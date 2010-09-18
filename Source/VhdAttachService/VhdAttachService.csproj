@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6FACC55B-3441-4A4E-885B-269D82820F9E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VhdAttachService</RootNamespace>
+    <AssemblyName>VhdAttachService</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <ApplicationIcon>..\VhdAttach\Properties\App.ico</ApplicationIcon>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\VhdAttach\Properties\App.snk</AssemblyOriginatorKeyFile>
+    <StartupObject>VhdAttachService.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Binaries\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Binaries\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="%28Medo%29\Args [001].cs" />
+    <Compile Include="%28Medo%29\CallingAssembly [002].cs" />
+    <Compile Include="..\VhdAttach\%28Medo%29\AboutBox [009].cs">
+      <Link>%28Medo%29\AboutBox [009].cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttach\%28Medo%29\ErrorReport [015].cs">
+      <Link>%28Medo%29\ErrorReport [015].cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttach\%28Medo%29\Settings [010].cs">
+      <Link>%28Medo%29\Settings [010].cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttach\%28Medo%29\UnhandledCatch [006].cs">
+      <Link>%28Medo%29\UnhandledCatch [006].cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttach\%28Medo%29\VirtualDisk [005].cs">
+      <Link>%28Medo%29\VirtualDisk [005].cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttach\ExitCodes.cs">
+      <Link>ExitCodes.cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AppService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="App.cs" />
+    <Compile Include="AppServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AppServiceThread.cs" />
+    <Compile Include="ServiceSettings.cs" />
+    <Compile Include="Wcf\JsonAttachDetachData.cs" />
+    <Compile Include="Wcf\JsonResponseData.cs" />
+    <Compile Include="Wcf\JsonSettingsData.cs" />
+    <Compile Include="Wcf\WcfPipeServer.cs" />
+    <Compile Include="Wcf\PipeService.cs" />
+    <Compile Include="Wcf\IPipeService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\VhdAttach\Properties\App.ico">
+      <Link>Properties\App.ico</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\VhdAttach\Properties\App.snk">
+      <Link>Properties\App.snk</Link>
+    </None>
+    <None Include="Properties\App.manifest" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>Q:\Tools\BuildEvents\BuildEvents.exe /Prebuild /ConfigurationName:"$(ConfigurationName)" /TargetPath:"$(TargetPath)" /SolutionDir:"$(SolutionDir)" /ProjectDir:"$(ProjectDir)"</PreBuildEvent>
+    <PostBuildEvent>Q:\Tools\BuildEvents\BuildEvents.exe /Postbuild /ConfigurationName:"$(ConfigurationName)" /TargetPath:"$(TargetPath)" /SolutionDir:"$(SolutionDir)" /ProjectDir:"$(ProjectDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
