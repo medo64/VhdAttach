@@ -30,7 +30,7 @@ Source: "ReadMe.txt";            DestDir: "{app}"; Attribs: readonly; Flags: ove
 Name: "{userstartmenu}\VHD Attach"; Filename: "{app}\VhdAttach.exe"
 
 [Registry]
-Root: HKCU; Subkey: "Software\Josip Medved\VhdAttach"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Josip Medved\VhdAttach"; ValueType: dword; ValueName: "Installed"; ValueData: "1"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Josip Medved"; Flags: uninsdeletekeyifempty
 
 Root: HKCR; Subkey: ".vhd"; ValueType: string; ValueName: ""; ValueData: "VhdAttachFile"; Flags: uninsclearvalue ;
