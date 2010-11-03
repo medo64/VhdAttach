@@ -70,8 +70,8 @@
   <ItemGroup>
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\CallingAssembly [002].cs" />
-    <Compile Include="..\VhdAttach\%28Medo%29\AboutBox [009].cs">
-      <Link>%28Medo%29\AboutBox [009].cs</Link>
+    <Compile Include="..\VhdAttach\%28Medo%29\AboutBox [010].cs">
+      <Link>%28Medo%29\AboutBox [010].cs</Link>
     </Compile>
     <Compile Include="..\VhdAttach\%28Medo%29\ErrorReport [015].cs">
       <Link>%28Medo%29\ErrorReport [015].cs</Link>
@@ -122,8 +122,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>Q:\Tools\BuildEvents\BuildEvents.exe /Prebuild /ConfigurationName:"$(ConfigurationName)" /TargetPath:"$(TargetPath)" /SolutionDir:"$(SolutionDir)" /ProjectDir:"$(ProjectDir)"</PreBuildEvent>
-    <PostBuildEvent>Q:\Tools\BuildEvents\BuildEvents.exe /Postbuild /ConfigurationName:"$(ConfigurationName)" /TargetPath:"$(TargetPath)" /SolutionDir:"$(SolutionDir)" /ProjectDir:"$(ProjectDir)"</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -64,7 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="%28Medo%29\AboutBox [009].cs" />
+    <Compile Include="%28Medo%29\AboutBox [010].cs" />
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\BinaryPrefixExtensions [002].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
