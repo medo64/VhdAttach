@@ -68,23 +68,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="%28Medo%29\AboutBox [010].cs" />
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\CallingAssembly [002].cs" />
-    <Compile Include="..\VhdAttach\%28Medo%29\AboutBox [010].cs">
-      <Link>%28Medo%29\AboutBox [010].cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttach\%28Medo%29\ErrorReport [015].cs">
-      <Link>%28Medo%29\ErrorReport [015].cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttach\%28Medo%29\Settings [010].cs">
-      <Link>%28Medo%29\Settings [010].cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttach\%28Medo%29\UnhandledCatch [006].cs">
-      <Link>%28Medo%29\UnhandledCatch [006].cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttach\%28Medo%29\VirtualDisk [005].cs">
-      <Link>%28Medo%29\VirtualDisk [005].cs</Link>
-    </Compile>
+    <Compile Include="%28Medo%29\ErrorReport [015].cs" />
+    <Compile Include="%28Medo%29\Settings [010].cs" />
+    <Compile Include="%28Medo%29\UnhandledCatch [007].cs" />
+    <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
     <Compile Include="..\VhdAttach\ExitCodes.cs">
       <Link>ExitCodes.cs</Link>
     </Compile>

@@ -75,7 +75,7 @@
     <Compile Include="%28Medo%29\State [013].cs" />
     <Compile Include="%28Medo%29\StringAdder [002].cs" />
     <Compile Include="%28Medo%29\TaskbarProgress [002].cs" />
-    <Compile Include="%28Medo%29\UnhandledCatch [006].cs" />
+    <Compile Include="%28Medo%29\UnhandledCatch [007].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
     <Compile Include="..\VhdAttachService\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
