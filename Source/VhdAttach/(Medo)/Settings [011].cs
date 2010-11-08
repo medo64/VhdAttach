@@ -15,6 +15,7 @@
 //2008-04-26: Fixed case sensitivity bug when reading command line (introduced with FxCop cleaning).
 //2008-11-07: Inserted Args [001] class in order to perform proper command line parsing.
 //2009-07-04: Compatibility with Mono 2.4.
+//2010-10-31: Added option to skip registry writes (NoRegistryWrites).
 
 
 using Microsoft.Win32;
@@ -88,6 +89,11 @@ namespace Medo.Configuration {
             }
             set { lock (_syncRoot) { _subkeyPath = value; } }
         }
+
+        /// <summary>
+        /// Gets/sets whether settings should be written to registry.
+        /// </summary>
+        public static bool NoRegistryWrites { get; set; }
 
         /// <summary>
         /// Clears all cached data so on next access re-read of configuration data will occur.
@@ -201,14 +207,18 @@ namespace Medo.Configuration {
 
             lock (_syncRoot) {
                 Cache.Invalidate(key.ToUpperInvariant());
-                try {
-                    using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
-                        if (rk != null) {
-                            rk.SetValue(key, value, RegistryValueKind.String);
+                if (Settings.NoRegistryWrites) {
+                    Cache.Write(key.ToUpperInvariant(), value);
+                } else {
+                    try {
+                        using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
+                            if (rk != null) {
+                                rk.SetValue(key, value, RegistryValueKind.String);
+                            }
                         }
-                    }
-                } catch (IOException) { //key is deleted. 
-                } catch (UnauthorizedAccessException) { } //key is write protected. 
+                    } catch (IOException) { //key is deleted. 
+                    } catch (UnauthorizedAccessException) { } //key is write protected. 
+                }
             }
         }
 
@@ -308,21 +318,25 @@ namespace Medo.Configuration {
         /// Sets the value for specified key. If the specified key does not exist, it is created.
         /// </summary>
         /// <param name="key">Key.</param>
-        /// <param name="value">The value to write.</param>4
+        /// <param name="value">The value to write.</param>
         /// <exception cref="ArgumentNullException">Key cannot be null.</exception>
         public static void Write(string key, int value) {
             if (key == null) { throw new ArgumentNullException("key", Resources.ExceptionKeyCannotBeNull); }
 
             lock (_syncRoot) {
                 Cache.Invalidate(key.ToUpperInvariant());
-                try {
-                    using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
-                        if (rk != null) {
-                            rk.SetValue(key, value, RegistryValueKind.DWord);
+                if (Settings.NoRegistryWrites) {
+                    Cache.Write(key.ToUpperInvariant(), value.ToString(CultureInfo.InvariantCulture));
+                } else {
+                    try {
+                        using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
+                            if (rk != null) {
+                                rk.SetValue(key, value, RegistryValueKind.DWord);
+                            }
                         }
-                    }
-                } catch (IOException) { //key is deleted. 
-                } catch (UnauthorizedAccessException) { } //key is write protected. 
+                    } catch (IOException) { //key is deleted. 
+                    } catch (UnauthorizedAccessException) { } //key is write protected.
+                }
             }
         }
 
@@ -459,18 +473,22 @@ namespace Medo.Configuration {
 
             lock (_syncRoot) {
                 Cache.Invalidate(key.ToUpperInvariant());
-                try {
-                    using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
-                        if (rk != null) {
-                            if (value) {
-                                rk.SetValue(key, 1, RegistryValueKind.DWord);
-                            } else {
-                                rk.SetValue(key, 0, RegistryValueKind.DWord);
+                if (Settings.NoRegistryWrites) {
+                    Cache.Write(key.ToUpperInvariant(), value.ToString(CultureInfo.InvariantCulture));
+                } else {
+                    try {
+                        using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
+                            if (rk != null) {
+                                if (value) {
+                                    rk.SetValue(key, 1, RegistryValueKind.DWord);
+                                } else {
+                                    rk.SetValue(key, 0, RegistryValueKind.DWord);
+                                }
                             }
                         }
-                    }
-                } catch (IOException) { //key is deleted. 
-                } catch (UnauthorizedAccessException) { } //key is write protected. 
+                    } catch (IOException) { //key is deleted. 
+                    } catch (UnauthorizedAccessException) { } //key is write protected. 
+                }
             }
         }
 
@@ -577,14 +595,18 @@ namespace Medo.Configuration {
 
             lock (_syncRoot) {
                 Cache.Invalidate(key.ToUpperInvariant());
-                try {
-                    using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
-                        if (rk != null) {
-                            rk.SetValue(key, value.ToString(CultureInfo.InvariantCulture), RegistryValueKind.String);
+                if (Settings.NoRegistryWrites) {
+                    Cache.Write(key.ToUpperInvariant(), value.ToString(CultureInfo.InvariantCulture));
+                } else {
+                    try {
+                        using (RegistryKey rk = Registry.CurrentUser.CreateSubKey(Settings.SubkeyPath)) {
+                            if (rk != null) {
+                                rk.SetValue(key, value.ToString(CultureInfo.InvariantCulture), RegistryValueKind.String);
+                            }
                         }
-                    }
-                } catch (IOException) { //key is deleted. 
-                } catch (UnauthorizedAccessException) { } //key is write protected. 
+                    } catch (IOException) { //key is deleted. 
+                    } catch (UnauthorizedAccessException) { } //key is write protected.
+                }
             }
         }
 

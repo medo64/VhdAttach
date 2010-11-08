@@ -68,11 +68,11 @@
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\BinaryPrefixExtensions [002].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
-    <Compile Include="%28Medo%29\ErrorReport [015].cs" />
+    <Compile Include="%28Medo%29\ErrorReport [018].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
     <Compile Include="%28Medo%29\RecentFiles [002].cs" />
-    <Compile Include="%28Medo%29\Settings [010].cs" />
-    <Compile Include="%28Medo%29\State [013].cs" />
+    <Compile Include="%28Medo%29\Settings [011].cs" />
+    <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\StringAdder [002].cs" />
     <Compile Include="%28Medo%29\TaskbarProgress [002].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [007].cs" />
@@ -171,8 +171,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>Q:\Tools\BuildEvents\BuildEvents.exe /Prebuild /ConfigurationName:"$(ConfigurationName)" /TargetPath:"$(TargetPath)" /SolutionDir:"$(SolutionDir)" /ProjectDir:"$(ProjectDir)"</PreBuildEvent>
-    <PostBuildEvent>Q:\Tools\BuildEvents\BuildEvents.exe /Postbuild /ConfigurationName:"$(ConfigurationName)" /TargetPath:"$(TargetPath)" /SolutionDir:"$(SolutionDir)" /ProjectDir:"$(ProjectDir)"</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

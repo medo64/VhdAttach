@@ -17,7 +17,7 @@ Shortcut keys
 
 Version history
 
-   Version 1.61 ()
+   Version 1.70 (2010-11-14)
 
       o  Bugfix: Service returns proper code on crash.
       o  Bugfix: Pipe name changed to VhdAttach.

@@ -23,6 +23,9 @@
 //            Log file is now ErrorReport "[{application}].log" and "ErrorReport [{application}] {time}.log".
 //2010-02-13: Added TopMost.
 //2010-03-02: Line wrapping at 72nd character.
+//2010-03-07: Changed Math.* to System.Math.*.
+//2010-10-30: Fixed bug with sending error report.
+//2010-11-06: Graphical update.
 
 
 using System;
@@ -60,6 +63,7 @@ namespace Medo.Diagnostics {
         /// <summary>
         /// Setting up of initial variable values in order to avoid setting them once problems (e.g. OutOfMemoryException) occur.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "This cannot be done with in-field assignments.")]
         static ErrorReport() {
             var assembly = Assembly.GetEntryAssembly();
 
@@ -255,6 +259,7 @@ namespace Medo.Diagnostics {
         /// <summary>
         /// Gets/sets whether window will appear top-most.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "TopMost", Justification = "Spelling is same as Form's TopMost property.")]
         public static bool TopMost { get; set; }
 
 
@@ -285,34 +290,39 @@ namespace Medo.Diagnostics {
 
                 int dluW, dluH;
                 using (var graphics = form.CreateGraphics()) {
-                    var fewCharSize = graphics.MeasureString("mMiI", form.Font);
-                    dluW = (int)System.Math.Ceiling(fewCharSize.Width / 4);
+                    var fewCharSize = graphics.MeasureString(Resources.MeasurementText, form.Font);
+                    dluW = (int)System.Math.Ceiling(fewCharSize.Width / Resources.MeasurementText.Length);
                     dluH = (int)System.Math.Ceiling(fewCharSize.Height);
                 }
+                var dluBorder = dluH / 2;
 
-                form.ClientSize = new Size(Math.Min(36 * dluW, Screen.GetWorkingArea(form).Width - 4 * dluH), Math.Min(5 * dluH, Screen.GetWorkingArea(form).Height - 4 * dluH));
-
-                //label
-                label.AutoEllipsis = true;
-                label.TextAlign = ContentAlignment.TopCenter;
-                label.ClientSize = new Size(form.ClientSize.Width - 14, dluH * 2);
-                label.Location = new Point(7, 7);
-                label.Text = Resources.GetInCurrentLanguage("Unexpected error occurred.", "Dogodila se neočekivana greška.");
+                form.ClientSize = new Size(System.Math.Min(36 * dluW, Screen.GetWorkingArea(form).Width - 4 * dluH), System.Math.Min(6 * dluH, Screen.GetWorkingArea(form).Height - 4 * dluH));
 
                 //sendButton
                 sendButton.AutoEllipsis = true;
                 sendButton.ClientSize = new Size(dluW * 20, (int)(dluH * 1.5));
                 sendButton.DialogResult = DialogResult.OK;
-                sendButton.Location = new Point(7, form.ClientRectangle.Bottom - sendButton.Height - 7);
+                sendButton.Location = new Point(dluBorder, form.ClientRectangle.Bottom - sendButton.Height - dluBorder);
                 sendButton.Text = Resources.GetInCurrentLanguage("Report a bug", "Pošalji prijavu greške");
 
                 //closeButton
                 closeButton.AutoEllipsis = true;
                 closeButton.ClientSize = new Size(dluW * 10, (int)(dluH * 1.5));
                 closeButton.DialogResult = DialogResult.Cancel;
-                closeButton.Location = new Point(form.ClientRectangle.Right - closeButton.Width - 7, form.ClientRectangle.Bottom - closeButton.Height - 7);
+                closeButton.Location = new Point(form.ClientRectangle.Right - closeButton.Width - dluBorder, form.ClientRectangle.Bottom - closeButton.Height - dluBorder);
                 closeButton.Text = Resources.GetInCurrentLanguage("Close", "Zatvori");
 
+                //label
+                label.AutoEllipsis = true;
+                label.AutoSize = false;
+                label.BackColor = SystemColors.Window;
+                label.ForeColor = SystemColors.WindowText;
+                label.TextAlign = ContentAlignment.TopCenter;
+                label.ClientSize = new Size(form.ClientSize.Width - 14, dluH * 2);
+                label.Location = new Point(0, 0);
+                label.Padding = new Padding(dluBorder);
+                label.Size = new Size(form.ClientSize.Width, form.ClientSize.Height - dluBorder - closeButton.Height - dluBorder);
+                label.Text = Resources.GetInCurrentLanguage("Unexpected error occurred.", "Dogodila se neočekivana greška.");
 
                 form.Controls.Add(label);
                 if (address != null) {
@@ -329,6 +339,7 @@ namespace Medo.Diagnostics {
             var ownerForm = owner as Form;
 
             using (var form = new Form())
+            using (var panelContent = new Panel())
             using (var labelHelp = new Label())
             using (var labelMessage = new Label())
             using (var textMessage = new TextBox())
@@ -360,80 +371,108 @@ namespace Medo.Diagnostics {
 
                 int dluW, dluH;
                 using (var graphics = form.CreateGraphics()) {
-                    var fewCharSize = graphics.MeasureString("mMiI", form.Font);
-                    dluW = (int)System.Math.Ceiling(fewCharSize.Width / 4);
+                    var fewCharSize = graphics.MeasureString(Resources.MeasurementText, form.Font);
+                    dluW = (int)System.Math.Ceiling(fewCharSize.Width / Resources.MeasurementText.Length);
                     dluH = (int)System.Math.Ceiling(fewCharSize.Height);
                 }
+                var dluBorder = dluH / 2;
+                var dluSpace = dluH / 3;
 
                 form.ClientSize = new Size(System.Math.Min(64 * dluW, Screen.GetWorkingArea(form).Width - 4 * dluH), System.Math.Min(32 * dluH, Screen.GetWorkingArea(form).Height - 4 * dluH));
 
+                //panel
+                panelContent.BackColor = SystemColors.Window;
+                panelContent.ForeColor = SystemColors.WindowText;
+                panelContent.Location = new Point(0, 0);
+                panelContent.Size = new Size(form.ClientRectangle.Width, form.ClientRectangle.Height - sendButton.Height - dluBorder * 3);
 
                 //labelHelp
                 labelHelp.AutoEllipsis = true;
+                labelHelp.AutoSize = false;
+                labelHelp.BackColor = SystemColors.Window;
                 labelHelp.ForeColor = SystemColors.Highlight;
                 labelHelp.Text = Resources.GetInCurrentLanguage("This report will not contain any personal data not provided by you.", "Ovaj izvještaj neće sadržavati osobne podatke osim onih koje Vi odlučite dati.");
-                //labelHelp.TextAlign = ContentAlignment.TopCenter;
-                labelHelp.ClientSize = new Size(form.ClientSize.Width - 14, dluH * 2);
-                labelHelp.Location = new Point(7, 7);
+                labelHelp.ClientSize = new Size(form.ClientSize.Width - dluBorder - dluBorder, dluH * 2);
+                labelHelp.Location = new Point(dluBorder, dluBorder);
 
                 //labelMessage
                 labelMessage.AutoEllipsis = true;
+                labelMessage.AutoSize = false;
+                labelMessage.BackColor = SystemColors.Window;
+                labelMessage.ForeColor = SystemColors.WindowText;
                 if (exception != null) {
                     labelMessage.Text = Resources.GetInCurrentLanguage("What were you doing when error occurred?", "Što ste radili kada se dogodila greška?");
                 } else {
                     labelMessage.Text = Resources.GetInCurrentLanguage("What do you wish to report?", "Što želite prijaviti?");
                 }
-                labelMessage.ClientSize = new Size(form.ClientRectangle.Width - 14, dluH);
-                labelMessage.Location = new Point(7, 7 + labelHelp.Height + 14);
+                labelMessage.ClientSize = new Size(form.ClientSize.Width - dluBorder - dluBorder, dluH);
+                labelMessage.Location = new Point(dluBorder, labelHelp.Bottom + dluSpace);
 
                 //textMessage
+                textMessage.BackColor = SystemColors.Window;
+                textMessage.ForeColor = SystemColors.WindowText;
                 textMessage.AcceptsReturn = true;
                 textMessage.Multiline = true;
                 textMessage.ScrollBars = ScrollBars.Vertical;
-                textMessage.Size = new Size(form.ClientRectangle.Width - 14, 3 * dluH);
-                textMessage.Location = new Point(7, 7 + labelHelp.Height + 14 + labelMessage.Height);
+                textMessage.Size = new Size(form.ClientRectangle.Width - dluBorder * 2, 3 * dluH);
+                textMessage.Location = new Point(dluBorder, labelMessage.Bottom + dluSpace);
                 if (exception == null) {
                     textMessage.Tag = sendButton;
                     textMessage.TextChanged += new EventHandler(textMessage_TextChanged);
                 }
                 textMessage.PreviewKeyDown += new PreviewKeyDownEventHandler(text_PreviewKeyDown);
 
+                //textEmail
+                textEmail.BackColor = SystemColors.Window;
+                textEmail.ForeColor = SystemColors.WindowText;
+                textEmail.Size = new Size(form.ClientRectangle.Width - dluW * 15 - dluBorder * 2, dluH);
+                textEmail.Location = new Point(form.ClientRectangle.Width - textEmail.Width - dluBorder, textMessage.Bottom + dluSpace);
+                textEmail.PreviewKeyDown += new PreviewKeyDownEventHandler(text_PreviewKeyDown);
+
                 //labelEmail
+                labelEmail.BackColor = SystemColors.Window;
+                labelEmail.ForeColor = SystemColors.WindowText;
                 labelEmail.AutoEllipsis = true;
+                labelEmail.AutoSize = false;
                 labelEmail.ClientSize = new Size(dluW * 14, dluH);
+                labelEmail.Location = new Point(dluBorder, textEmail.Top + (textEmail.Height - labelEmail.Height) / 2);
                 labelEmail.Text = Resources.GetInCurrentLanguage("E-mail (optional):", "E-mail (neobvezno):");
+
+                //textName
+                textName.BackColor = SystemColors.Window;
+                textName.ForeColor = SystemColors.WindowText;
+                textName.Size = new Size(form.ClientRectangle.Width - dluW * 15 - dluBorder * 2, dluH);
+                textName.Location = new Point(form.ClientRectangle.Width - textName.Width - dluBorder, textEmail.Bottom + dluSpace + dluSpace);
+                textName.PreviewKeyDown += new PreviewKeyDownEventHandler(text_PreviewKeyDown);
 
                 //labelName
                 labelName.AutoEllipsis = true;
+                labelName.AutoSize = false;
+                labelName.BackColor = SystemColors.Window;
+                labelName.ForeColor = SystemColors.WindowText;
                 labelName.ClientSize = new Size(dluW * 14, dluH);
+                labelName.Location = new Point(dluBorder, textName.Top + (textName.Height - labelName.Height) / 2);
                 labelName.Text = Resources.GetInCurrentLanguage("Name (optional):", "Ime (neobvezno):");
-
-                //textEmail
-                textEmail.Location = new Point(7 + System.Math.Max(labelEmail.Width, labelName.Width) + 7, 7 + labelHelp.Height + 14 + labelMessage.Height + textMessage.Height + 7);
-                textEmail.Width = form.ClientRectangle.Width - textEmail.Location.X - 7;
-                textEmail.PreviewKeyDown += new PreviewKeyDownEventHandler(text_PreviewKeyDown);
-                labelEmail.Location = new Point(7, textEmail.Top + (textEmail.Height - labelEmail.Height) / 2);
-
-                //textName
-                textName.Location = new Point(7 + System.Math.Max(labelEmail.Width, labelName.Width) + 7, 7 + labelHelp.Height + 14 + labelMessage.Height + textMessage.Height + 7 + textEmail.Height + 7);
-                textName.Width = form.ClientRectangle.Width - textName.Location.X - 7; ;
-                textName.PreviewKeyDown += new PreviewKeyDownEventHandler(text_PreviewKeyDown);
-                labelName.Location = new Point(7, textName.Top + (textName.Height - labelName.Height) / 2);
 
                 //labelReport
                 labelReport.AutoEllipsis = true;
+                labelReport.AutoSize = false;
+                labelReport.BackColor = SystemColors.Window;
+                labelReport.ForeColor = SystemColors.WindowText;
                 labelReport.Text = Resources.GetInCurrentLanguage("Additional data that will be sent:", "Dodatni podaci koji će biti poslani:");
-                labelReport.ClientSize = new Size(form.ClientRectangle.Width - 14, dluH);
-                labelReport.Location = new Point(7, 7 + labelHelp.Height + 14 + labelMessage.Height + textMessage.Height + 7 + textEmail.Height + 7 + textName.Height + 14);
+                labelReport.ClientSize = new Size(form.ClientRectangle.Width - dluBorder * 2, dluH);
+                labelReport.Location = new Point(dluBorder, textName.Bottom + dluBorder);
 
                 //textReport
+                textReport.BackColor = SystemColors.Control;
+                textReport.ForeColor = SystemColors.ControlText;
                 textReport.Font = new Font(FontFamily.GenericMonospace, form.Font.Size * 1F, FontStyle.Regular, form.Font.Unit);
                 textReport.Multiline = true;
                 textReport.ReadOnly = true;
                 textReport.ScrollBars = ScrollBars.Vertical;
                 textReport.Text = LogBufferGetString();
-                textReport.Location = new Point(7, 7 + labelHelp.Height + 14 + labelMessage.Height + textMessage.Height + 7 + textEmail.Height + 7 + textName.Height + 7 + labelReport.Height + 7);
-                textReport.Size = new Size(form.ClientRectangle.Width - 14, form.ClientRectangle.Height - (7 + labelHelp.Height + 14 + labelMessage.Height + textMessage.Height + 7 + textEmail.Height + 7 + textName.Height + 7 + labelReport.Height + 14 + 14 + sendButton.Height + 7));
+                textReport.Location = new Point(dluBorder, labelReport.Bottom + dluSpace);
+                textReport.Size = new Size(form.ClientRectangle.Width - dluBorder * 2, panelContent.ClientRectangle.Height - textReport.Top - dluBorder);
                 textReport.PreviewKeyDown += new PreviewKeyDownEventHandler(text_PreviewKeyDown);
 
                 //sendButton
@@ -441,26 +480,27 @@ namespace Medo.Diagnostics {
                 sendButton.ClientSize = new Size(dluW * 20, (int)(dluH * 1.5));
                 sendButton.Enabled = (exception != null);
                 sendButton.DialogResult = DialogResult.OK;
-                sendButton.Location = new Point(7, form.ClientRectangle.Bottom - sendButton.Height - 7);
+                sendButton.Location = new Point(dluBorder, form.ClientRectangle.Bottom - sendButton.Height - dluBorder);
                 sendButton.Text = Resources.GetInCurrentLanguage("Report a bug", "Pošalji prijavu greške");
 
                 //cancelButton
                 cancelButton.AutoEllipsis = true;
                 cancelButton.ClientSize = new Size(dluW * 10, (int)(dluH * 1.5));
                 cancelButton.DialogResult = DialogResult.Cancel;
-                cancelButton.Location = new Point(form.ClientRectangle.Right - cancelButton.Width - 7, form.ClientRectangle.Bottom - cancelButton.Height - 7);
+                cancelButton.Location = new Point(form.ClientRectangle.Right - cancelButton.Width - dluBorder, form.ClientRectangle.Bottom - cancelButton.Height - dluBorder);
                 cancelButton.Text = Resources.GetInCurrentLanguage("Cancel", "Odustani");
 
+                panelContent.Controls.Add(labelHelp);
+                panelContent.Controls.Add(labelMessage);
+                panelContent.Controls.Add(textMessage);
+                panelContent.Controls.Add(labelEmail);
+                panelContent.Controls.Add(textEmail);
+                panelContent.Controls.Add(labelName);
+                panelContent.Controls.Add(textName);
+                panelContent.Controls.Add(labelReport);
+                panelContent.Controls.Add(textReport);
 
-                form.Controls.Add(labelHelp);
-                form.Controls.Add(labelMessage);
-                form.Controls.Add(textMessage);
-                form.Controls.Add(labelEmail);
-                form.Controls.Add(textEmail);
-                form.Controls.Add(labelName);
-                form.Controls.Add(textName);
-                form.Controls.Add(labelReport);
-                form.Controls.Add(textReport);
+                form.Controls.Add(panelContent);
                 form.Controls.Add(sendButton);
                 form.Controls.Add(cancelButton);
 
@@ -526,25 +566,28 @@ namespace Medo.Diagnostics {
 
                 int dluW, dluH;
                 using (var graphics = form.CreateGraphics()) {
-                    var fewCharSize = graphics.MeasureString("mMiI", form.Font);
-                    dluW = (int)System.Math.Ceiling(fewCharSize.Width / 4);
+                    var fewCharSize = graphics.MeasureString(Resources.MeasurementText, form.Font);
+                    dluW = (int)System.Math.Ceiling(fewCharSize.Width / Resources.MeasurementText.Length);
                     dluH = (int)System.Math.Ceiling(fewCharSize.Height);
                 }
 
-                form.ClientSize = new Size(Math.Min(36 * dluW, Screen.GetWorkingArea(form).Width - 4 * dluH), Math.Min(4 * dluH, Screen.GetWorkingArea(form).Height - 4 * dluH));
+                var dluBorder = dluH / 2;
+                var dluSpace = dluH / 3;
+
+                form.ClientSize = new Size(System.Math.Min(36 * dluW, Screen.GetWorkingArea(form).Width - 4 * dluH), System.Math.Min(4 * dluH, Screen.GetWorkingArea(form).Height - 4 * dluH));
 
                 //label
                 label.AutoEllipsis = true;
                 label.TextAlign = ContentAlignment.TopCenter;
-                label.ClientSize = new Size(form.ClientSize.Width - 14, dluH * 2);
-                label.Location = new Point(7, 7);
+                label.ClientSize = new Size(form.ClientSize.Width - dluBorder * 2, dluH * 2);
+                label.Location = new Point(dluBorder, dluBorder);
                 label.Text = Resources.GetInCurrentLanguage("Sending error report...", "Prijava greške u tijeku...");
 
                 //progressBar
                 progressBar.MarqueeAnimationSpeed = 50;
                 progressBar.Style = ProgressBarStyle.Marquee;
-                progressBar.ClientSize = new Size(form.ClientRectangle.Width - 14, dluH);
-                progressBar.Location = new Point(7, form.ClientRectangle.Bottom - 7 - progressBar.Height);
+                progressBar.ClientSize = new Size(form.ClientRectangle.Width - dluBorder * 2, dluH);
+                progressBar.Location = new Point(dluBorder, form.ClientRectangle.Bottom - dluBorder - progressBar.Height);
 
                 //backgroundWorker
                 backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker_DoWork);
@@ -650,13 +693,14 @@ namespace Medo.Diagnostics {
 
         private static void LogBufferFillFromException(Exception exception, params string[] additionalInformation) {
             if (_logBuffer.Length != 0) { _logBuffer.Length = 0; }
+            var isOutOfMemoryException = (exception is OutOfMemoryException);
 
             AppendLine("Environment", _logBuffer);
             AppendLine("", _logBuffer);
             AppendLine(_infoAssemblyFullName, _logBuffer, 1, true);
             AppendLine(_infoOsVersion, _logBuffer, 1, true);
             AppendLine(_infoFrameworkVersion, _logBuffer, 1, true);
-            if (!(exception is OutOfMemoryException)) {
+            if (isOutOfMemoryException == false) {
                 AppendLine("Local time is " + DateTime.Now.ToString(@"yyyy\-MM\-dd\THH\:mm\:ssK", System.Globalization.CultureInfo.InvariantCulture), _logBuffer, 1, true); //it will fail in OutOfMemory situation
             }
 
@@ -677,7 +721,7 @@ namespace Medo.Diagnostics {
                         AppendLine("Inner exception (...)", _logBuffer);
                     }
                     AppendLine("", _logBuffer);
-                    if (!(exception is OutOfMemoryException)) {
+                    if (isOutOfMemoryException == false) {
                         AppendLine(ex.GetType().ToString(), _logBuffer, 1, true);
                     }
                     AppendLine(ex.Message, _logBuffer, 1, true);
@@ -712,7 +756,7 @@ namespace Medo.Diagnostics {
         private static string LogBufferGetStringWithUserInformation(string message, string name, string email) {
             var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(message)) {
-                AppendLine("message", sb);
+                AppendLine(message, sb);
                 AppendLine("", sb);
                 AppendLine("", sb);
             }
@@ -735,13 +779,6 @@ namespace Medo.Diagnostics {
 
         private static string LogBufferGetString() {
             return _logBuffer.ToString();
-        }
-
-        private static readonly AssemblyNameComparer _assemblyNameComparer = new AssemblyNameComparer();
-        private class AssemblyNameComparer : IComparer<AssemblyName> {
-            int IComparer<AssemblyName>.Compare(AssemblyName x, AssemblyName y) {
-                return string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
-            }
         }
 
         private static string UrlEncode(string text) {
@@ -796,7 +833,7 @@ namespace Medo.Diagnostics {
                     } else if (nextLfBreak == -1) {
                         nextCrLfBreak = nextCrBreak;
                     } else {
-                        nextCrLfBreak = Math.Min(nextCrBreak, nextLfBreak);
+                        nextCrLfBreak = System.Math.Min(nextCrBreak, nextLfBreak);
                     }
                     if ((nextCrLfBreak != -1) && ((nextCrLfBreak - firstChar) <= maxWidth)) {
                         lastChar = nextCrLfBreak - 1;
@@ -816,7 +853,7 @@ namespace Medo.Diagnostics {
                             int nextOtherBreak2 = input.LastIndexOf(':', firstChar + maxWidth, maxWidth);
                             int nextOtherBreak3 = input.LastIndexOf('(', firstChar + maxWidth, maxWidth);
                             int nextOtherBreak4 = input.LastIndexOf(',', firstChar + maxWidth, maxWidth);
-                            int nextOtherBreak = Math.Max(nextOtherBreak1, Math.Max(nextOtherBreak2, Math.Max(nextOtherBreak3, nextOtherBreak4)));
+                            int nextOtherBreak = System.Math.Max(nextOtherBreak1, System.Math.Max(nextOtherBreak2, System.Math.Max(nextOtherBreak3, nextOtherBreak4)));
                             if ((nextOtherBreak != -1) && ((nextOtherBreak - firstChar) <= maxWidth)) {
                                 lastChar = nextOtherBreak;
                                 nextChar = lastChar + 1;
@@ -847,6 +884,8 @@ namespace Medo.Diagnostics {
 
 
         private static class Resources {
+
+            internal static string MeasurementText { get { return "mMiI"; } }
 
             internal static string GetInCurrentLanguage(string en_US, string hr_HR) {
                 switch (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.ToUpperInvariant()) {

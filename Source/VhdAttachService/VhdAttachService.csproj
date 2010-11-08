@@ -72,7 +72,7 @@
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\CallingAssembly [002].cs" />
     <Compile Include="%28Medo%29\ErrorReport [015].cs" />
-    <Compile Include="%28Medo%29\Settings [010].cs" />
+    <Compile Include="%28Medo%29\Settings [011].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [007].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
     <Compile Include="..\VhdAttach\ExitCodes.cs">
