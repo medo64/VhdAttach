@@ -6,6 +6,7 @@ using System.IO;
 using System.Management;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using VhdAttachService;
 
 [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
 class PipeService : IPipeService {
@@ -104,73 +105,141 @@ class PipeService : IPipeService {
                 }
             }
 
-            var diskPartScriptFile = Path.GetTempFileName();
-            File.WriteAllText(diskPartScriptFile, "list vdisk");
 
-            var startInfo = new ProcessStartInfo();
-            startInfo.Arguments = "/s \"" + diskPartScriptFile + "\"";
-            startInfo.CreateNoWindow = true;
-            startInfo.ErrorDialog = false;
-            startInfo.FileName = "diskpart";
-            startInfo.RedirectStandardOutput = true;
-            startInfo.UseShellExecute = false;
-
-            var diskPartProcess = new Process();
-            diskPartProcess.StartInfo = startInfo;
-            diskPartProcess.Start();
-
-            var diskPartResult = diskPartProcess.StandardOutput.ReadToEnd();
-            var diskPartLines = diskPartResult.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            string diskPartDashedLine = null;
-            int minDashPosition = int.MaxValue;
-            int dashedLineIndex = -1;
-            for (int i = 0; i < diskPartLines.Length; ++i) {
-                int dashPosition = diskPartLines[i].IndexOf("---");
-                if ((dashPosition >= 0) && (dashPosition < minDashPosition)) {
-                    minDashPosition = dashPosition;
-                    diskPartDashedLine = diskPartLines[i];
-                    dashedLineIndex = i;
-                }
-            }
-            if (diskPartDashedLine == null) {
-                throw new FormatException("Cannot find attached virtual disk drives.");
-            }
-            var dataLines = new List<string>();
-            for (int i = dashedLineIndex + 1; i < diskPartLines.Length; ++i) {
-                dataLines.Add(diskPartLines[i]);
-            }
-
-
-            var dashedLineStarts = new List<int>();
-            int dashIndex = diskPartDashedLine.IndexOf('-');
-            dashedLineStarts.Add(dashIndex);
-            int lastDashIndex = dashIndex;
-            while (true) {
-                dashIndex = diskPartDashedLine.IndexOf('-', lastDashIndex + 1);
-                if (dashIndex < 0) { break; }
-                if (dashIndex > lastDashIndex + 1) { //there is space in-between last two dashes
-                    dashedLineStarts.Add(dashIndex);
-                }
-                lastDashIndex = dashIndex;
-            }
-            if (dashedLineStarts.Count != 5) {
-                throw new FormatException("Cannot determine attached virtual disk drives.");
-            }
+            #region VDS COM
 
             FileInfo vhdFile = null;
-            foreach (var iLine in dataLines) {
-                var diskText = iLine.Substring(dashedLineStarts[1], dashedLineStarts[2] - dashedLineStarts[1] - 1).Trim();
-                var diskNumberMatch = ExtractDiskNumberRegex.Match(diskText);
-                if (diskNumberMatch.Success) {
-                    int diskPartDiskNumber;
-                    if (int.TryParse(diskNumberMatch.Value, NumberStyles.Integer, CultureInfo.CurrentCulture, out diskPartDiskNumber)) {
-                        if (diskPartDiskNumber == wmiPhysicalDiskNumber) {
-                            vhdFile = new FileInfo(iLine.Substring(dashedLineStarts[4], iLine.Length - dashedLineStarts[4]).TrimStart());
+
+            VdsServiceLoader loaderClass = new VdsServiceLoader();
+            IVdsServiceLoader loader = (IVdsServiceLoader)loaderClass;
+
+            IVdsService service;
+            loader.LoadService(null, out service);
+
+            service.WaitForServiceReady();
+
+            IEnumVdsObject providerEnum;
+            service.QueryProviders(VDS_QUERY_PROVIDER_FLAG.VDS_QUERY_VIRTUALDISK_PROVIDERS, out providerEnum);
+
+            while (true) {
+                uint fetchedProvider;
+                object unknownProvider;
+                providerEnum.Next(1, out unknownProvider, out fetchedProvider);
+
+                if (fetchedProvider == 0) break;
+                IVdsVdProvider provider = (IVdsVdProvider)unknownProvider;
+                Console.WriteLine("Got VD Provider");
+
+                IEnumVdsObject diskEnum;
+                provider.QueryVDisks(out diskEnum);
+
+                while (true) {
+                    uint fetchedDisk;
+                    object unknownDisk;
+                    diskEnum.Next(1, out unknownDisk, out fetchedDisk);
+                    if (fetchedDisk == 0) break;
+                    IVdsVDisk vDisk = (IVdsVDisk)unknownDisk;
+
+                    VDS_VDISK_PROPERTIES vdiskProperties;
+                    vDisk.GetProperties(out vdiskProperties);
+
+                    IVdsDisk disk;
+                    provider.GetDiskFromVDisk(vDisk, out disk);
+
+                    VDS_DISK_PROP diskProperties;
+                    disk.GetProperties(out diskProperties);
+
+                    if (diskProperties.pwszName.StartsWith(@"\\?\PhysicalDrive")) {
+                        int vdsDiskNumber;
+                        if (int.TryParse(diskProperties.pwszName.Substring(17), NumberStyles.Integer, CultureInfo.CurrentCulture, out vdsDiskNumber)) {
+                            if (vdsDiskNumber == wmiPhysicalDiskNumber) {
+                                vhdFile = new FileInfo(vdiskProperties.pPath);
+                                break;
+                            }
                         }
+                    } else {
+                        Trace.TraceError(diskProperties.pwszName + " = " + vdiskProperties.pPath);
                     }
+                    Console.WriteLine("-> Disk Name=" + diskProperties.pwszName);
+                    Console.WriteLine("-> Disk Friendly=" + diskProperties.pwszFriendlyName);
                 }
+                if (vhdFile != null) { break; }
             }
+
+            #endregion
+
+            #region diskpart - not used
+
+            //var diskPartScriptFile = Path.GetTempFileName();
+            //File.WriteAllText(diskPartScriptFile, "list vdisk");
+
+            //var startInfo = new ProcessStartInfo();
+            //startInfo.Arguments = "/s \"" + diskPartScriptFile + "\"";
+            //startInfo.CreateNoWindow = true;
+            //startInfo.ErrorDialog = false;
+            //startInfo.FileName = "diskpart";
+            //startInfo.RedirectStandardOutput = true;
+            //startInfo.UseShellExecute = false;
+
+            //var diskPartProcess = new Process();
+            //diskPartProcess.StartInfo = startInfo;
+            //diskPartProcess.Start();
+
+            //var diskPartResult = diskPartProcess.StandardOutput.ReadToEnd();
+            //var diskPartLines = diskPartResult.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            //string diskPartDashedLine = null;
+            //int minDashPosition = int.MaxValue;
+            //int dashedLineIndex = -1;
+            //for (int i = 0; i < diskPartLines.Length; ++i) {
+            //    int dashPosition = diskPartLines[i].IndexOf("---");
+            //    if ((dashPosition >= 0) && (dashPosition < minDashPosition)) {
+            //        minDashPosition = dashPosition;
+            //        diskPartDashedLine = diskPartLines[i];
+            //        dashedLineIndex = i;
+            //    }
+            //}
+            //if (diskPartDashedLine == null) {
+            //    throw new FormatException("Cannot find attached virtual disk drives.");
+            //}
+            //var dataLines = new List<string>();
+            //for (int i = dashedLineIndex + 1; i < diskPartLines.Length; ++i) {
+            //    dataLines.Add(diskPartLines[i]);
+            //}
+
+
+            //var dashedLineStarts = new List<int>();
+            //int dashIndex = diskPartDashedLine.IndexOf('-');
+            //dashedLineStarts.Add(dashIndex);
+            //int lastDashIndex = dashIndex;
+            //while (true) {
+            //    dashIndex = diskPartDashedLine.IndexOf('-', lastDashIndex + 1);
+            //    if (dashIndex < 0) { break; }
+            //    if (dashIndex > lastDashIndex + 1) { //there is space in-between last two dashes
+            //        dashedLineStarts.Add(dashIndex);
+            //    }
+            //    lastDashIndex = dashIndex;
+            //}
+            //if (dashedLineStarts.Count != 5) {
+            //    throw new FormatException("Cannot determine attached virtual disk drives.");
+            //}
+
+            //FileInfo vhdFile = null;
+            //foreach (var iLine in dataLines) {
+            //    var diskText = iLine.Substring(dashedLineStarts[1], dashedLineStarts[2] - dashedLineStarts[1] - 1).Trim();
+            //    var diskNumberMatch = ExtractDiskNumberRegex.Match(diskText);
+            //    if (diskNumberMatch.Success) {
+            //        int diskPartDiskNumber;
+            //        if (int.TryParse(diskNumberMatch.Value, NumberStyles.Integer, CultureInfo.CurrentCulture, out diskPartDiskNumber)) {
+            //            if (diskPartDiskNumber == wmiPhysicalDiskNumber) {
+            //                vhdFile = new FileInfo(iLine.Substring(dashedLineStarts[4], iLine.Length - dashedLineStarts[4]).TrimStart());
+            //            }
+            //        }
+            //    }
+            //}
+
+            #endregion
+
 
             if (vhdFile != null) {
                 using (var disk = new Medo.IO.VirtualDisk(vhdFile.FullName)) {

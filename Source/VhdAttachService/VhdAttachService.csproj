@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="AppServiceThread.cs" />
     <Compile Include="ServiceSettings.cs" />
+    <Compile Include="VirtualDiskServiceHelper.cs" />
     <Compile Include="Wcf\JsonAttachDetachData.cs" />
     <Compile Include="Wcf\JsonResponseData.cs" />
     <Compile Include="Wcf\JsonSettingsData.cs" />

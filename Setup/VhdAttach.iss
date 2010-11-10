@@ -1,8 +1,8 @@
 [Setup]
 AppName=VHD Attach
-AppVerName=VHD Attach 1.70
+AppVerName=VHD Attach 2.00
 DefaultDirName={pf}\Josip Medved\VHD Attach
-OutputBaseFilename=vhdattach170
+OutputBaseFilename=vhdattach200
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
@@ -33,7 +33,7 @@ Name: "{userstartmenu}\VHD Attach"; Filename: "{app}\VhdAttach.exe"
 Root: HKCU; Subkey: "Software\Josip Medved\VhdAttach"; ValueType: dword; ValueName: "Installed"; ValueData: "1"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Josip Medved"; Flags: uninsdeletekeyifempty
 
-Root: HKCR; Subkey: ".vhd"; ValueType: string; ValueName: ""; ValueData: "VhdAttachFile"; Flags: uninsclearvalue ;
+Root: HKCR; Subkey: ".vhd"; ValueType: string; ValueName: ""; ValueData: "VhdAttachFile"; Flags: uninsclearvalue;
 
 Root: HKCR; Subkey: "VhdAttachFile"; ValueType: none; Flags: uninsdeletekey;
 Root: HKCR; Subkey: "VhdAttachFile"; ValueType: string; ValueName: ""; ValueData: "Virtual Disk";

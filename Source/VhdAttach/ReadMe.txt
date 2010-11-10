@@ -17,6 +17,10 @@ Shortcut keys
 
 Version history
 
+   Version 2.00 ()
+
+      o  Virtual disk service is used instead of parsing DISKPART.
+
    Version 1.70 (2010-11-14)
 
       o  Bugfix: Service returns proper code on crash.
