@@ -42,17 +42,17 @@ Root: HKCR; Subkey: "VhdAttachFile\DefaultIcon"; ValueType: string; ValueName: "
 Root: HKCR; Subkey: "VhdAttachFile\shell\Open"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" ""%1""";
 
-Root: HKCR; Subkey: "VhdAttachFile\shell\Attach"; ValueType: string; ValueName: "HasLUAShield"; ValueData: "";
+;Root: HKCR; Subkey: "VhdAttachFile\shell\Attach"; ValueType: string; ValueName: "HasLUAShield"; ValueData: "";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Attach"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Attach\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" /attach ""%1""";
 
+;Root: HKCR; Subkey: "VhdAttachFile\shell\Detach"; ValueType: string; ValueName: "HasLUAShield"; ValueData: "";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Detach"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player";
-Root: HKCR; Subkey: "VhdAttachFile\shell\Detach"; ValueType: string; ValueName: "HasLUAShield"; ValueData: "";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Detach\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" /detach ""%1""";
 
 Root: HKCR; Subkey: "Drive\shell\Detach"; ValueType: none; Flags: deletekey;
 Root: HKCR; Subkey: "Drive\shell\Detach drive"; ValueType: none; Flags: uninsdeletekey;
-Root: HKCR; Subkey: "Drive\shell\Detach drive"; ValueType: string; ValueName: "HasLUAShield"; ValueData: "";
+;Root: HKCR; Subkey: "Drive\shell\Detach drive"; ValueType: string; ValueName: "HasLUAShield"; ValueData: "";
 Root: HKCR; Subkey: "Drive\shell\Detach drive"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Single";
 Root: HKCR; Subkey: "Drive\shell\Detach drive\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" /detachdrive ""%1""";
 

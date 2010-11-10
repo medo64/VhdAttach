@@ -44,7 +44,7 @@ internal static class ServiceSettings {
             if (value == true) {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                     using (var keyMain = rk.CreateSubKey("Attach")) {
-                        keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
+                        //keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
                         keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
                         using (var keyCommand = keyMain.CreateSubKey("command")) {
                             keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/attach"), RegistryValueKind.String);
@@ -69,7 +69,7 @@ internal static class ServiceSettings {
             if (value == true) {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                     using (var keyMain = rk.CreateSubKey("Detach")) {
-                        keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
+                        //keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
                         keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
                         using (var keyCommand = keyMain.CreateSubKey("command")) {
                             keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/detach"), RegistryValueKind.String);
@@ -94,7 +94,7 @@ internal static class ServiceSettings {
             if (value == true) {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"Drive\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                     using (var keyMain = rk.CreateSubKey("Detach drive")) {
-                        keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
+                        //keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
                         keyMain.SetValue("MultiSelectModel", "Single", RegistryValueKind.String);
                         using (var keyCommand = keyMain.CreateSubKey("command")) {
                             keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/detachdrive"), RegistryValueKind.String);
