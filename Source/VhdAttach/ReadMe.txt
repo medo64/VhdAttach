@@ -17,7 +17,7 @@ Shortcut keys
 
 Version history
 
-   Version 2.00 ()
+   Version 2.00 (2010-11-30 beta)
 
       o  Virtual disk service is used instead of parsing DISKPART.
 
