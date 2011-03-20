@@ -25,38 +25,18 @@ namespace VhdAttach {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.mnu = new System.Windows.Forms.MenuStrip();
-            this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFileNew = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFileRecent = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuFileExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuEditCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuEditSelectAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAction = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuActionAttach = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuActionDetach = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuTools = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuToolsRefresh = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuToolsOptions = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuHelpReportABug = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnx = new System.Windows.Forms.ToolStrip();
             this.mnxFileNew = new System.Windows.Forms.ToolStripButton();
             this.mnxFileOpen = new System.Windows.Forms.ToolStripSplitButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxAttach = new System.Windows.Forms.ToolStripButton();
             this.mnxDetach = new System.Windows.Forms.ToolStripButton();
             this.mnxHelpAbout = new System.Windows.Forms.ToolStripButton();
             this.mnxHelpReportABug = new System.Windows.Forms.ToolStripButton();
             this.mnxToolsOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxAutoMount = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxToolsRefresh = new System.Windows.Forms.ToolStripButton();
             this.list = new System.Windows.Forms.ListView();
@@ -67,200 +47,9 @@ namespace VhdAttach {
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxListEditSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.bwExecutor = new System.ComponentModel.BackgroundWorker();
-            this.mnu.SuspendLayout();
             this.mnx.SuspendLayout();
             this.mnxList.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // mnu
-            // 
-            this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuFile,
-            this.mnuEdit,
-            this.mnuAction,
-            this.mnuTools,
-            this.mnuHelp});
-            this.mnu.Location = new System.Drawing.Point(0, 0);
-            this.mnu.Name = "mnu";
-            this.mnu.Size = new System.Drawing.Size(582, 28);
-            this.mnu.TabIndex = 0;
-            this.mnu.Visible = false;
-            this.mnu.MenuDeactivate += new System.EventHandler(this.mnu_MenuDeactivate);
-            this.mnu.VisibleChanged += new System.EventHandler(this.mnu_VisibleChanged);
-            this.mnu.Leave += new System.EventHandler(this.mnu_Leave);
-            // 
-            // mnuFile
-            // 
-            this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuFileNew,
-            this.mnuFileOpen,
-            this.mnuFileRecent,
-            this.toolStripMenuItem1,
-            this.mnuFileExit});
-            this.mnuFile.Name = "mnuFile";
-            this.mnuFile.Size = new System.Drawing.Size(44, 24);
-            this.mnuFile.Text = "&File";
-            // 
-            // mnuFileNew
-            // 
-            this.mnuFileNew.Image = ((System.Drawing.Image)(resources.GetObject("mnuFileNew.Image")));
-            this.mnuFileNew.Name = "mnuFileNew";
-            this.mnuFileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.mnuFileNew.Size = new System.Drawing.Size(167, 24);
-            this.mnuFileNew.Text = "&New";
-            this.mnuFileNew.Visible = false;
-            this.mnuFileNew.Click += new System.EventHandler(this.mnuFileNew_Click);
-            // 
-            // mnuFileOpen
-            // 
-            this.mnuFileOpen.Image = ((System.Drawing.Image)(resources.GetObject("mnuFileOpen.Image")));
-            this.mnuFileOpen.Name = "mnuFileOpen";
-            this.mnuFileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mnuFileOpen.Size = new System.Drawing.Size(167, 24);
-            this.mnuFileOpen.Text = "&Open";
-            this.mnuFileOpen.Click += new System.EventHandler(this.mnuFileOpen_Click);
-            // 
-            // mnuFileRecent
-            // 
-            this.mnuFileRecent.Name = "mnuFileRecent";
-            this.mnuFileRecent.Size = new System.Drawing.Size(167, 24);
-            this.mnuFileRecent.Text = "&Recent files";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(164, 6);
-            // 
-            // mnuFileExit
-            // 
-            this.mnuFileExit.Name = "mnuFileExit";
-            this.mnuFileExit.Size = new System.Drawing.Size(167, 24);
-            this.mnuFileExit.Text = "E&xit";
-            this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
-            // 
-            // mnuEdit
-            // 
-            this.mnuEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuEditCopy,
-            this.toolStripMenuItem4,
-            this.mnuEditSelectAll});
-            this.mnuEdit.Name = "mnuEdit";
-            this.mnuEdit.Size = new System.Drawing.Size(47, 24);
-            this.mnuEdit.Text = "&Edit";
-            this.mnuEdit.DropDownOpening += new System.EventHandler(this.mnuEdit_DropDownOpening);
-            // 
-            // mnuEditCopy
-            // 
-            this.mnuEditCopy.Image = ((System.Drawing.Image)(resources.GetObject("mnuEditCopy.Image")));
-            this.mnuEditCopy.Name = "mnuEditCopy";
-            this.mnuEditCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.mnuEditCopy.Size = new System.Drawing.Size(190, 24);
-            this.mnuEditCopy.Text = "&Copy";
-            this.mnuEditCopy.Click += new System.EventHandler(this.mnuEditCopy_Click);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(187, 6);
-            // 
-            // mnuEditSelectAll
-            // 
-            this.mnuEditSelectAll.Name = "mnuEditSelectAll";
-            this.mnuEditSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.mnuEditSelectAll.Size = new System.Drawing.Size(190, 24);
-            this.mnuEditSelectAll.Text = "&Select all";
-            this.mnuEditSelectAll.Click += new System.EventHandler(this.mnuEditSelectAll_Click);
-            // 
-            // mnuAction
-            // 
-            this.mnuAction.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuActionAttach,
-            this.mnuActionDetach});
-            this.mnuAction.Name = "mnuAction";
-            this.mnuAction.Size = new System.Drawing.Size(64, 24);
-            this.mnuAction.Text = "&Action";
-            // 
-            // mnuActionAttach
-            // 
-            this.mnuActionAttach.Enabled = false;
-            this.mnuActionAttach.Image = ((System.Drawing.Image)(resources.GetObject("mnuActionAttach.Image")));
-            this.mnuActionAttach.Name = "mnuActionAttach";
-            this.mnuActionAttach.ShortcutKeys = System.Windows.Forms.Keys.F6;
-            this.mnuActionAttach.Size = new System.Drawing.Size(145, 24);
-            this.mnuActionAttach.Text = "&Attach";
-            this.mnuActionAttach.Click += new System.EventHandler(this.mnuActionAttach_Click);
-            // 
-            // mnuActionDetach
-            // 
-            this.mnuActionDetach.Enabled = false;
-            this.mnuActionDetach.Image = ((System.Drawing.Image)(resources.GetObject("mnuActionDetach.Image")));
-            this.mnuActionDetach.Name = "mnuActionDetach";
-            this.mnuActionDetach.Size = new System.Drawing.Size(145, 24);
-            this.mnuActionDetach.Text = "&Detach";
-            this.mnuActionDetach.Click += new System.EventHandler(this.mnuActionDetach_Click);
-            // 
-            // mnuTools
-            // 
-            this.mnuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuToolsRefresh,
-            this.toolStripMenuItem12,
-            this.mnuToolsOptions});
-            this.mnuTools.Name = "mnuTools";
-            this.mnuTools.Size = new System.Drawing.Size(57, 24);
-            this.mnuTools.Text = "&Tools";
-            // 
-            // mnuToolsRefresh
-            // 
-            this.mnuToolsRefresh.Image = ((System.Drawing.Image)(resources.GetObject("mnuToolsRefresh.Image")));
-            this.mnuToolsRefresh.Name = "mnuToolsRefresh";
-            this.mnuToolsRefresh.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.mnuToolsRefresh.Size = new System.Drawing.Size(151, 24);
-            this.mnuToolsRefresh.Text = "&Refresh";
-            this.mnuToolsRefresh.Click += new System.EventHandler(this.mnuToolsRefresh_Click);
-            // 
-            // toolStripMenuItem12
-            // 
-            this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(148, 6);
-            // 
-            // mnuToolsOptions
-            // 
-            this.mnuToolsOptions.Image = ((System.Drawing.Image)(resources.GetObject("mnuToolsOptions.Image")));
-            this.mnuToolsOptions.Name = "mnuToolsOptions";
-            this.mnuToolsOptions.Size = new System.Drawing.Size(151, 24);
-            this.mnuToolsOptions.Text = "&Options";
-            this.mnuToolsOptions.Click += new System.EventHandler(this.mnuToolsOptions_Click);
-            // 
-            // mnuHelp
-            // 
-            this.mnuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuHelpReportABug,
-            this.toolStripMenuItem5,
-            this.mnuHelpAbout});
-            this.mnuHelp.Name = "mnuHelp";
-            this.mnuHelp.Size = new System.Drawing.Size(53, 24);
-            this.mnuHelp.Text = "&Help";
-            // 
-            // mnuHelpReportABug
-            // 
-            this.mnuHelpReportABug.Image = ((System.Drawing.Image)(resources.GetObject("mnuHelpReportABug.Image")));
-            this.mnuHelpReportABug.Name = "mnuHelpReportABug";
-            this.mnuHelpReportABug.Size = new System.Drawing.Size(165, 24);
-            this.mnuHelpReportABug.Text = "Report a &bug";
-            this.mnuHelpReportABug.Click += new System.EventHandler(this.mnuHelpReportABug_Click);
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(162, 6);
-            // 
-            // mnuHelpAbout
-            // 
-            this.mnuHelpAbout.Image = ((System.Drawing.Image)(resources.GetObject("mnuHelpAbout.Image")));
-            this.mnuHelpAbout.Name = "mnuHelpAbout";
-            this.mnuHelpAbout.Size = new System.Drawing.Size(165, 24);
-            this.mnuHelpAbout.Text = "&About";
-            this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
             // 
             // mnx
             // 
@@ -268,18 +57,19 @@ namespace VhdAttach {
             this.mnx.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnxFileNew,
             this.mnxFileOpen,
-            this.toolStripSeparator2,
+            this.toolStripSeparator3,
             this.mnxAttach,
             this.mnxDetach,
             this.mnxHelpAbout,
             this.mnxHelpReportABug,
             this.mnxToolsOptions,
             this.toolStripSeparator4,
+            this.toolStripSeparator2,
+            this.mnxAutoMount,
             this.toolStripSeparator1,
             this.mnxToolsRefresh});
             this.mnx.Location = new System.Drawing.Point(0, 0);
             this.mnx.Name = "mnx";
-            this.mnx.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.mnx.Size = new System.Drawing.Size(582, 27);
             this.mnx.Stretch = true;
             this.mnx.TabIndex = 1;
@@ -305,10 +95,10 @@ namespace VhdAttach {
             this.mnxFileOpen.ToolTipText = "Open virtual disk (Ctrl+O)";
             this.mnxFileOpen.ButtonClick += new System.EventHandler(this.mnuFileOpen_Click);
             // 
-            // toolStripSeparator2
+            // toolStripSeparator3
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
             // 
             // mnxAttach
             // 
@@ -370,6 +160,23 @@ namespace VhdAttach {
             this.toolStripSeparator4.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // mnxAutoMount
+            // 
+            this.mnxAutoMount.CheckOnClick = true;
+            this.mnxAutoMount.Enabled = false;
+            this.mnxAutoMount.Image = ((System.Drawing.Image)(resources.GetObject("mnxAutoMount.Image")));
+            this.mnxAutoMount.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnxAutoMount.Name = "mnxAutoMount";
+            this.mnxAutoMount.Size = new System.Drawing.Size(110, 24);
+            this.mnxAutoMount.Text = "Auto-mount";
+            this.mnxAutoMount.ToolTipText = "Selects whether VHD is mounted upon next system restart";
+            this.mnxAutoMount.Click += new System.EventHandler(this.mnxAutoMount_Click);
             // 
             // toolStripSeparator1
             // 
@@ -461,21 +268,15 @@ namespace VhdAttach {
             this.ClientSize = new System.Drawing.Size(582, 375);
             this.Controls.Add(this.list);
             this.Controls.Add(this.mnx);
-            this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.MainMenuStrip = this.mnu;
             this.MinimumSize = new System.Drawing.Size(300, 200);
             this.Name = "MainForm";
             this.Text = "VHD Attach";
-            this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.mnu.ResumeLayout(false);
-            this.mnu.PerformLayout();
             this.mnx.ResumeLayout(false);
             this.mnx.PerformLayout();
             this.mnxList.ResumeLayout(false);
@@ -486,48 +287,28 @@ namespace VhdAttach {
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip mnu;
-        private System.Windows.Forms.ToolStripMenuItem mnuFile;
-        private System.Windows.Forms.ToolStripMenuItem mnuFileNew;
-        private System.Windows.Forms.ToolStripMenuItem mnuFileOpen;
-        private System.Windows.Forms.ToolStripMenuItem mnuFileExit;
-        private System.Windows.Forms.ToolStripMenuItem mnuAction;
-        private System.Windows.Forms.ToolStripMenuItem mnuActionAttach;
-        private System.Windows.Forms.ToolStripMenuItem mnuTools;
-        private System.Windows.Forms.ToolStripMenuItem mnuToolsOptions;
-        private System.Windows.Forms.ToolStripMenuItem mnuHelp;
-        private System.Windows.Forms.ToolStripMenuItem mnuHelpAbout;
         private System.Windows.Forms.ToolStrip mnx;
         private System.Windows.Forms.ToolStripButton mnxFileNew;
         private System.Windows.Forms.ToolStripButton mnxAttach;
         private System.Windows.Forms.ListView list;
         private System.Windows.Forms.ColumnHeader list_Property;
         private System.Windows.Forms.ColumnHeader list_Value;
-        private System.Windows.Forms.ToolStripMenuItem mnuEdit;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem mnuFileRecent;
-        private System.Windows.Forms.ToolStripMenuItem mnuEditCopy;
         private System.Windows.Forms.ToolStripSplitButton mnxFileOpen;
         private System.Windows.Forms.ContextMenuStrip mnxList;
         private System.Windows.Forms.ToolStripMenuItem mnxListCopy;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
-        private System.Windows.Forms.ToolStripMenuItem mnuEditSelectAll;
         private System.Windows.Forms.ToolStripMenuItem mnxListEditSelectAll;
-        private System.Windows.Forms.ToolStripMenuItem mnuActionDetach;
         private System.Windows.Forms.ToolStripButton mnxDetach;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
-        private System.Windows.Forms.ToolStripMenuItem mnuHelpReportABug;
-        private System.Windows.Forms.ToolStripMenuItem mnuToolsRefresh;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem12;
         private System.Windows.Forms.ToolStripButton mnxToolsOptions;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.ComponentModel.BackgroundWorker bwExecutor;
         private System.Windows.Forms.ToolStripButton mnxHelpAbout;
         private System.Windows.Forms.ToolStripButton mnxHelpReportABug;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton mnxToolsRefresh;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton mnxAutoMount;
     }
 }
 

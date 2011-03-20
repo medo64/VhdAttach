@@ -20,6 +20,8 @@ Version history
    Version 2.00 (2010-11-30 beta)
 
       o  Virtual disk service is used instead of parsing DISKPART.
+      o  Auto-mount is now directly on toolbar.
+      o  General bug-fixing.
 
    Version 1.70 (2010-11-14)
 
