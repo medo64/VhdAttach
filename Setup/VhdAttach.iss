@@ -49,7 +49,7 @@ Root: HKCR; Subkey: "VhdAttachFile\shell\Detach"; ValueType: string; ValueName: 
 Root: HKCR; Subkey: "VhdAttachFile\shell\Detach\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" /detach ""%1""";
 
 Root: HKCR; Subkey: "Drive\shell\Detach"; ValueType: none; Flags: deletekey;
-Root: HKCR; Subkey: "Drive\shell\Detach drive"; ValueType: none; Flags: uninsdeletekey;
+Root: HKCR; Subkey: "Drive\shell\Detach drive"; ValueType: none; Flags: deletekey uninsdeletekey;
 
 [Run]
 Filename: "{app}\VhdAttachService.exe"; Parameters: "/Install"; Flags: runascurrentuser waituntilterminated
