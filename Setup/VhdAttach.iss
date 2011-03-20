@@ -2,13 +2,13 @@
 AppName=VHD Attach
 AppVerName=VHD Attach 2.00
 DefaultDirName={pf}\Josip Medved\VHD Attach
-OutputBaseFilename=vhdattach200b1
+OutputBaseFilename=vhdattach200
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
 AppMutex=Global\JosipMedved_VhdAttach
 AppPublisher=Josip Medved
-AppPublisherURL=http://www.jmedved.com/?page=vhdattach
+AppPublisherURL=http://www.jmedved.com/vhdattach/
 UninstallDisplayIcon={app}\VhdAttach.exe
 AlwaysShowComponentsList=no
 ArchitecturesInstallIn64BitMode=x64
