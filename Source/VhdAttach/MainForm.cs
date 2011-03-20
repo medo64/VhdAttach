@@ -197,7 +197,7 @@ namespace VhdAttach {
 
                     mnxAttach.Enabled = string.IsNullOrEmpty(attachedPath);
                     mnxDetach.Enabled = !mnxAttach.Enabled;
-                    mnxAutoMount.Enabled = !mnxAttach.Enabled;
+                    mnxAutoMount.Enabled = true;
 
                     bool isAutoMount = false;
                     foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
