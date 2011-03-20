@@ -1,6 +1,5 @@
                                                 Josip Medved
                                                 http://www.jmedved.com
-                                                http://blog.jmedved.com
 
 
                                VHD Attach
@@ -17,7 +16,7 @@ Shortcut keys
 
 Version history
 
-   Version 2.00 (2010-11-30 beta)
+   Version 2.00 (2011-03-21)
 
       o  Virtual disk service is used instead of parsing DISKPART.
       o  Auto-mount is now directly on toolbar.
