@@ -60,6 +60,7 @@ class PipeService : IPipeService {
                             ServiceSettings.ContextMenuDetachDrive = settings.ContextMenuDetachDrive;
                             ServiceSettings.AutoAttachVhdList = settings.AutoAttachList;
                         } catch (Exception ex) {
+                            Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                             throw new InvalidOperationException("Settings cannot be written.", ex);
                         }
                     } return (new JsonResponseData(ExitCodes.OK, null)).ToJson();

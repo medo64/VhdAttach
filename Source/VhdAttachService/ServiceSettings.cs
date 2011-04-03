@@ -17,12 +17,14 @@ internal static class ServiceSettings {
 
     public static string[] AutoAttachVhdList {
         get {
+            var files = new List<string>();
             using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(RootSubkeyPath, false)) {
                 if (rk != null) {
-                    return rk.GetValue("AutoAttachVhdList", null) as string[];
+                    var fileArray = rk.GetValue("AutoAttachVhdList", null) as string[];
+                    if (fileArray != null) { files.AddRange(fileArray); }
                 }
             }
-            return new string[] { };
+            return files.ToArray();
         }
         set {
             using (RegistryKey rk = RootRegistryKey.CreateSubKey(RootSubkeyPath, RegistryKeyPermissionCheck.ReadWriteSubTree)) {
@@ -53,7 +55,9 @@ internal static class ServiceSettings {
                 }
             } else {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
-                    rk.DeleteSubKeyTree("Attach");
+                    try {
+                        rk.DeleteSubKeyTree("Attach");
+                    } catch (ArgumentException) { } //for cases when there is no such subkey.
                 }
             }
         }
@@ -78,14 +82,16 @@ internal static class ServiceSettings {
                 }
             } else {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
-                    rk.DeleteSubKeyTree("Detach");
+                    try {
+                        rk.DeleteSubKeyTree("Detach");
+                    } catch (ArgumentException) { } //for cases when there is no such subkey.
                 }
             }
         }
     }
 
     public static bool ContextMenuDetachDrive {
-        get { 
+        get {
             using (var rk = Registry.ClassesRoot.OpenSubKey(@"Drive\shell\Detach drive", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
                 return (rk != null);
             }
@@ -103,7 +109,9 @@ internal static class ServiceSettings {
                 }
             } else {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"Drive\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
-                    rk.DeleteSubKeyTree("Detach drive");                    
+                    try {
+                        rk.DeleteSubKeyTree("Detach drive");
+                    } catch (ArgumentException) { } //for cases when there is no such subkey.
                 }
             }
         }

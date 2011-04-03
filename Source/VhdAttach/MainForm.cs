@@ -481,10 +481,11 @@ namespace VhdAttach {
             try {
                 var startInfo = (ProcessStartInfo)e.Argument;
                 startInfo.Arguments += string.Format(CultureInfo.InvariantCulture, " /ParentWindow=\"{0},{1},{2},{3}\"", this.Left, this.Top, this.Width, this.Height);
-                var process = new Process();
-                process.StartInfo = startInfo;
-                process.Start();
-                process.WaitForExit();
+                using (var process = new Process()) {
+                    process.StartInfo = startInfo;
+                    process.Start();
+                    process.WaitForExit();
+                }
                 Thread.Sleep(250);
             } catch (Exception ex) {
                 throw new InvalidOperationException(ex.Message, ex);

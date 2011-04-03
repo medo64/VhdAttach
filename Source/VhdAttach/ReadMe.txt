@@ -16,6 +16,10 @@ Shortcut keys
 
 Version history
 
+   Version 2.01 (2011-04-04)
+
+      o  Fixed bug that caused inability to save settings.
+
    Version 2.00 (2011-03-21)
 
       o  Virtual disk service is used instead of parsing DISKPART.
