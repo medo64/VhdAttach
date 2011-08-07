@@ -76,7 +76,7 @@ internal static class ServiceSettings {
                         //keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
                         keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
                         using (var keyCommand = keyMain.CreateSubKey("command")) {
-                            keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/attach"), RegistryValueKind.String);
+                            keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/readonly /attach"), RegistryValueKind.String);
                         }
                     }
                 }

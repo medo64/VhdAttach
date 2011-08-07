@@ -29,6 +29,7 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupContextMenu = new System.Windows.Forms.GroupBox();
+            this.checkAttachReadOnly = new System.Windows.Forms.CheckBox();
             this.checkDetachDrive = new System.Windows.Forms.CheckBox();
             this.checkDetach = new System.Windows.Forms.CheckBox();
             this.checkAttach = new System.Windows.Forms.CheckBox();
@@ -41,7 +42,6 @@
             this.listAutoAttach = new System.Windows.Forms.ListView();
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imagesAutoAttach = new System.Windows.Forms.ImageList(this.components);
-            this.checkAttachReadOnly = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.groupContextMenu.SuspendLayout();
             this.groupAutoAttach.SuspendLayout();
@@ -91,6 +91,17 @@
             this.groupContextMenu.TabIndex = 0;
             this.groupContextMenu.TabStop = false;
             this.groupContextMenu.Text = "Explorer context menu";
+            // 
+            // checkAttachReadOnly
+            // 
+            this.checkAttachReadOnly.AutoSize = true;
+            this.checkAttachReadOnly.Location = new System.Drawing.Point(185, 27);
+            this.checkAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkAttachReadOnly.Name = "checkAttachReadOnly";
+            this.checkAttachReadOnly.Size = new System.Drawing.Size(134, 21);
+            this.checkAttachReadOnly.TabIndex = 1;
+            this.checkAttachReadOnly.Text = "Attach read-only";
+            this.checkAttachReadOnly.UseVisualStyleBackColor = true;
             // 
             // checkDetachDrive
             // 
@@ -240,17 +251,6 @@
             this.imagesAutoAttach.Images.SetKeyName(1, "StatusWarning [16x16].png");
             this.imagesAutoAttach.Images.SetKeyName(2, "Status_SeriousWarning_16.png");
             this.imagesAutoAttach.Images.SetKeyName(3, "StatusError [16x16].png");
-            // 
-            // checkAttachReadOnly
-            // 
-            this.checkAttachReadOnly.AutoSize = true;
-            this.checkAttachReadOnly.Location = new System.Drawing.Point(185, 27);
-            this.checkAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
-            this.checkAttachReadOnly.Name = "checkAttachReadOnly";
-            this.checkAttachReadOnly.Size = new System.Drawing.Size(70, 21);
-            this.checkAttachReadOnly.TabIndex = 1;
-            this.checkAttachReadOnly.Text = "Attach";
-            this.checkAttachReadOnly.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
