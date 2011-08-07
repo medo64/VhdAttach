@@ -37,14 +37,18 @@ Root: HKCR; Subkey: ".vhd"; ValueType: string; ValueName: ""; ValueData: "VhdAtt
 
 Root: HKCR; Subkey: "VhdAttachFile"; ValueType: none; Flags: uninsdeletekey;
 Root: HKCR; Subkey: "VhdAttachFile"; ValueType: string; ValueName: ""; ValueData: "Virtual Disk";
-Root: HKCR; Subkey: "VhdAttachFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\VhdAttach.exe";
 
+Root: HKCR; Subkey: "VhdAttachFile\shell\Open"; ValueType: string; ValueName: "Icon"; ValueData: """{app}\VhdAttach.exe""";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Open"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" ""%1""";
 
+Root: HKCR; Subkey: "VhdAttachFile\shell\Attach"; ValueType: string; ValueName: "Icon"; ValueData: """{app}\VhdAttach.exe""";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Attach"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Attach\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" /attach ""%1""";
 
+Root: HKCR; Subkey: "VhdAttachFile\shell\Attach read-only"; ValueType: none; Flags: deletekey uninsdeletekey;
+
+Root: HKCR; Subkey: "VhdAttachFile\shell\Detach"; ValueType: string; ValueName: "Icon"; ValueData: """{app}\VhdAttach.exe""";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Detach"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Player";
 Root: HKCR; Subkey: "VhdAttachFile\shell\Detach\command"; ValueType: string; ValueName: ""; ValueData: """{app}\VhdAttach.exe"" /detach ""%1""";
 
