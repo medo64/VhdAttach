@@ -9,7 +9,7 @@ class WcfPipeClient {
         try {
             return ServiceProxy.Execute(action, data);
         } catch (CommunicationException) {
-            return (new JsonResponseData(ExitCodes.CannotExecute, "Communication error.")).ToJson();
+            return (new ResponseData(ExitCodes.CannotExecute, "Communication error.")).ToJson();
         }
     }
 }

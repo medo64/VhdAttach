@@ -63,6 +63,33 @@ internal static class ServiceSettings {
         }
     }
 
+    public static bool ContextMenuAttachReadOnly {
+        get {
+            using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell\Attach read-only", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
+                return (rk != null);
+            }
+        }
+        set {
+            if (value == true) {
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
+                    using (var keyMain = rk.CreateSubKey("Attach read-only")) {
+                        //keyMain.SetValue("HasLUAShield", "", RegistryValueKind.String);
+                        keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
+                        using (var keyCommand = keyMain.CreateSubKey("command")) {
+                            keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/attach"), RegistryValueKind.String);
+                        }
+                    }
+                }
+            } else {
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
+                    try {
+                        rk.DeleteSubKeyTree("Attach read-only");
+                    } catch (ArgumentException) { } //for cases when there is no such subkey.
+                }
+            }
+        }
+    }
+
     public static bool ContextMenuDetach {
         get {
             using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell\Detach", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {

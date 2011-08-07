@@ -41,6 +41,7 @@
             this.listAutoAttach = new System.Windows.Forms.ListView();
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imagesAutoAttach = new System.Windows.Forms.ImageList(this.components);
+            this.checkAttachReadOnly = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.groupContextMenu.SuspendLayout();
             this.groupAutoAttach.SuspendLayout();
@@ -80,6 +81,7 @@
             // 
             // groupContextMenu
             // 
+            this.groupContextMenu.Controls.Add(this.checkAttachReadOnly);
             this.groupContextMenu.Controls.Add(this.checkDetachDrive);
             this.groupContextMenu.Controls.Add(this.checkDetach);
             this.groupContextMenu.Controls.Add(this.checkAttach);
@@ -96,7 +98,7 @@
             this.checkDetachDrive.Location = new System.Drawing.Point(185, 54);
             this.checkDetachDrive.Name = "checkDetachDrive";
             this.checkDetachDrive.Size = new System.Drawing.Size(110, 21);
-            this.checkDetachDrive.TabIndex = 2;
+            this.checkDetachDrive.TabIndex = 3;
             this.checkDetachDrive.Text = "Detach drive";
             this.checkDetachDrive.UseVisualStyleBackColor = true;
             // 
@@ -106,7 +108,7 @@
             this.checkDetach.Location = new System.Drawing.Point(6, 54);
             this.checkDetach.Name = "checkDetach";
             this.checkDetach.Size = new System.Drawing.Size(75, 21);
-            this.checkDetach.TabIndex = 1;
+            this.checkDetach.TabIndex = 2;
             this.checkDetach.Text = "Detach";
             this.checkDetach.UseVisualStyleBackColor = true;
             // 
@@ -138,8 +140,8 @@
             // toolVhdOrder
             // 
             this.toolVhdOrder.AllowMerge = false;
-            this.toolVhdOrder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.toolVhdOrder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.toolVhdOrder.AutoSize = false;
             this.toolVhdOrder.CanOverflow = false;
             this.toolVhdOrder.Dock = System.Windows.Forms.DockStyle.None;
@@ -203,9 +205,9 @@
             // 
             // listAutoAttach
             // 
-            this.listAutoAttach.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listAutoAttach.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listAutoAttach.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnFileName});
             this.listAutoAttach.FullRowSelect = true;
@@ -238,6 +240,17 @@
             this.imagesAutoAttach.Images.SetKeyName(1, "StatusWarning [16x16].png");
             this.imagesAutoAttach.Images.SetKeyName(2, "Status_SeriousWarning_16.png");
             this.imagesAutoAttach.Images.SetKeyName(3, "StatusError [16x16].png");
+            // 
+            // checkAttachReadOnly
+            // 
+            this.checkAttachReadOnly.AutoSize = true;
+            this.checkAttachReadOnly.Location = new System.Drawing.Point(185, 27);
+            this.checkAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkAttachReadOnly.Name = "checkAttachReadOnly";
+            this.checkAttachReadOnly.Size = new System.Drawing.Size(70, 21);
+            this.checkAttachReadOnly.TabIndex = 1;
+            this.checkAttachReadOnly.Text = "Attach";
+            this.checkAttachReadOnly.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -288,5 +301,6 @@
         private System.Windows.Forms.ToolStripButton buttonMoveVhdUp;
         private System.Windows.Forms.ToolStripButton buttonMoveVhdDown;
         private System.Windows.Forms.ImageList imagesAutoAttach;
+        private System.Windows.Forms.CheckBox checkAttachReadOnly;
     }
 }

@@ -1,74 +1,76 @@
+using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.ServiceModel;
-using System;
 using System.IO;
 using System.Management;
-using System.Collections.Generic;
+using System.ServiceModel;
 using System.Text.RegularExpressions;
 using VhdAttachService;
 
 [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
 class PipeService : IPipeService {
 
-    public byte[] Execute(string action, byte[] data) {
+    public byte[] Execute(string action, byte[] bytes) {
         Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Action=\"{0}\".", action));
 
         try {
             switch (action) {
                 case "Attach": {
-                        var file = JsonAttachDetachData.FromJson(data);
+                        var data = AttachRequestData.FromJson(bytes);
                         try {
-                            using (var disk = new Medo.IO.VirtualDisk(file.Path)) {
+                            using (var disk = new Medo.IO.VirtualDisk(data.Path)) {
                                 disk.Open();
-                                disk.Attach(Medo.IO.VirtualDiskAttachOptions.PermanentLifetime);
+                                var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
+                                if (data.MountReadOnly) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
+                                disk.Attach(options);
                                 disk.Close();
                             }
                         } catch (Exception ex) {
-                            throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(file.Path)).Name), ex);
+                            throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(data.Path)).Name), ex);
                         }
-                    } return (new JsonResponseData(ExitCodes.OK, null)).ToJson();
+                    } return (new ResponseData(ExitCodes.OK, null)).ToJson();
 
                 case "Detach": {
-                        var file = JsonAttachDetachData.FromJson(data);
+                        var data = DetachRequestData.FromJson(bytes);
                         try {
-                            using (var disk = new Medo.IO.VirtualDisk(file.Path)) {
+                            using (var disk = new Medo.IO.VirtualDisk(data.Path)) {
                                 disk.Open();
                                 disk.Detach();
                                 disk.Close();
                             }
                         } catch (Exception ex) {
-                            throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(file.Path)).Name), ex);
+                            throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(data.Path)).Name), ex);
                         }
-                    } return (new JsonResponseData(ExitCodes.OK, null)).ToJson();
+                    } return (new ResponseData(ExitCodes.OK, null)).ToJson();
 
                 case "DetachDrive": {
-                        var file = JsonAttachDetachData.FromJson(data);
+                        var data = DetachRequestData.FromJson(bytes);
                         try {
-                            DetachDrive(file.Path);
+                            DetachDrive(data.Path);
                         } catch (Exception ex) {
                             //throw new InvalidOperationException(string.Format("Disk drive \"{0}\" cannot be detached.", file.Path), ex);
                             throw new InvalidOperationException(ex.Message);
                         }
-                    } return (new JsonResponseData(ExitCodes.OK, null)).ToJson();
+                    } return (new ResponseData(ExitCodes.OK, null)).ToJson();
 
                 case "WriteSettings": {
-                        var settings = JsonSettingsData.FromJson(data);
+                        var data = SettingsRequestData.FromJson(bytes);
                         try {
-                            ServiceSettings.ContextMenuAttach = settings.ContextMenuAttach;
-                            ServiceSettings.ContextMenuDetach = settings.ContextMenuDetach;
-                            ServiceSettings.ContextMenuDetachDrive = settings.ContextMenuDetachDrive;
-                            ServiceSettings.AutoAttachVhdList = settings.AutoAttachList;
+                            ServiceSettings.ContextMenuAttach = data.ContextMenuAttach;
+                            ServiceSettings.ContextMenuAttachReadOnly = data.ContextMenuAttachReadOnly;
+                            ServiceSettings.ContextMenuDetach = data.ContextMenuDetach;
+                            ServiceSettings.ContextMenuDetachDrive = data.ContextMenuDetachDrive;
+                            ServiceSettings.AutoAttachVhdList = data.AutoAttachList;
                         } catch (Exception ex) {
                             Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                             throw new InvalidOperationException("Settings cannot be written.", ex);
                         }
-                    } return (new JsonResponseData(ExitCodes.OK, null)).ToJson();
+                    } return (new ResponseData(ExitCodes.OK, null)).ToJson();
 
                 default: return null;
             }
         } catch (InvalidOperationException ex) {
-            return (new JsonResponseData(ExitCodes.GenericError, ex.Message)).ToJson();
+            return (new ResponseData(ExitCodes.GenericError, ex.Message)).ToJson();
         }
     }
 

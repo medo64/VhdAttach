@@ -4,12 +4,12 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
 [DataContract()]
-internal class JsonResponseData {
+internal class ResponseData {
 
-    private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(JsonResponseData));
+    private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(ResponseData));
 
 
-    public JsonResponseData(int exitCode, string message) {
+    public ResponseData(int exitCode, string message) {
         this.ExitCode = exitCode;
         this.Message = message;
     }
@@ -29,9 +29,9 @@ internal class JsonResponseData {
         }
     }
 
-    public static JsonResponseData FromJson(byte[] json) {
+    public static ResponseData FromJson(byte[] json) {
         using (var stream = new MemoryStream(json)) {
-            return DataSerializer.ReadObject(stream) as JsonResponseData;
+            return DataSerializer.ReadObject(stream) as ResponseData;
         }
     }
 

@@ -22,6 +22,7 @@ namespace VhdAttach {
         private void SettingsForm_Load(object sender, EventArgs e) {
             //chbShowMenu.Checked = Settings.ShowMenu;
             checkAttach.Checked = ServiceSettings.ContextMenuAttach;
+            checkAttachReadOnly.Checked = ServiceSettings.ContextMenuAttachReadOnly;
             checkDetach.Checked = ServiceSettings.ContextMenuDetach;
             checkDetachDrive.Checked = ServiceSettings.ContextMenuDetachDrive;
             foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
@@ -39,9 +40,9 @@ namespace VhdAttach {
                 foreach (ListViewVhdItem item in listAutoAttach.Items) {
                     vhds.Add(item.FileName);
                 }
-                var data = new JsonSettingsData(checkAttach.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
+                var data = new SettingsRequestData(checkAttach.Checked, checkAttachReadOnly.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
                 var resBytes = WcfPipeClient.Execute("WriteSettings", data.ToJson());
-                var res = JsonResponseData.FromJson(resBytes);
+                var res = ResponseData.FromJson(resBytes);
                 if (res.ExitCode != ExitCodes.OK) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }

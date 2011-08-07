@@ -16,6 +16,10 @@ Shortcut keys
 
 Version history
 
+   Version 2.01 (2011-08-07)
+
+      o  Added readonly mounting.
+
    Version 2.01 (2011-04-04)
 
       o  Fixed bug that caused inability to save settings.
@@ -50,7 +54,7 @@ Version history
 
 Licence (MIT)
 
-   Copyright (c) 2009-2010 Josip Medved <jmedved@jmedved.com>
+   Copyright (c) 2009 Josip Medved <jmedved@jmedved.com>
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the

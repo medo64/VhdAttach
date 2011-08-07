@@ -97,14 +97,17 @@
     <Compile Include="..\VhdAttachService\WCF\IPipeService.cs">
       <Link>WCF\IPipeService.cs</Link>
     </Compile>
-    <Compile Include="..\VhdAttachService\WCF\JsonAttachDetachData.cs">
-      <Link>WCF\JsonAttachDetachData.cs</Link>
+    <Compile Include="..\VhdAttachService\Wcf\Json\AttachRequestData.cs">
+      <Link>WCF\Json\AttachRequestData.cs</Link>
     </Compile>
-    <Compile Include="..\VhdAttachService\WCF\JsonResponseData.cs">
-      <Link>WCF\JsonResponseData.cs</Link>
+    <Compile Include="..\VhdAttachService\Wcf\Json\DetachRequestData.cs">
+      <Link>WCF\Json\DetachRequestData.cs</Link>
     </Compile>
-    <Compile Include="..\VhdAttachService\WCF\JsonSettingsData.cs">
-      <Link>WCF\JsonSettingsData.cs</Link>
+    <Compile Include="..\VhdAttachService\Wcf\Json\ResponseData.cs">
+      <Link>WCF\Json\ResponseData.cs</Link>
+    </Compile>
+    <Compile Include="..\VhdAttachService\Wcf\Json\SettingsRequestData.cs">
+      <Link>WCF\Json\SettingsRequestData.cs</Link>
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="AttachForm.cs">

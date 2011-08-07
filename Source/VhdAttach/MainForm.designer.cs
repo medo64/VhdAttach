@@ -25,11 +25,12 @@ namespace VhdAttach {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.mnx = new System.Windows.Forms.ToolStrip();
+            this.mnu = new System.Windows.Forms.ToolStrip();
             this.mnxFileNew = new System.Windows.Forms.ToolStripButton();
             this.mnxFileOpen = new System.Windows.Forms.ToolStripSplitButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnxAttach = new System.Windows.Forms.ToolStripButton();
+            this.mnxAttach = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuAttachReadOnly = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxDetach = new System.Windows.Forms.ToolStripButton();
             this.mnxHelpAbout = new System.Windows.Forms.ToolStripButton();
             this.mnxHelpReportABug = new System.Windows.Forms.ToolStripButton();
@@ -47,14 +48,14 @@ namespace VhdAttach {
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxListEditSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.bwExecutor = new System.ComponentModel.BackgroundWorker();
-            this.mnx.SuspendLayout();
+            this.mnu.SuspendLayout();
             this.mnxList.SuspendLayout();
             this.SuspendLayout();
             // 
-            // mnx
+            // mnu
             // 
-            this.mnx.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.mnx.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnu.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnxFileNew,
             this.mnxFileOpen,
             this.toolStripSeparator3,
@@ -68,11 +69,11 @@ namespace VhdAttach {
             this.mnxAutoMount,
             this.toolStripSeparator1,
             this.mnxToolsRefresh});
-            this.mnx.Location = new System.Drawing.Point(0, 0);
-            this.mnx.Name = "mnx";
-            this.mnx.Size = new System.Drawing.Size(582, 27);
-            this.mnx.Stretch = true;
-            this.mnx.TabIndex = 1;
+            this.mnu.Location = new System.Drawing.Point(0, 0);
+            this.mnu.Name = "mnu";
+            this.mnu.Size = new System.Drawing.Size(582, 27);
+            this.mnu.Stretch = true;
+            this.mnu.TabIndex = 1;
             // 
             // mnxFileNew
             // 
@@ -102,14 +103,23 @@ namespace VhdAttach {
             // 
             // mnxAttach
             // 
+            this.mnxAttach.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuAttachReadOnly});
             this.mnxAttach.Enabled = false;
             this.mnxAttach.Image = ((System.Drawing.Image)(resources.GetObject("mnxAttach.Image")));
             this.mnxAttach.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnxAttach.Name = "mnxAttach";
-            this.mnxAttach.Size = new System.Drawing.Size(72, 24);
+            this.mnxAttach.Size = new System.Drawing.Size(84, 24);
             this.mnxAttach.Text = "&Attach";
             this.mnxAttach.ToolTipText = "Attach virtual disk (F6)";
-            this.mnxAttach.Click += new System.EventHandler(this.mnuActionAttach_Click);
+            this.mnxAttach.ButtonClick += new System.EventHandler(this.mnuAttach_ButtonClick);
+            // 
+            // mnuAttachReadOnly
+            // 
+            this.mnuAttachReadOnly.Name = "mnuAttachReadOnly";
+            this.mnuAttachReadOnly.Size = new System.Drawing.Size(189, 24);
+            this.mnuAttachReadOnly.Text = "Attach read-only";
+            this.mnuAttachReadOnly.Click += new System.EventHandler(this.mnuAttachReadOnly_Click);
             // 
             // mnxDetach
             // 
@@ -267,7 +277,7 @@ namespace VhdAttach {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 375);
             this.Controls.Add(this.list);
-            this.Controls.Add(this.mnx);
+            this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(300, 200);
@@ -277,8 +287,8 @@ namespace VhdAttach {
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.mnx.ResumeLayout(false);
-            this.mnx.PerformLayout();
+            this.mnu.ResumeLayout(false);
+            this.mnu.PerformLayout();
             this.mnxList.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -287,9 +297,8 @@ namespace VhdAttach {
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip mnx;
+        private System.Windows.Forms.ToolStrip mnu;
         private System.Windows.Forms.ToolStripButton mnxFileNew;
-        private System.Windows.Forms.ToolStripButton mnxAttach;
         private System.Windows.Forms.ListView list;
         private System.Windows.Forms.ColumnHeader list_Property;
         private System.Windows.Forms.ColumnHeader list_Value;
@@ -309,6 +318,8 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripButton mnxToolsRefresh;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton mnxAutoMount;
+        private System.Windows.Forms.ToolStripSplitButton mnxAttach;
+        private System.Windows.Forms.ToolStripMenuItem mnuAttachReadOnly;
     }
 }
 

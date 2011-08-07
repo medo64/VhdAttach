@@ -4,13 +4,14 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
 [DataContract()]
-internal class JsonSettingsData {
+internal class SettingsRequestData {
 
-    private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(JsonSettingsData));
+    private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(SettingsRequestData));
 
 
-    public JsonSettingsData(bool contextMenuAttach, bool contextMenuDetach, bool contextMenuDetachDrive, string[] autoAttachList) {
+    public SettingsRequestData(bool contextMenuAttach, bool contextMenuAttachReadOnly, bool contextMenuDetach, bool contextMenuDetachDrive, string[] autoAttachList) {
         this.ContextMenuAttach = contextMenuAttach;
+        this.ContextMenuAttachReadOnly = contextMenuAttachReadOnly;
         this.ContextMenuDetach = contextMenuDetach;
         this.ContextMenuDetachDrive = contextMenuDetachDrive;
         this.AutoAttachList = autoAttachList;
@@ -19,6 +20,9 @@ internal class JsonSettingsData {
 
     [DataMember()]
     public bool ContextMenuAttach { get; private set; }
+
+    [DataMember()]
+    public bool ContextMenuAttachReadOnly { get; private set; }
 
     [DataMember()]
     public bool ContextMenuDetach { get; private set; }
@@ -37,9 +41,9 @@ internal class JsonSettingsData {
         }
     }
 
-    public static JsonSettingsData FromJson(byte[] json) {
+    public static SettingsRequestData FromJson(byte[] json) {
         using (var stream = new MemoryStream(json)) {
-            return DataSerializer.ReadObject(stream) as JsonSettingsData;
+            return DataSerializer.ReadObject(stream) as SettingsRequestData;
         }
     }
 

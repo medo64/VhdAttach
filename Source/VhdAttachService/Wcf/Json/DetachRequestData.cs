@@ -4,12 +4,12 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
 [DataContract()]
-internal class JsonAttachDetachData {
+internal class DetachRequestData {
 
-    private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(JsonAttachDetachData));
+    private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(DetachRequestData));
 
 
-    public JsonAttachDetachData(string path) {
+    public DetachRequestData(string path) {
         this.Path = path;
     }
 
@@ -25,9 +25,9 @@ internal class JsonAttachDetachData {
         }
     }
 
-    public static JsonAttachDetachData FromJson(byte[] json) {
+    public static DetachRequestData FromJson(byte[] json) {
         using (var stream = new MemoryStream(json)) {
-            return DataSerializer.ReadObject(stream) as JsonAttachDetachData;
+            return DataSerializer.ReadObject(stream) as DetachRequestData;
         }
     }
 

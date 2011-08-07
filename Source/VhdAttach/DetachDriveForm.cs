@@ -45,9 +45,9 @@ namespace VhdAttach {
                     iDirectory = new DirectoryInfo(this._files[i].FullName);
                     bw.ReportProgress(-1, iDirectory.Name);
 
-                    var data = new JsonAttachDetachData(iDirectory.FullName);
+                    var data = new DetachRequestData(iDirectory.FullName);
                     var resBytes = WcfPipeClient.Execute("DetachDrive", data.ToJson());
-                    var res = JsonResponseData.FromJson(resBytes);
+                    var res = ResponseData.FromJson(resBytes);
                     if (res.ExitCode != ExitCodes.OK) {
                         this._exceptions.Add(new InvalidOperationException(iDirectory.Name, new Exception(res.Message)));
                     }

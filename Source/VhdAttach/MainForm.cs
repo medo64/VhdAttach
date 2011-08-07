@@ -31,8 +31,8 @@ namespace VhdAttach {
                 dpiRatioX = (float)Math.Round(g.DpiX / 96, 2);
                 dpiRatioY = (float)Math.Round(g.DpiY / 96, 2);
             }
-            mnx.ImageScalingSize = new Size((int)(16 * dpiRatioX), (int)(16 * dpiRatioY));
-            mnx.Scale(new SizeF(dpiRatioX, dpiRatioY));
+            mnu.ImageScalingSize = new Size((int)(16 * dpiRatioX), (int)(16 * dpiRatioY));
+            mnu.Scale(new SizeF(dpiRatioX, dpiRatioY));
 
             this._recent = new Medo.Configuration.RecentFiles();
         }
@@ -47,7 +47,7 @@ namespace VhdAttach {
             switch (e.KeyData) {
 
                 case (Keys.Alt | Keys.Menu):
-                    mnx.Select();
+                    mnu.Select();
                     mnxFileOpen.Select();
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -60,13 +60,13 @@ namespace VhdAttach {
                     break;
 
                 case Keys.F6:
-                    mnuActionAttach_Click(null, null);
+                    mnuAttach_ButtonClick(null, null);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
 
                 case Keys.Alt | Keys.A:
-                    mnuActionAttach_Click(null, null);
+                    mnuAttach_ButtonClick(null, null);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
@@ -94,7 +94,7 @@ namespace VhdAttach {
 
         private void MainForm_Resize(object sender, EventArgs e) {
             list.Left = this.ClientRectangle.Left + 3;
-            list.Top = this.ClientRectangle.Top + mnx.Height + 3;
+            list.Top = this.ClientRectangle.Top + mnu.Height + 3;
             list.Width = this.ClientRectangle.Width - 6;
             list.Height = this.ClientRectangle.Height - list.Top - 3;
         }
@@ -339,27 +339,39 @@ namespace VhdAttach {
 
         #region Menu: Action
 
-        private void mnuActionAttach_Click(object sender, EventArgs e) {
+        private void mnuAttach_ButtonClick(object sender, EventArgs e) {
             if (this._vhdFileName == null) { return; }
 
             if (Settings.UseService) {
-
-                using (var form = new AttachForm(new FileInfo[] { new FileInfo(this._vhdFileName) })) {
+                using (var form = new AttachForm(new FileInfo(this._vhdFileName), false)) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }
                 UpdateData(this._vhdFileName);
-
             } else {
-
-                mnx.Enabled = false;
-
+                mnu.Enabled = false;
                 var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
                 var startInfo = Utility.GetProcessStartInfo(exe, @"/Attach """ + this._vhdFileName + @"""");
-
                 this.Cursor = Cursors.WaitCursor;
                 bwExecutor.RunWorkerAsync(startInfo);
+            }
+        }
 
+        private void mnuAttachReadOnly_Click(object sender, EventArgs e) {
+            if (this._vhdFileName == null) { return; }
+
+            if (Settings.UseService) {
+                using (var form = new AttachForm(new FileInfo(this._vhdFileName), true)) {
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
+                }
+                UpdateData(this._vhdFileName);
+            } else {
+                mnu.Enabled = false;
+                var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
+                var startInfo = Utility.GetProcessStartInfo(exe, @"/Attach """ + this._vhdFileName + @""" /ReadOnly");
+                this.Cursor = Cursors.WaitCursor;
+                bwExecutor.RunWorkerAsync(startInfo);
             }
         }
 
@@ -376,7 +388,7 @@ namespace VhdAttach {
 
             } else {
 
-                mnx.Enabled = false;
+                mnu.Enabled = false;
 
                 var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
                 var startInfo = Utility.GetProcessStartInfo(exe, @"/Detach """ + this._vhdFileName + @"""");
@@ -496,7 +508,7 @@ namespace VhdAttach {
             if (e.Error != null) {
                 Medo.MessageBox.ShowError(this, string.Format("Error during execution of external process.\n\n{0}", e.Error.Message));
             }
-            mnx.Enabled = true;
+            mnu.Enabled = true;
             UpdateData(this._vhdFileName);
             this.Cursor = Cursors.Default;
         }
@@ -553,9 +565,9 @@ namespace VhdAttach {
                         }
                     }
                 }
-                var data = new JsonSettingsData(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
+                var data = new SettingsRequestData(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
                 var resBytes = WcfPipeClient.Execute("WriteSettings", data.ToJson());
-                var res = JsonResponseData.FromJson(resBytes);
+                var res = ResponseData.FromJson(resBytes);
                 if (res.ExitCode != ExitCodes.OK) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }

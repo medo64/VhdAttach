@@ -104,9 +104,10 @@
     <Compile Include="AppServiceThread.cs" />
     <Compile Include="ServiceSettings.cs" />
     <Compile Include="VirtualDiskServiceHelper.cs" />
-    <Compile Include="Wcf\JsonAttachDetachData.cs" />
-    <Compile Include="Wcf\JsonResponseData.cs" />
-    <Compile Include="Wcf\JsonSettingsData.cs" />
+    <Compile Include="Wcf\Json\DetachRequestData.cs" />
+    <Compile Include="Wcf\Json\AttachRequestData.cs" />
+    <Compile Include="Wcf\Json\ResponseData.cs" />
+    <Compile Include="Wcf\Json\SettingsRequestData.cs" />
     <Compile Include="Wcf\WcfPipeServer.cs" />
     <Compile Include="Wcf\PipeService.cs" />
     <Compile Include="Wcf\IPipeService.cs" />

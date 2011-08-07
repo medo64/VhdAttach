@@ -2,26 +2,32 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
-using System.Runtime.Serialization;
+using System.Windows.Forms;
 
 namespace VhdAttach {
     partial class AttachForm : Form {
 
-        private IList<FileInfo> _files;
+        private readonly IList<FileInfo> Files;
+        private readonly bool MountReadOnly;
         private List<Exception> _exceptions;
 
-        public AttachForm(IList<FileInfo> files) {
+        private AttachForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
-            this._files = files;
-
             Medo.Windows.Forms.TaskbarProgress.DefaultOwner = this;
             Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
+        }
+
+        public AttachForm(IList<FileInfo> files, bool mountReadOnly)
+            : this() {
+            this.Files = files;
+            this.MountReadOnly = mountReadOnly;
+        }
+
+        public AttachForm(FileInfo file, bool mountReadOnly)
+            : this(new FileInfo[] { file }, mountReadOnly) {
         }
 
         private void AttachForm_Load(object sender, EventArgs e) {
@@ -37,13 +43,13 @@ namespace VhdAttach {
             this._exceptions = new List<Exception>();
             FileInfo iFile = null;
             try {
-                for (var i = 0; i < this._files.Count; ++i) {
-                    iFile = this._files[i];
+                for (var i = 0; i < this.Files.Count; ++i) {
+                    iFile = this.Files[i];
                     bw.ReportProgress(-1, iFile.Name);
 
-                    var data = new JsonAttachDetachData(iFile.FullName);
+                    var data = new AttachRequestData(iFile.FullName, this.MountReadOnly);
                     var resBytes = WcfPipeClient.Execute("Attach", data.ToJson());
-                    var res = JsonResponseData.FromJson(resBytes);
+                    var res = ResponseData.FromJson(resBytes);
                     if (res.ExitCode != ExitCodes.OK) {
                         this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(res.Message)));
                     }
