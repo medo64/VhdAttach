@@ -12,13 +12,16 @@ Shortcut keys
    Ctrl + A                Select all
    Ctrl + C                Copy
    Ctrl + O                Open file
+   Ctrl + N                New file
 
 
 Version history
 
-   Version 2.01 (2011-08-07)
+   Version 2.10 (2011-08-07)
 
       o  Added readonly mounting.
+      o  Added disk creation.
+      o  Bug-fixing.
 
    Version 2.01 (2011-04-04)
 

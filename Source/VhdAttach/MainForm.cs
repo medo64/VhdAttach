@@ -53,6 +53,18 @@ namespace VhdAttach {
                     e.SuppressKeyPress = true;
                     break;
 
+                case Keys.Control | Keys.N:
+                    mnuFileNew_Click(null, null);
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.Control | Keys.O:
+                    mnuFileOpen_Click(null, null);
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
                 case Keys.F5:
                     mnuToolsRefresh_Click(null, null);
                     e.Handled = true;
@@ -282,7 +294,25 @@ namespace VhdAttach {
         #region Menu: File
 
         private void mnuFileNew_Click(object sender, EventArgs e) {
-            //TODO: New
+            using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*", FilterIndex = 0, OverwritePrompt = true, Title = "New disk", ValidateNames = true }) {
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    using (var frm2 = new NewDiskForm(frm.FileName)) {
+                        if (frm2.ShowDialog(this) == DialogResult.OK) {
+                            var fileName = frm.FileName;
+                            try {
+                                var newDocument = new Medo.IO.VirtualDisk(fileName);
+                                UpdateData(newDocument.FileName);
+                                this._vhdFileName = newDocument.FileName;
+                                _recent.Push(fileName);
+                                UpdateRecent();
+                            } catch (Exception ex) {
+                                var exFile = new FileInfo(fileName);
+                                Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}", exFile.Name, ex.Message));
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void mnuFileOpen_Click(object sender, EventArgs e) {
