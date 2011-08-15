@@ -5,4 +5,4 @@ using System.Reflection;
 [assembly: AssemblyCopyright("Copyright (c) 2009 Josip Medved <jmedved@jmedved.com>")]
 
 [assembly: AssemblyVersion("2.10.*")]
-[assembly: AssemblyInformationalVersion("2.10 (beta)")]
+[assembly: AssemblyInformationalVersion("2.10 (beta 2)")]

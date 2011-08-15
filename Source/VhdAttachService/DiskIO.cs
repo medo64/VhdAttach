@@ -17,10 +17,11 @@ namespace VhdAttachService {
                 var signature = new byte[4];
                 RandomNumberGenerator.Create().GetBytes(signature);
 
+                Int32 bytesOut = 0;
+
                 var cd = new NativeMethods.CREATE_DISK();
                 cd.PartitionStyle = NativeMethods.PARTITION_STYLE.PARTITION_STYLE_MBR;
                 cd.Mbr.Signature = BitConverter.ToInt32(signature, 0);
-                Int32 bytesOut = 0;
                 if (NativeMethods.DeviceIoControl(handle, NativeMethods.IOCTL_DISK_CREATE_DISK, ref cd, Marshal.SizeOf(cd), IntPtr.Zero, 0, ref bytesOut, IntPtr.Zero) == false) { throw new Win32Exception(); }
 
                 if (NativeMethods.DeviceIoControl(handle, NativeMethods.IOCTL_DISK_UPDATE_PROPERTIES, IntPtr.Zero, 0, IntPtr.Zero, 0, ref bytesOut, IntPtr.Zero) == false) { throw new Win32Exception(); } //just update cache
@@ -33,7 +34,7 @@ namespace VhdAttachService {
                 dli.PartitionCount = 1;
                 dli.Partition1.PartitionStyle = NativeMethods.PARTITION_STYLE.PARTITION_STYLE_MBR;
                 dli.Partition1.StartingOffset = 65536;
-                dli.Partition1.PartitionLength = pi.PartitionLength - dli.Partition1.StartingOffset - 2 * 1024 * 1024;
+                dli.Partition1.PartitionLength = pi.PartitionLength - dli.Partition1.StartingOffset;
                 dli.Partition1.PartitionNumber = 1;
                 dli.Partition1.RewritePartition = true;
                 dli.Partition1.Mbr.PartitionType = NativeMethods.PARTITION_IFS;
@@ -62,7 +63,8 @@ namespace VhdAttachService {
             public const int IOCTL_DISK_SET_DRIVE_LAYOUT_EX = 0x7C054;
             public const byte PARTITION_IFS = 0x07;
 
-            public enum PARTITION_STYLE {
+
+            public enum PARTITION_STYLE : int {
                 PARTITION_STYLE_MBR = 0,
                 PARTITION_STYLE_GPT = 1,
                 PARTITION_STYLE_RAW = 2,
