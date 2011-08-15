@@ -9,9 +9,10 @@ internal class AttachRequestData {
     private static readonly DataContractJsonSerializer DataSerializer = new DataContractJsonSerializer(typeof(AttachRequestData));
 
 
-    public AttachRequestData(string path, bool mountReadOnly) {
+    public AttachRequestData(string path, bool mountReadOnly, bool initializeDisk) {
         this.Path = path;
         this.MountReadOnly = mountReadOnly;
+        this.InitializeDisk = initializeDisk;
     }
 
 
@@ -20,6 +21,9 @@ internal class AttachRequestData {
 
     [DataMember()]
     public bool MountReadOnly { get; private set; }
+
+    [DataMember()]
+    public bool InitializeDisk { get; private set; }
 
 
     public byte[] ToJson() {

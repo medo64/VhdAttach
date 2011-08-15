@@ -57,7 +57,7 @@ namespace VhdAttach {
 
                     Form appForm = null;
                     if (doAttach) {
-                        appForm = new AttachForm(files, Medo.Application.Args.Current.ContainsKey("readonly"));
+                        appForm = new AttachForm(files, Medo.Application.Args.Current.ContainsKey("readonly"), false);
                     } else if (doDetach) {
                         appForm = new DetachForm(files);
                     } else if (doDetachDrive) {

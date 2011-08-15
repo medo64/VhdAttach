@@ -93,6 +93,7 @@
     <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="DiskIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AppService.cs">
       <SubType>Component</SubType>

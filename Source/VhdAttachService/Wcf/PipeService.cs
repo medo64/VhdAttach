@@ -18,12 +18,17 @@ class PipeService : IPipeService {
                 case "Attach": {
                         var data = AttachRequestData.FromJson(bytes);
                         try {
+                            string diskPath;
                             using (var disk = new Medo.IO.VirtualDisk(data.Path)) {
                                 disk.Open();
                                 var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
                                 if (data.MountReadOnly) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
                                 disk.Attach(options);
+                                diskPath = disk.GetAttachedPath();
                                 disk.Close();
+                            }
+                            if (data.InitializeDisk) {
+                                DiskIO.InitializeDisk(diskPath);
                             }
                         } catch (Exception ex) {
                             throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(data.Path)).Name), ex);

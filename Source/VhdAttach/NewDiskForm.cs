@@ -53,7 +53,7 @@ namespace VhdAttach {
                     return;
                 }
 
-                using (var form = new AttachForm(new FileInfo(this.FileName), false)) {
+                using (var form = new AttachForm(new FileInfo(this.FileName), false, true)) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }

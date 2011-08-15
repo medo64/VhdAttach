@@ -373,7 +373,7 @@ namespace VhdAttach {
             if (this._vhdFileName == null) { return; }
 
             if (Settings.UseService) {
-                using (var form = new AttachForm(new FileInfo(this._vhdFileName), false)) {
+                using (var form = new AttachForm(new FileInfo(this._vhdFileName), false, false)) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }
@@ -391,7 +391,7 @@ namespace VhdAttach {
             if (this._vhdFileName == null) { return; }
 
             if (Settings.UseService) {
-                using (var form = new AttachForm(new FileInfo(this._vhdFileName), true)) {
+                using (var form = new AttachForm(new FileInfo(this._vhdFileName), true, false)) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }

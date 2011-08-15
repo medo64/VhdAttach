@@ -10,6 +10,7 @@ namespace VhdAttach {
 
         private readonly IList<FileInfo> Files;
         private readonly bool MountReadOnly;
+        private readonly bool InitializeDisk;
         private List<Exception> _exceptions;
 
         private AttachForm() {
@@ -20,14 +21,15 @@ namespace VhdAttach {
             Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
         }
 
-        public AttachForm(IList<FileInfo> files, bool mountReadOnly)
+        public AttachForm(IList<FileInfo> files, bool mountReadOnly, bool initializeDisk)
             : this() {
             this.Files = files;
             this.MountReadOnly = mountReadOnly;
+            this.InitializeDisk = initializeDisk;
         }
 
-        public AttachForm(FileInfo file, bool mountReadOnly)
-            : this(new FileInfo[] { file }, mountReadOnly) {
+        public AttachForm(FileInfo file, bool mountReadOnly, bool initializeDisk)
+            : this(new FileInfo[] { file }, mountReadOnly, initializeDisk) {
         }
 
         private void AttachForm_Load(object sender, EventArgs e) {
@@ -47,7 +49,7 @@ namespace VhdAttach {
                     iFile = this.Files[i];
                     bw.ReportProgress(-1, iFile.Name);
 
-                    var data = new AttachRequestData(iFile.FullName, this.MountReadOnly);
+                    var data = new AttachRequestData(iFile.FullName, this.MountReadOnly, this.InitializeDisk);
                     var resBytes = WcfPipeClient.Execute("Attach", data.ToJson());
                     var res = ResponseData.FromJson(resBytes);
                     if (res.ExitCode != ExitCodes.OK) {
