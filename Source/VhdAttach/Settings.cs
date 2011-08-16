@@ -31,6 +31,11 @@ namespace VhdAttach {
             set { Medo.Configuration.Settings.Write("LastSizeThousandBased", value); }
         }
 
+        public static bool LastSizeFixed {
+            get { return Medo.Configuration.Settings.Read("LastSizeFixed", false); }
+            set { Medo.Configuration.Settings.Write("LastSizeFixed", value); }
+        }
+
     }
 
 }

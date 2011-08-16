@@ -44,7 +44,9 @@ namespace VhdAttach {
                 try {
                     var sizeInBytes = GetSizeInBytes();
                     using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
-                        vhd.Create(sizeInBytes);
+                        var options = Medo.IO.VirtualDiskCreateOptions.None;
+                        if (Settings.LastSizeFixed) { options |= Medo.IO.VirtualDiskCreateOptions.FullPhysicalAllocation; }
+                        vhd.Create(sizeInBytes, options);
                     }
                 } catch (IOException ex) {
                     this.Cursor = Cursors.Default;
