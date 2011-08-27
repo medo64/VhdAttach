@@ -17,10 +17,9 @@ Shortcut keys
 
 Version history
 
-   Version 2.10 (2011-08-07)
+   Version 2.10 (2011-09-01)
 
       o  Added readonly mounting.
-      o  Added disk creation.
       o  Bug-fixing.
 
    Version 2.01 (2011-04-04)

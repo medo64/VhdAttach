@@ -83,6 +83,7 @@ namespace VhdAttach {
             this.mnxFileNew.Size = new System.Drawing.Size(59, 24);
             this.mnxFileNew.Text = "New";
             this.mnxFileNew.ToolTipText = "New virtual disk (Ctrl+N)";
+            this.mnxFileNew.Visible = false;
             this.mnxFileNew.Click += new System.EventHandler(this.mnuFileNew_Click);
             // 
             // mnxFileOpen
