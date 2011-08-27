@@ -22,9 +22,9 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <ApplicationIcon>..\VhdAttach\Properties\App.ico</ApplicationIcon>
+    <ApplicationIcon>Properties\App.ico</ApplicationIcon>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\VhdAttach\Properties\App.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Properties\App.snk</AssemblyOriginatorKeyFile>
     <StartupObject>VhdAttachService.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
@@ -114,14 +114,10 @@
     <Compile Include="Wcf\IPipeService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\VhdAttach\Properties\App.ico">
-      <Link>Properties\App.ico</Link>
-    </Content>
+    <Content Include="Properties\App.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\VhdAttach\Properties\App.snk">
-      <Link>Properties\App.snk</Link>
-    </None>
+    <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest" />
   </ItemGroup>
   <ItemGroup />
