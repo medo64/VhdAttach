@@ -1,8 +1,8 @@
 [Setup]
 AppName=VHD Attach
-AppVerName=VHD Attach 2.10 (beta 2)
+AppVerName=VHD Attach 2.10
 DefaultDirName={pf}\Josip Medved\VHD Attach
-OutputBaseFilename=vhdattach210b2
+OutputBaseFilename=vhdattach210
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
@@ -73,4 +73,3 @@ var
 begin
     Exec(ExpandConstant('{app}\VhdAttachService.exe'), '/Uninstall', '', SW_SHOW, ewWaitUntilTerminated, ResultCode)
 end;
-
