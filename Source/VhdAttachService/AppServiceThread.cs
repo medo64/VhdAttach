@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.ServiceModel;
 using System.Threading;
+using System.Globalization;
 
 namespace VhdAttachService {
 
@@ -29,8 +32,6 @@ namespace VhdAttachService {
         private static void Run() {
             try {
 
-                WcfPipeServer.Start();
-
                 foreach (var file in ServiceSettings.AutoAttachVhdList) {
                     try {
                         using (var disk = new Medo.IO.VirtualDisk(file)) {
@@ -42,12 +43,33 @@ namespace VhdAttachService {
                     } catch (Exception) {}
                 }
 
+
+                WcfPipeServer.Start();
+                WaitForOpenPipe();
                 while (!_cancelEvent.WaitOne(0, false)) {
+                    if (WcfPipeServer.State != CommunicationState.Opened) {
+                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "W: Unexpected pipe status ({0})." , WcfPipeServer.State));
+                        WcfPipeServer.Stop();
+                        WcfPipeServer.Start();
+                        WaitForOpenPipe();
+                        if (WcfPipeServer.State == CommunicationState.Opened) { Trace.WriteLine("I: Pipe re-opened."); }
+                    }
                     Thread.Sleep(100);
                 }
                 WcfPipeServer.Stop();
 
             } catch (ThreadAbortException) { }
+        }
+
+        private static void WaitForOpenPipe() {
+            var sw = new Stopwatch();
+            sw.Start();
+            while (!_cancelEvent.WaitOne(0, false)) {
+                if (WcfPipeServer.State == CommunicationState.Opened) { break; }
+                if (sw.ElapsedMilliseconds > 10000) { break; } //assume that waiting is futile
+                Thread.Sleep(10);
+            }
+            sw.Stop();
         }
 
     }
