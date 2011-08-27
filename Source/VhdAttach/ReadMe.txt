@@ -20,6 +20,7 @@ Version history
    Version 3.00 beta
 
       o  Added disk creation.
+      o  Setup improvements.
 
    Version 2.10 (2011-09-01)
 
