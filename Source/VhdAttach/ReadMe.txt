@@ -12,7 +12,6 @@ Shortcut keys
    Ctrl + A                Select all
    Ctrl + C                Copy
    Ctrl + O                Open file
-   Ctrl + N                New file
 
 
 Version history

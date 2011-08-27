@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Threading;
+using System.Drawing;
 using System.Globalization;
-using Medo.Extensions;
+using System.IO;
 using System.Management;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Medo.Extensions;
 
 namespace VhdAttach {
 
@@ -49,12 +49,6 @@ namespace VhdAttach {
                 case (Keys.Alt | Keys.Menu):
                     mnu.Select();
                     mnxFileOpen.Select();
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Control | Keys.N:
-                    mnuFileNew_Click(null, null);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
