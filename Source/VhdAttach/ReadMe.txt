@@ -12,9 +12,15 @@ Shortcut keys
    Ctrl + A                Select all
    Ctrl + C                Copy
    Ctrl + O                Open file
+   Ctrl + N                New file
 
 
 Version history
+
+   Version 3.00 beta
+
+      o  Added disk creation.
+      o  Setup improvements.
 
    Version 2.10 (2011-09-01)
 
