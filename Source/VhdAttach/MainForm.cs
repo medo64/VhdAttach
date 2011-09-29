@@ -95,6 +95,12 @@ namespace VhdAttach {
                     e.SuppressKeyPress = true;
                     break;
 
+                case Keys.Control | Keys.N:
+                    mnuFileNew_Click(null, null);
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
             }
         }
 

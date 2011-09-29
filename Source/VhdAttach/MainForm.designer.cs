@@ -57,9 +57,9 @@ namespace VhdAttach {
             this.mnu.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnxFileNew,
+            this.mnxAttach,
             this.mnxFileOpen,
             this.toolStripSeparator3,
-            this.mnxAttach,
             this.mnxDetach,
             this.mnxHelpAbout,
             this.mnxHelpReportABug,
@@ -83,7 +83,6 @@ namespace VhdAttach {
             this.mnxFileNew.Size = new System.Drawing.Size(59, 24);
             this.mnxFileNew.Text = "New";
             this.mnxFileNew.ToolTipText = "New virtual disk (Ctrl+N)";
-            this.mnxFileNew.Visible = false;
             this.mnxFileNew.Click += new System.EventHandler(this.mnuFileNew_Click);
             // 
             // mnxFileOpen
