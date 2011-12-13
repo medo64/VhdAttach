@@ -283,9 +283,9 @@ namespace VhdAttach {
             this.mnu.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnxFileNew,
-            this.mnxAttach,
             this.mnxFileOpen,
             this.toolStripSeparator3,
+            this.mnxAttach,
             this.mnxDetach,
             this.mnxHelpAbout,
             this.mnxToolsOptions,

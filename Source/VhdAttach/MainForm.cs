@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Medo.Extensions;
+using System.Runtime.InteropServices;
 
 namespace VhdAttach {
 
@@ -385,6 +386,7 @@ namespace VhdAttach {
                 this.Cursor = Cursors.WaitCursor;
                 bwExecutor.RunWorkerAsync(startInfo);
             }
+            AllowSetForegroundWindowToExplorer();
         }
 
         private void mnuAttachReadOnly_Click(object sender, EventArgs e) {
@@ -403,6 +405,7 @@ namespace VhdAttach {
                 this.Cursor = Cursors.WaitCursor;
                 bwExecutor.RunWorkerAsync(startInfo);
             }
+            AllowSetForegroundWindowToExplorer();
         }
 
         private void mnuActionDetach_Click(object sender, EventArgs e) {
@@ -612,6 +615,30 @@ namespace VhdAttach {
             } finally {
                 this.Cursor = Cursors.Default;
             }
+        }
+
+
+        private static void AllowSetForegroundWindowToExplorer() {
+            var pathToExplorer = Path.Combine(Environment.GetEnvironmentVariable("SystemRoot"), "explorer.exe");
+            foreach (var process in Process.GetProcesses()) {
+                try {
+                    var mainModule = process.MainModule;
+                    if (mainModule != null) {
+                        var fileName = mainModule.FileName;
+                        if ((fileName != null) && (fileName.Equals(pathToExplorer, StringComparison.OrdinalIgnoreCase))) {
+                            NativeMethods.AllowSetForegroundWindow(process.Id);
+                        }
+                    }
+                } catch (Exception) { }
+            }
+        }
+
+        private static class NativeMethods {
+
+            [DllImportAttribute("user32.dll", EntryPoint = "AllowSetForegroundWindow")]
+            [return: MarshalAsAttribute(UnmanagedType.Bool)]
+            public static extern bool AllowSetForegroundWindow(int dwProcessId);
+
         }
 
     }
