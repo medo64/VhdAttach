@@ -449,6 +449,22 @@ namespace VhdAttach {
 
         #region Menu: Help
 
+        private void mnuAppFeedback_Click(object sender, EventArgs e) {
+            mnuHelpReportABug_Click(null, null);
+        }
+
+        private void mnuAppCheckUpdate_Click(object sender, EventArgs e) {
+
+        }
+
+        private void mnuAppDonate_Click(object sender, EventArgs e) {
+            Process.Start("http://www.jmedved.com/donate/");
+        }
+
+        private void mnuAppAbout_Click(object sender, EventArgs e) {
+            mnuHelpAbout_Click(null, null);
+        }
+
         private void mnuHelpReportABug_Click(object sender, EventArgs e) {
             Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/ErrorReport/"));
         }
@@ -562,14 +578,6 @@ namespace VhdAttach {
             if (xEnd2 < 0) { return null; }
 
             return extract.Substring(xStart2 + start.Length, xEnd2 - xStart2 - start.Length);
-        }
-
-        private void mnxHelpAbout_Click(object sender, EventArgs e) {
-            mnuHelpAbout_Click(null, null);
-        }
-
-        private void mnxHelpReportABug_Click(object sender, EventArgs e) {
-            mnuHelpReportABug_Click(null, null);
         }
 
         private void mnxAutoMount_Click(object sender, EventArgs e) {
