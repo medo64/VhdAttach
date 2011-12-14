@@ -1,6 +1,6 @@
 [Setup]
 AppName=VHD Attach
-AppVerName=VHD Attach 3.00 (beta 1)
+AppVerName=VHD Attach 3.00 (beta 2)
 DefaultDirName={pf}\Josip Medved\VHD Attach
 OutputBaseFilename=vhdattach300b1
 OutputDir=..\Releases
