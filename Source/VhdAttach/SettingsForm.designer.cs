@@ -42,6 +42,7 @@
             this.listAutoAttach = new System.Windows.Forms.ListView();
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imagesAutoAttach = new System.Windows.Forms.ImageList(this.components);
+            this.btnRegisterExtension = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.groupContextMenu.SuspendLayout();
             this.groupAutoAttach.SuspendLayout();
@@ -252,6 +253,18 @@
             this.imagesAutoAttach.Images.SetKeyName(2, "Status_SeriousWarning_16.png");
             this.imagesAutoAttach.Images.SetKeyName(3, "StatusError [16x16].png");
             // 
+            // btnRegisterExtension
+            // 
+            this.btnRegisterExtension.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRegisterExtension.Location = new System.Drawing.Point(12, 277);
+            this.btnRegisterExtension.Name = "btnRegisterExtension";
+            this.btnRegisterExtension.Size = new System.Drawing.Size(150, 28);
+            this.btnRegisterExtension.TabIndex = 5;
+            this.btnRegisterExtension.Text = "&Register extension";
+            this.btnRegisterExtension.UseVisualStyleBackColor = true;
+            this.btnRegisterExtension.Visible = false;
+            this.btnRegisterExtension.Click += new System.EventHandler(this.btnRegisterExtension_Click);
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -259,6 +272,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(394, 317);
+            this.Controls.Add(this.btnRegisterExtension);
             this.Controls.Add(this.groupAutoAttach);
             this.Controls.Add(this.groupContextMenu);
             this.Controls.Add(this.buttonCancel);
@@ -302,5 +316,6 @@
         private System.Windows.Forms.ToolStripButton buttonMoveVhdDown;
         private System.Windows.Forms.ImageList imagesAutoAttach;
         private System.Windows.Forms.CheckBox checkAttachReadOnly;
+        private System.Windows.Forms.Button btnRegisterExtension;
     }
 }

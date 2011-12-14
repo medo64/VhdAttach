@@ -52,8 +52,11 @@ namespace VhdAttach {
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxToolsRefresh = new System.Windows.Forms.ToolStripButton();
             this.mnu = new System.Windows.Forms.ToolStrip();
+            this.staStolenExtension = new System.Windows.Forms.StatusStrip();
+            this.staStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
             this.mnxList.SuspendLayout();
             this.mnu.SuspendLayout();
+            this.staStolenExtension.SuspendLayout();
             this.SuspendLayout();
             // 
             // list
@@ -303,11 +306,34 @@ namespace VhdAttach {
             this.mnu.Stretch = true;
             this.mnu.TabIndex = 1;
             // 
+            // staStolenExtension
+            // 
+            this.staStolenExtension.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.staStolenExtensionText});
+            this.staStolenExtension.Location = new System.Drawing.Point(0, 350);
+            this.staStolenExtension.Name = "staStolenExtension";
+            this.staStolenExtension.Size = new System.Drawing.Size(582, 25);
+            this.staStolenExtension.TabIndex = 3;
+            this.staStolenExtension.Text = "statusStrip1";
+            this.staStolenExtension.Visible = false;
+            // 
+            // staStolenExtensionText
+            // 
+            this.staStolenExtensionText.Image = ((System.Drawing.Image)(resources.GetObject("staStolenExtensionText.Image")));
+            this.staStolenExtensionText.IsLink = true;
+            this.staStolenExtensionText.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.staStolenExtensionText.Margin = new System.Windows.Forms.Padding(1, 3, 0, 2);
+            this.staStolenExtensionText.Name = "staStolenExtensionText";
+            this.staStolenExtensionText.Size = new System.Drawing.Size(370, 20);
+            this.staStolenExtensionText.Text = "Another application is registered for VHD extension.";
+            this.staStolenExtensionText.Click += new System.EventHandler(this.staStolenExtensionText_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 375);
+            this.Controls.Add(this.staStolenExtension);
             this.Controls.Add(this.list);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -322,6 +348,8 @@ namespace VhdAttach {
             this.mnxList.ResumeLayout(false);
             this.mnu.ResumeLayout(false);
             this.mnu.PerformLayout();
+            this.staStolenExtension.ResumeLayout(false);
+            this.staStolenExtension.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -356,6 +384,8 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripMenuItem mnuAppCheckUpdate;
         private System.Windows.Forms.ToolStripMenuItem mnuAppDonate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.StatusStrip staStolenExtension;
+        private System.Windows.Forms.ToolStripStatusLabel staStolenExtensionText;
     }
 }
 

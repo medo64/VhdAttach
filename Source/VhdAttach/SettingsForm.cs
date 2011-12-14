@@ -20,7 +20,6 @@ namespace VhdAttach {
         }
 
         private void SettingsForm_Load(object sender, EventArgs e) {
-            //chbShowMenu.Checked = Settings.ShowMenu;
             checkAttach.Checked = ServiceSettings.ContextMenuAttach;
             checkAttachReadOnly.Checked = ServiceSettings.ContextMenuAttachReadOnly;
             checkDetach.Checked = ServiceSettings.ContextMenuDetach;
@@ -28,11 +27,10 @@ namespace VhdAttach {
             foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
                 listAutoAttach.Items.Add(new ListViewVhdItem(fileName));
             }
+            btnRegisterExtension.Visible = !ServiceSettings.ContextMenu;
         }
 
         private void buttonOk_Click(object sender, EventArgs e) {
-            //Settings.ShowMenu = chbShowMenu.Checked;
-
             try {
                 this.Cursor = Cursors.WaitCursor;
 
@@ -169,6 +167,15 @@ namespace VhdAttach {
                 listAutoAttach.EndUpdate();
                 listAutoAttach_SelectedIndexChanged(null, null);
             }
+        }
+
+        private void btnRegisterExtension_Click(object sender, EventArgs e) {
+            var resBytes = WcfPipeClient.Execute("RegisterExtension", new byte[] { 0x6e, 0x75, 0x6c, 0x6c });
+            var res = ResponseData.FromJson(resBytes);
+            if (res.ExitCode != ExitCodes.OK) {
+                Medo.MessageBox.ShowError(this, res.Message);
+            }
+            this.DialogResult = DialogResult.OK;
         }
 
     }

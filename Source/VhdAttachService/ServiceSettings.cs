@@ -144,4 +144,26 @@ internal static class ServiceSettings {
         }
     }
 
+    /// <summary>
+    /// Returns true if VHD Attach is handling extension.
+    /// </summary>
+    public static bool ContextMenu {
+        get {
+            using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey)) {
+                if (rk != null) {
+                    var text = rk.GetValue("", null) as string;
+                    if ((text != null) && (text.Equals("VhdAttachFile"))) { return true; }
+                }
+                return false;
+            }
+        }
+        set {
+            if (value == true) {
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue)) {
+                    rk.SetValue("", "VhdAttachFile", RegistryValueKind.String);
+                }
+            }
+        }
+    }
+
 }

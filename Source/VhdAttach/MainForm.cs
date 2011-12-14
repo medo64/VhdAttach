@@ -42,6 +42,7 @@ namespace VhdAttach {
             Medo.Windows.Forms.State.Load(this, list);
             OpenFromCommandLineArgs();
             UpdateRecent();
+            staStolenExtension.Visible = !ServiceSettings.ContextMenu;
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e) {
@@ -437,6 +438,7 @@ namespace VhdAttach {
         #region Menu: Tools
 
         private void mnuToolsRefresh_Click(object sender, EventArgs e) {
+            staStolenExtension.Visible = !ServiceSettings.ContextMenu;
             UpdateData(this._vhdFileName);
         }
 
@@ -666,6 +668,10 @@ namespace VhdAttach {
                     }
                 }
             }
+        }
+
+        private void staStolenExtensionText_Click(object sender, EventArgs e) {
+            mnuToolsOptions_Click(null, null);
         }
 
     }

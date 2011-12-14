@@ -72,6 +72,15 @@ class PipeService : IPipeService {
                         }
                     } return (new ResponseData(ExitCodes.OK, null)).ToJson();
 
+                case "RegisterExtension": {
+                        try {
+                            ServiceSettings.ContextMenu = true;
+                        } catch (Exception ex) {
+                            Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
+                            throw new InvalidOperationException("Settings cannot be written.", ex);
+                        }
+                    } return (new ResponseData(ExitCodes.OK, null)).ToJson();
+
                 default: return null;
             }
         } catch (InvalidOperationException ex) {
