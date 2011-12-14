@@ -58,6 +58,7 @@ namespace VhdAttach {
             // 
             // list
             // 
+            this.list.AllowDrop = true;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.list_Property,
             this.list_Value});
@@ -74,6 +75,8 @@ namespace VhdAttach {
             this.list.TabIndex = 2;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
+            this.list.DragDrop += new System.Windows.Forms.DragEventHandler(this.list_DragDrop);
+            this.list.DragEnter += new System.Windows.Forms.DragEventHandler(this.list_DragEnter);
             // 
             // list_Property
             // 

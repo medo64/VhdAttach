@@ -641,6 +641,33 @@ namespace VhdAttach {
 
         }
 
+        private void list_DragEnter(object sender, DragEventArgs e) {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                e.Effect = (files.Length == 1) ? DragDropEffects.Move : DragDropEffects.None;
+            } else {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void list_DragDrop(object sender, DragEventArgs e) {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length == 1) {
+                    try {
+                        var newDocument = new Medo.IO.VirtualDisk(files[0]);
+                        UpdateData(newDocument.FileName);
+                        this._vhdFileName = newDocument.FileName;
+                        _recent.Push(files[0]);
+                        UpdateRecent();
+                    } catch (Exception ex) {
+                        var exFile = new FileInfo(files[0]);
+                        Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}", exFile.Name, ex.Message));
+                    }
+                }
+            }
+        }
+
     }
 
 }

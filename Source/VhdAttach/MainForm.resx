@@ -146,14 +146,14 @@
   <data name="mnxFileNew.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAGgSURBVDhPjZJNSwJRFIaHoJW0ahv0A1q1qE3UvnLTumX9
-        CSFoG+SmQiH7QKxAC4Q+IBSyooJMQsIKTUtELcrv0rSZcd7uHZ3rhDl64XAud+77nHveMxxXX+n0dEUQ
-        poJY44AAB0GYjCaTel75rpmrQd0BbyBCmIAjkh9re/msOLrbFiIGdbdMYCWifa4mJpB8aAROzz0cLj+2
-        D73YOvQuNgF5I7lsIrFERXTZay+xkLArZ8D63hmGJ2abIdFHTrAu9EpYrvWPl27glOTKIBDvq0NJjW0X
-        3Ff3MsR2cG1kLxFFvY+1QCuS6swTzDPAiu1YFivRABTHzplggwAiXQ0TscoAglgFhSigP15I6YG5arjH
-        DCcBJPqBjIFMYI2JJUlCqczjPVOSAUPjM/h3OpvOCyZSb354EdlCGbG3gjbA4vA0AcSqhM/SD15TRTzF
-        stoA8467CVCuCEjlvhFN5hEIp7QBtD/1osblvyqIv38iGM3A9/DWOUBtXCSew13oA5f+ROcAtXEPz2l4
-        A684uYl1BlDm3Sq3HKMyY3qhXdD/4BfOFDbRh0BwwwAAAABJRU5ErkJggg==
+        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAGfSURBVDhPjZLLSwJRFMaHoJW0ahv0B7RqUZuofeWmdcv6
+        J4SgZYvcVChkT8xAC4Q0CIVeVJBJSGiiaQ3iC/NtmjozztcddW6GNXnhcC537vc793xnGKa9Mpn5Gs/P
+        BbDFAF4GPD/LxuNqTv6umBsBlY3TECF0wCnJ/ta+eVaePPoXIgRUj1SwT0QnTEtMIIXgBKwXPlgcHpjs
+        LhzYXatdQE5LLutIrEkiaZlbLzGQMMtnwPbxFcZnFrshrJ/h91YGRay3+sdbP3BJcm0UiA61oaSGyQHn
+        na8JMdrutfQlgqB20xakiqQ69QTLFLBhPGuK5fgGlKeuqWCHAMJ93yZikwJ4oQEJIoN+eCFmRpYaoQE9
+        rAQQGwayGjKBLSoWRRGVKodUttIEjE0v4Nfp7FpvqKhzU+cE5IpVRJJFZYDBctEFEBoiSpU6EukyXiI5
+        ZYD+0NkFqNZ4pPOfYOMFeENpZYDUX+eSjCt81BBNlRBgs3A/J3sHdBoXjubxFHzHrSfWO6DTuOfXDFze
+        BM4fIr0B5Hn/lf8cozxj6cJ/If0HX8gPNs8IG9GvAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="mnxAttach.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -240,19 +240,19 @@
   <data name="mnxAutoMount.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAKxSURBVDhPrZPdS1NhHMf373RRRtALBRUZlG8XeuFCmwpG
-        TiQrQgxMD6gpCb4kOTVFXZuNRckcWxpMGDXRjttczm3O6dQ5xXQ2t52zF892vp1zqlXoVfTAw3P1+b7w
-        /H4i0f88gVDANuGYWH2qLmWyG6+hUlkF7fgiSxAGtrfXHlSpXEat1iM51pOHicm66L3xQuQ0Z2KIVMDv
-        pxAOMzgIJeB0BqAZd+N59zQll1uUR0TkCyNbAtxyHTKyH8kUCybJIsGkEEukQMVTCNNJzJJbaG83Mn19
-        M79F6EN6nodHPf24UX9VAA8ZFnEOpDkwEk3igEpiTDuPp206GE3rIIh3lGzw44865h2zt1ydLQhk1lxK
-        u9KxFEKca5Cr8X7KjeLiDmzvJ7C5m4Cs/xOaWnVGEe9c/iYHRa+uoJOsx+Xq87h45wzOFp9EiHMNhBgo
-        1aQA+/cS2NiJw7sdg97gQUWFIiiy7lh8PNxBNqBaU4i8vgyck5yCfkWPbxEGjuU9Ab4t6RRe/i75orhV
-        NIS8vDYIFaxfrb6bPSeQy8MlGTCsGRDk4O1AAroPDshVc5ANTmNQQcK5TsPupTFt20NBAcGmf8O0YsaF
-        stOYmjNhn4vN91zn4q5uxbHsj8G1EcXiGo0vqzQsyxRej9khLnsRTAuYzZte3+bBHz3j8HDgEgc6OHCB
-        A60eCmY3hVlnGE8aNai6P2xMCwzLSYlCMRufNKwIoJvr6eDiLnBx53+CpCuCmcUwBkYtyC/ppmrq1H9P
-        ZXvXlLJCOsyM6V1CT5uHjxtBfaMWM44wTPYwXirNKCntYSofyo9OIx+nuVWnlEqVVEvbJFSaRRg+7+Ku
-        VIMhtQ21DW+Rn99FVVaPHA//6tP0TCd5VKsyistkwZxcgs3KIlixuDVYXjVgfPBYdfwy/etWfweJazCu
-        2Vw+tQAAAABJRU5ErkJggg==
+        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAKxSURBVDhPrZPrS1NhHMf9d3pRRtCFgooMytsLfeFCmwqG
+        FyQrQgxMD3glwUuSU1PUtdlalMyxpdGEURPtuM3l3OacTp1TTGdz2zm7eLbz7ZxTrUJfRQ88PK8+3wvP
+        75eS8j+PL+CzTNgmVptfFTEZDddQIa/EuMrKEsQHtrfX6lcoHHq12iU+1pOHicna8N3xPGQ2pWGIlMHr
+        pRAMMjgIxGC3+6Aad+Jp9zQllZrkR0SkCyNbAtxyHRKyH/EECybOIsYkEIklQEUTCNJxzJJbaG/XM319
+        M79F6EN6nodHXf24UXdVAA8ZFlEOpDkwFI7jgIpjTD2P5jYN9IZ1EMRbSjL48Ucd447RXaLMEATSqi8l
+        XelIAgHO1c/VeDflREFBB7b3Y9jcjUHS/wmNrRp9Cu9c8joT+S+uoJOsw+Wq87h45wzOFpxEgHP1BRjI
+        laQAe/di2NiJwr0dgVbnQlmZzJ9i3jF5eLiDrEeVKg/Zfak4Jz4F7YoW30IMbMt7Anxb3Cm8/F3yhHEr
+        fwjZ2W0QKpi/mj03e04gi4cLU6Fb08HPwdu+GDTvbZAq5iAZnMagjIR9nYbVTWPasofcXIJN/oZhxYgL
+        xacxNWfAPheb77nOxV3dimLZG4FjI4zFNRpfVmmYlim8HLNCVPzMnxQwGjfdns2DP3pG4eLAJQ60ceAC
+        B5pdFIxOCrP2IB43qFB5b1ifFBiWkmKZbDY6qVsRQCfX08bFXeDizv8ESUcIM4tBDIyakFPYTVXXKv+e
+        yvauKXlp2TAzpnUIPS0uPm4IdQ1qzNiCMFiDeC43orCoh6l4ID06jXycplaNvLxcTrW0TUKhWoTu8y5K
+        y1UYUlpQU/8GOTldVEXVyPHwrz6NTzTihzUKvahY4s/MItj0dIIViVr9JZUD+vuPFMcv079u9Xd1HjCn
+        utko0wAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="mnxToolsRefresh.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
