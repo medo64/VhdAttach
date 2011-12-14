@@ -21,6 +21,7 @@ Version history
 
       o  Added disk creation.
       o  Some interface tweaks.
+      o  Added upgrade procedure.
       o  Setup improvements.
 
    Version 2.10 (2011-09-01)

@@ -41,7 +41,7 @@ namespace VhdAttach {
             this.mnxDetach = new System.Windows.Forms.ToolStripButton();
             this.mnxHelpAbout = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuAppFeedback = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAppCheckUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAppCheckUpgrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAppDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
@@ -190,7 +190,7 @@ namespace VhdAttach {
             this.mnxHelpAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnxHelpAbout.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuAppFeedback,
-            this.mnuAppCheckUpdate,
+            this.mnuAppCheckUpgrade,
             this.mnuAppDonate,
             this.toolStripMenuItem1,
             this.mnuAppAbout});
@@ -203,33 +203,33 @@ namespace VhdAttach {
             // mnuAppFeedback
             // 
             this.mnuAppFeedback.Name = "mnuAppFeedback";
-            this.mnuAppFeedback.Size = new System.Drawing.Size(191, 24);
+            this.mnuAppFeedback.Size = new System.Drawing.Size(200, 24);
             this.mnuAppFeedback.Text = "Send &feedback";
             this.mnuAppFeedback.Click += new System.EventHandler(this.mnuAppFeedback_Click);
             // 
-            // mnuAppCheckUpdate
+            // mnuAppCheckUpgrade
             // 
-            this.mnuAppCheckUpdate.Name = "mnuAppCheckUpdate";
-            this.mnuAppCheckUpdate.Size = new System.Drawing.Size(191, 24);
-            this.mnuAppCheckUpdate.Text = "Check for &update";
-            this.mnuAppCheckUpdate.Click += new System.EventHandler(this.mnuAppCheckUpdate_Click);
+            this.mnuAppCheckUpgrade.Name = "mnuAppCheckUpgrade";
+            this.mnuAppCheckUpgrade.Size = new System.Drawing.Size(200, 24);
+            this.mnuAppCheckUpgrade.Text = "Check for &upgrade";
+            this.mnuAppCheckUpgrade.Click += new System.EventHandler(this.mnuAppCheckUpgrade_Click);
             // 
             // mnuAppDonate
             // 
             this.mnuAppDonate.Name = "mnuAppDonate";
-            this.mnuAppDonate.Size = new System.Drawing.Size(191, 24);
+            this.mnuAppDonate.Size = new System.Drawing.Size(200, 24);
             this.mnuAppDonate.Text = "&Donate";
             this.mnuAppDonate.Click += new System.EventHandler(this.mnuAppDonate_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(188, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(197, 6);
             // 
             // mnuAppAbout
             // 
             this.mnuAppAbout.Name = "mnuAppAbout";
-            this.mnuAppAbout.Size = new System.Drawing.Size(191, 24);
+            this.mnuAppAbout.Size = new System.Drawing.Size(200, 24);
             this.mnuAppAbout.Text = "&About";
             this.mnuAppAbout.Click += new System.EventHandler(this.mnuAppAbout_Click);
             // 
@@ -381,7 +381,7 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton mnxToolsRefresh;
         private System.Windows.Forms.ToolStrip mnu;
-        private System.Windows.Forms.ToolStripMenuItem mnuAppCheckUpdate;
+        private System.Windows.Forms.ToolStripMenuItem mnuAppCheckUpgrade;
         private System.Windows.Forms.ToolStripMenuItem mnuAppDonate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.StatusStrip staStolenExtension;
