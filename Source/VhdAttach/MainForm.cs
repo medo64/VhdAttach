@@ -12,6 +12,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Medo.Extensions;
 using System.Runtime.InteropServices;
+using Medo.Localization.Croatia;
 
 namespace VhdAttach {
 
@@ -19,7 +20,9 @@ namespace VhdAttach {
 
         private string _vhdFileName;
         private Medo.Configuration.RecentFiles _recent;
-
+        private static readonly NumberDeclination CylinderSuffix = new NumberDeclination("cylinder", "cylinders", "cylinders");
+        private static readonly NumberDeclination HeadSuffix = new NumberDeclination("head", "heads", "heads");
+        private static readonly NumberDeclination SectorSuffix = new NumberDeclination("sector", "sectors", "sectors");
 
         public MainForm() {
             InitializeComponent();
@@ -196,18 +199,71 @@ namespace VhdAttach {
                         int deviceId;
                         Guid vendorId;
                         document.GetVirtualStorageType(out deviceId, out vendorId);
-                        string deviceText = "Unknown";
+                        string deviceText = string.Format(CultureInfo.CurrentUICulture, "Unknown ({0})", deviceId);
                         if (deviceId == 1) { deviceText = "ISO"; }
                         if (deviceId == 2) { deviceText = "VHD"; }
-                        string vendorText = "Unknown";
+                        string vendorText = string.Format(CultureInfo.CurrentUICulture, "Unknown ({0})", vendorId);
                         if (vendorId.Equals(new Guid("EC984AEC-A0F9-47e9-901F-71415A66345B"))) { vendorText = "Microsoft"; }
-                        items.Add(new ListViewItem(new string[] { "Device ID", string.Format(CultureInfo.CurrentUICulture, "{0} ({1})", deviceText, deviceId) }));
-                        items.Add(new ListViewItem(new string[] { "Vendor ID", string.Format(CultureInfo.CurrentUICulture, "{0} ({1})", vendorText, vendorId) }));
+                        items.Add(new ListViewItem(new string[] { "Device ID", deviceText }));
+                        items.Add(new ListViewItem(new string[] { "Vendor ID", vendorText }));
                     } catch { }
 
                     try {
                         items.Add(new ListViewItem(new string[] { "Provider subtype", string.Format(CultureInfo.CurrentUICulture, "{0} (0x{0:x8})", document.GetProviderSubtype()) }));
                     } catch { }
+
+
+                    try {
+                        var footer = new byte[512];
+                        using (var vhdFile = new FileStream(vhdFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                            vhdFile.Position = vhdFile.Length - 512;
+                            vhdFile.Read(footer, 0, 512);
+                        }
+                        if ((footer[0] == 0x63) && (footer[1] == 0x6f) && (footer[2] == 0x6e) && (footer[3] == 0x65) && (footer[4] == 0x63) && (footer[5] == 0x74) && (footer[6] == 0x69) && (footer[7] == 0x78)) {
+                            var timeStamp = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(BitConverter.ToUInt32(new byte[] { footer[27], footer[26], footer[25], footer[24] }, 0));
+                            items.Add(new ListViewItem(new string[] { "Creation time stamp", string.Format(CultureInfo.CurrentUICulture, "{0}", timeStamp.ToLocalTime()) }));
+
+                            var creatorApplication = System.Text.ASCIIEncoding.ASCII.GetString(footer, 28, 4);
+                            var creatorApplicationText = string.Format(CultureInfo.CurrentUICulture, "Unknown ({0})", creatorApplication.TrimEnd());
+                            switch (creatorApplication) {
+                                case "vbox": creatorApplicationText = "Oracle VirtualBox"; break;
+                                case "vpc ": creatorApplicationText = "Microsoft Virtual PC"; break;
+                                case "vs  ": creatorApplicationText = "Microsoft Virtual Server"; break;
+                                case "win ": creatorApplicationText = "Microsoft Windows"; break;
+                            }
+                            var creatorVersionMajor = BitConverter.ToUInt16(new byte[] { footer[33], footer[32] }, 0);
+                            var creatorVersionMinor = BitConverter.ToUInt16(new byte[] { footer[35], footer[34] }, 0);
+                            items.Add(new ListViewItem(new string[] { "Creator application", string.Format(CultureInfo.CurrentUICulture, "{0} {1}.{2}", creatorApplicationText, creatorVersionMajor, creatorVersionMinor) }));
+
+                            var creatorHostOs = BitConverter.ToUInt32(new byte[] { footer[39], footer[38], footer[37], footer[36] }, 0);
+                            var creatorHostOsText = string.Format(CultureInfo.CurrentUICulture, "Unknown (0x{0:x4})", creatorHostOs);
+                            switch (creatorHostOs) {
+                                case 0x5769326B: creatorHostOsText = "Windows"; break;
+                                case 0x4D616320: creatorHostOsText = "Macintosh"; break;
+                            }
+                            items.Add(new ListViewItem(new string[] { "Creator host OS", creatorHostOsText }));
+
+                            var diskGeometryCylinder = BitConverter.ToUInt16(new byte[] { footer[57], footer[56] }, 0);
+                            var diskGeometryHeads = footer[58];
+                            var diskGeometrySectors = footer[59];
+                            items.Add(new ListViewItem(new string[] { "Disk geometry", string.Format(CultureInfo.CurrentUICulture, "{0}, {1}, {2}", CylinderSuffix.GetText(diskGeometryCylinder), HeadSuffix.GetText(diskGeometryHeads), SectorSuffix.GetText(diskGeometrySectors)) }));
+
+                            var diskType = BitConverter.ToUInt32(new byte[] { footer[63], footer[62], footer[61], footer[60] }, 0);
+                            var diskTypeText = string.Format(CultureInfo.CurrentUICulture, "Unknown ({0}: 0x{0:x4})", diskType);
+                            switch (diskType) {
+                                case 0: diskTypeText = "None"; break;
+                                case 1: diskTypeText = "Reserved (deprecated: 1)"; break;
+                                case 2: diskTypeText = "Fixed hard disk"; break;
+                                case 3: diskTypeText = "Dynamic hard disk"; break;
+                                case 4: diskTypeText = "Differencing hard disk"; break;
+                                case 5: diskTypeText = "Reserved (deprecated: 5)"; break;
+                                case 6: diskTypeText = "Reserved (deprecated: 6)"; break;
+                            }
+                            items.Add(new ListViewItem(new string[] { "Disk type", diskTypeText }));
+                        }
+
+                    } catch { }
+
 
                     mnxAttach.Enabled = string.IsNullOrEmpty(attachedPath);
                     mnxDetach.Enabled = !mnxAttach.Enabled;

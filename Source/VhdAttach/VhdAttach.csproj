@@ -85,6 +85,7 @@
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
     <Compile Include="%28Medo%29\ErrorReport [018].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
+    <Compile Include="%28Medo%29\NumberDeclination [001].cs" />
     <Compile Include="%28Medo%29\RecentFiles [002].cs" />
     <Compile Include="%28Medo%29\Settings [011].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
