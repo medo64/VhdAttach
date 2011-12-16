@@ -32,17 +32,27 @@ namespace VhdAttach {
                 string url = "http://jmedved.com/upgrade/vhdattach/" + Assembly.GetEntryAssembly().GetName().Version.ToString() + "/";
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
                 request.AllowAutoRedirect = false;
-                request.Method = "GET";
+                request.Method = "HEAD";
                 request.Proxy = HttpWebRequest.DefaultWebProxy;
                 request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
                 using (var response = (HttpWebResponse)request.GetResponse()) {
                     switch (response.StatusCode) {
                         case HttpStatusCode.Forbidden: e.Result = null; break; //no upgrade
                         case HttpStatusCode.SeeOther: e.Result = response.Headers["Location"]; break; //upgrade at Location
-                        default: throw new InvalidOperationException("Unexpected answer from upgrade server.");
+                        default: throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + ").");
                     }
                 }
             } catch (InvalidOperationException ex) {
+                var webEx = ex as WebException;
+                if (webEx != null) {
+                    var response = webEx.Response as HttpWebResponse;
+                    if (response != null) {
+                        if (response.StatusCode == HttpStatusCode.Forbidden) {
+                            e.Result = null;
+                            return;
+                        }
+                    }
+                }
                 throw ex;
             }
         }
@@ -62,6 +72,7 @@ namespace VhdAttach {
                     btnDownload.Focus();
                 } else {
                     lblStatus.Text = "No upgrade at this time.";
+                    btnCancel.Text = "&Close";
                 }
             }
         }
