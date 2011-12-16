@@ -22,7 +22,7 @@ namespace VhdAttach {
             bcwCheck.RunWorkerAsync();
         }
 
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnCancel_Click(object sender, EventArgs e) {
             bcwCheck.CancelAsync();
             bcwDownload.CancelAsync();
         }

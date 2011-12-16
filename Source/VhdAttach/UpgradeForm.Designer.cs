@@ -25,7 +25,7 @@
         private void InitializeComponent() {
             this.prb = new System.Windows.Forms.ProgressBar();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.btnClose = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.btnDownload = new System.Windows.Forms.Button();
             this.bcwDownload = new System.ComponentModel.BackgroundWorker();
             this.bcwCheck = new System.ComponentModel.BackgroundWorker();
@@ -52,18 +52,18 @@
             this.lblStatus.Text = "Checking for upgrade";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // btnClose
+            // btnCancel
             // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(202, 71);
-            this.btnClose.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(100, 28);
-            this.btnClose.TabIndex = 0;
-            this.btnClose.Text = "&Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(202, 71);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(100, 28);
+            this.btnCancel.TabIndex = 0;
+            this.btnCancel.Text = "&Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnDownload
             // 
@@ -96,10 +96,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnClose;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(314, 111);
             this.Controls.Add(this.btnDownload);
-            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.prb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -119,7 +119,7 @@
 
         private System.Windows.Forms.ProgressBar prb;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnDownload;
         private System.ComponentModel.BackgroundWorker bcwDownload;
         private System.ComponentModel.BackgroundWorker bcwCheck;
