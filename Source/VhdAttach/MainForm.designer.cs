@@ -39,9 +39,9 @@ namespace VhdAttach {
             this.mnxFileOpen = new System.Windows.Forms.ToolStripSplitButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxDetach = new System.Windows.Forms.ToolStripButton();
-            this.mnxHelpAbout = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mnuApp = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuAppFeedback = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAppCheckUpgrade = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAppUpgrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAppDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
@@ -184,21 +184,21 @@ namespace VhdAttach {
             this.mnxDetach.ToolTipText = "Detach virtual disk";
             this.mnxDetach.Click += new System.EventHandler(this.mnuActionDetach_Click);
             // 
-            // mnxHelpAbout
+            // mnuApp
             // 
-            this.mnxHelpAbout.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.mnxHelpAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mnxHelpAbout.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuApp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.mnuApp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuApp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuAppFeedback,
-            this.mnuAppCheckUpgrade,
+            this.mnuAppUpgrade,
             this.mnuAppDonate,
             this.toolStripMenuItem1,
             this.mnuAppAbout});
-            this.mnxHelpAbout.Image = ((System.Drawing.Image)(resources.GetObject("mnxHelpAbout.Image")));
-            this.mnxHelpAbout.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnxHelpAbout.Name = "mnxHelpAbout";
-            this.mnxHelpAbout.Size = new System.Drawing.Size(29, 24);
-            this.mnxHelpAbout.Text = "About";
+            this.mnuApp.Image = ((System.Drawing.Image)(resources.GetObject("mnuApp.Image")));
+            this.mnuApp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuApp.Name = "mnuApp";
+            this.mnuApp.Size = new System.Drawing.Size(29, 24);
+            this.mnuApp.Text = "VHD Attach";
             // 
             // mnuAppFeedback
             // 
@@ -207,12 +207,12 @@ namespace VhdAttach {
             this.mnuAppFeedback.Text = "Send &feedback";
             this.mnuAppFeedback.Click += new System.EventHandler(this.mnuAppFeedback_Click);
             // 
-            // mnuAppCheckUpgrade
+            // mnuAppUpgrade
             // 
-            this.mnuAppCheckUpgrade.Name = "mnuAppCheckUpgrade";
-            this.mnuAppCheckUpgrade.Size = new System.Drawing.Size(200, 24);
-            this.mnuAppCheckUpgrade.Text = "Check for &upgrade";
-            this.mnuAppCheckUpgrade.Click += new System.EventHandler(this.mnuAppCheckUpgrade_Click);
+            this.mnuAppUpgrade.Name = "mnuAppUpgrade";
+            this.mnuAppUpgrade.Size = new System.Drawing.Size(200, 24);
+            this.mnuAppUpgrade.Text = "Check for &upgrade";
+            this.mnuAppUpgrade.Click += new System.EventHandler(this.mnuAppUpgrade_Click);
             // 
             // mnuAppDonate
             // 
@@ -293,7 +293,7 @@ namespace VhdAttach {
             this.toolStripSeparator3,
             this.mnxAttach,
             this.mnxDetach,
-            this.mnxHelpAbout,
+            this.mnuApp,
             this.mnxToolsOptions,
             this.toolStripSeparator4,
             this.toolStripSeparator2,
@@ -371,7 +371,7 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripSplitButton mnxFileOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton mnxDetach;
-        private System.Windows.Forms.ToolStripDropDownButton mnxHelpAbout;
+        private System.Windows.Forms.ToolStripDropDownButton mnuApp;
         private System.Windows.Forms.ToolStripMenuItem mnuAppFeedback;
         private System.Windows.Forms.ToolStripMenuItem mnuAppAbout;
         private System.Windows.Forms.ToolStripButton mnxToolsOptions;
@@ -381,7 +381,7 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton mnxToolsRefresh;
         private System.Windows.Forms.ToolStrip mnu;
-        private System.Windows.Forms.ToolStripMenuItem mnuAppCheckUpgrade;
+        private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
         private System.Windows.Forms.ToolStripMenuItem mnuAppDonate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.StatusStrip staStolenExtension;

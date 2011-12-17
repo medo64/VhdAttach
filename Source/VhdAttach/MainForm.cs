@@ -514,7 +514,7 @@ namespace VhdAttach {
             mnuHelpReportABug_Click(null, null);
         }
 
-        private void mnuAppCheckUpgrade_Click(object sender, EventArgs e) {
+        private void mnuAppUpgrade_Click(object sender, EventArgs e) {
             using (var frm = new UpgradeForm()) {
                 frm.ShowDialog(this);
             }
