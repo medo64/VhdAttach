@@ -356,6 +356,7 @@ namespace VhdAttach {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     using (var frm2 = new NewDiskForm(frm.FileName)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
+                            AllowSetForegroundWindowToExplorer();
                             var fileName = frm.FileName;
                             try {
                                 var newDocument = new Medo.IO.VirtualDisk(fileName);
