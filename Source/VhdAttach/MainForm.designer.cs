@@ -302,6 +302,7 @@ namespace VhdAttach {
             this.mnxToolsRefresh});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
+            this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.mnu.Size = new System.Drawing.Size(582, 27);
             this.mnu.Stretch = true;
             this.mnu.TabIndex = 1;

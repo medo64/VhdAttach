@@ -53,7 +53,7 @@ namespace VhdAttach {
 
                 case (Keys.Alt | Keys.Menu):
                     mnu.Select();
-                    mnxFileOpen.Select();
+                    mnu.Items[0].Select();
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
