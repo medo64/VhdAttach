@@ -1,18 +1,20 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Windows.Forms;
+using Medo.Localization.Croatia;
 
 namespace VhdAttach {
     partial class NewDiskForm : Form {
-        public NewDiskForm(string fileName) {
+        public NewDiskForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-
-            this.FileName = fileName;
         }
 
-        private readonly string FileName;
+
+        private static readonly NumberDeclination BytesSuffix = new NumberDeclination("byte", "bytes", "bytes");
+        public string FileName { get; private set; }
 
 
         private void Form_Load(object sender, EventArgs e) {
@@ -32,42 +34,50 @@ namespace VhdAttach {
             try {
                 this.Cursor = Cursors.WaitCursor;
 
-                try {
-                    File.Delete(this.FileName);
-                } catch (IOException ex) {
-                    this.Cursor = Cursors.Default;
-                    Medo.MessageBox.ShowError(this, "File cannot be deleted.\n\n" + ex.Message);
-                    this.DialogResult = DialogResult.Cancel;
-                    return;
-                }
+                using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*", FilterIndex = 0, OverwritePrompt = true, Title = "New disk", ValidateNames = true }) {
+                    if (frm.ShowDialog(this) == DialogResult.OK) {
+                        this.FileName = frm.FileName;
 
-                try {
-                    var sizeInBytes = GetSizeInBytes();
-                    using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
-                        var options = Medo.IO.VirtualDiskCreateOptions.None;
-                        if (Settings.LastSizeFixed) { options |= Medo.IO.VirtualDiskCreateOptions.FullPhysicalAllocation; }
-                        vhd.Create(sizeInBytes, options);
+                        try {
+                            File.Delete(this.FileName);
+                        } catch (IOException ex) {
+                            this.Cursor = Cursors.Default;
+                            Medo.MessageBox.ShowError(this, "File cannot be deleted.\n\n" + ex.Message);
+                            this.DialogResult = DialogResult.Cancel;
+                            return;
+                        }
+
+                        try {
+                            var sizeInBytes = GetSizeInBytes();
+                            using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
+                                var options = Medo.IO.VirtualDiskCreateOptions.None;
+                                if (Settings.LastSizeFixed) { options |= Medo.IO.VirtualDiskCreateOptions.FullPhysicalAllocation; }
+                                vhd.Create(sizeInBytes, options);
+                            }
+                        } catch (IOException ex) {
+                            this.Cursor = Cursors.Default;
+                            Medo.MessageBox.ShowError(this, "Virtual disk cannot be created.\n\n" + ex.Message);
+                            this.DialogResult = DialogResult.Cancel;
+                            return;
+                        }
+
+                        using (var form = new AttachForm(new FileInfo(this.FileName), false, true)) {
+                            form.StartPosition = FormStartPosition.CenterParent;
+                            form.ShowDialog(this);
+                        }
+
+                        this.DialogResult = DialogResult.OK;
                     }
-                } catch (IOException ex) {
-                    this.Cursor = Cursors.Default;
-                    Medo.MessageBox.ShowError(this, "Virtual disk cannot be created.\n\n" + ex.Message);
-                    this.DialogResult = DialogResult.Cancel;
-                    return;
                 }
-
-                using (var form = new AttachForm(new FileInfo(this.FileName), false, true)) {
-                    form.StartPosition = FormStartPosition.CenterParent;
-                    form.ShowDialog(this);
-                }
-
-                this.DialogResult = DialogResult.OK;
             } finally {
                 this.Cursor = Cursors.Default;
             }
         }
 
         private void control_Changed(object sender, EventArgs e) {
-            btnOK.Enabled = (GetSizeInBytes() >= 8 * 1000 * 1000 / 4096 * 4096);
+            var sizeInBytes = GetSizeInBytes();
+            txtSizeInBytes.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,##0}", sizeInBytes);
+            btnOK.Enabled = (sizeInBytes >= 8 * 1000 * 1000 / 4096 * 4096);
         }
 
 
