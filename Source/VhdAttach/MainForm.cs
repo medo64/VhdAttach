@@ -188,10 +188,11 @@ namespace VhdAttach {
                             }
                         } catch { }
                     } catch { }
-                    if (string.IsNullOrEmpty(attachedPath)) {
-                        items.Add(new ListViewItem(new string[] { "Attached path", string.Format(CultureInfo.InvariantCulture, "{0}", attachedPath) }));
-                    } else {
-                        items.Add(new ListViewItem(new string[] { "Attached path", string.Format(CultureInfo.InvariantCulture, "{1} ({0})", attachedPath, attachedPathLetters) }));
+                    if (attachedPath != null) {
+                        items.Add(new ListViewItem(new string[] { "Attached path", attachedPath }));
+                    }
+                    if (string.IsNullOrEmpty(attachedPathLetters) == false) {
+                        items.Add(new ListViewItem(new string[] { "Attached drive", attachedPathLetters }));
                     }
 
                     try {
@@ -201,10 +202,10 @@ namespace VhdAttach {
                         int sectorSize;
                         document.GetSize(out virtualSize, out physicalSize, out blockSize, out sectorSize);
                         items.Add(new ListViewItem(new string[] { "Virtual size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", virtualSize.ToBinaryPrefixString("B", "0"), virtualSize) }));
-                        items.Add(new ListViewItem(new string[] { "Physical size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", physicalSize.ToBinaryPrefixString("B", "0"), physicalSize) }));
-                        if (blockSize == 0) {
-                            items.Add(new ListViewItem(new string[] { "Block size", "Default" }));
-                        } else {
+                        if (fileInfo.Length != physicalSize) {
+                            items.Add(new ListViewItem(new string[] { "Physical size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", physicalSize.ToBinaryPrefixString("B", "0"), physicalSize) }));
+                        }
+                        if (blockSize != 0) {
                             items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", ((long)blockSize).ToBinaryPrefixString("B", "0"), blockSize) }));
                         }
                         items.Add(new ListViewItem(new string[] { "Sector size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", ((long)sectorSize).ToBinaryPrefixString("B", "0"), sectorSize) }));
