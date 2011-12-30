@@ -7,19 +7,19 @@ using System.Globalization;
 using System.IO;
 using System.Management;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Medo.Extensions;
-using System.Runtime.InteropServices;
 using Medo.Localization.Croatia;
 
 namespace VhdAttach {
 
     internal partial class MainForm : Form {
 
-        private string _vhdFileName;
-        private Medo.Configuration.RecentFiles _recent;
+        private string VhdFileName;
+        private Medo.Configuration.RecentFiles Recent;
         private static readonly NumberDeclination CylinderSuffix = new NumberDeclination("cylinder", "cylinders", "cylinders");
         private static readonly NumberDeclination HeadSuffix = new NumberDeclination("head", "heads", "heads");
         private static readonly NumberDeclination SectorSuffix = new NumberDeclination("sector", "sectors", "sectors");
@@ -30,15 +30,95 @@ namespace VhdAttach {
             Medo.Windows.Forms.TaskbarProgress.DefaultOwner = this;
             Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
 
-            float dpiRatioX, dpiRatioY;
-            using (var g = this.CreateGraphics()) {
-                dpiRatioX = (float)Math.Round(g.DpiX / 96, 2);
-                dpiRatioY = (float)Math.Round(g.DpiY / 96, 2);
-            }
-            mnu.ImageScalingSize = new Size((int)(16 * dpiRatioX), (int)(16 * dpiRatioY));
-            mnu.Scale(new SizeF(dpiRatioX, dpiRatioY));
+            this.Recent = new Medo.Configuration.RecentFiles();
+        }
 
-            this._recent = new Medo.Configuration.RecentFiles();
+
+        private bool SuppressMenuKey = false;
+
+        protected override bool ProcessDialogKey(Keys keyData) {
+            if (((keyData & Keys.Alt) == Keys.Alt) && (keyData != (Keys.Alt | Keys.Menu))) { this.SuppressMenuKey = true; }
+
+            switch (keyData) {
+
+                case Keys.F10:
+                    ToggleMenu();
+                    return true;
+
+                case Keys.Control | Keys.N:
+                case Keys.Alt | Keys.N:
+                    mnuNew.PerformClick();
+                    return true;
+
+                case Keys.Control | Keys.O:
+                    mnuOpen.PerformButtonClick();
+                    return true;
+
+                case Keys.Alt | Keys.O:
+                    mnuOpen.ShowDropDown();
+                    return true;
+
+                case Keys.F6:
+                    mnuAttach.PerformButtonClick();
+                    return true;
+
+                case Keys.Alt | Keys.A:
+                    if (mnuAttach.Enabled) {
+                        mnuAttach.ShowDropDown();
+                    }
+                    return true;
+
+                case Keys.Alt | Keys.D:
+                    mnuDetach.PerformClick();
+                    return true;
+
+                case Keys.Alt | Keys.M:
+                    mnuAutoMount.PerformClick();
+                    return true;
+
+                case Keys.F1:
+                    mnuApp.ShowDropDown();
+                    return true;
+
+
+                case Keys.F5:
+                    UpdateData(this.VhdFileName);
+                    return true;
+
+
+                case Keys.Control | Keys.C:
+                    mnxListCopy.PerformClick();
+                    return true;
+
+                case Keys.Control | Keys.A:
+                    mnxListSelectAll.PerformClick();
+                    return true;
+
+            }
+
+            return base.ProcessDialogKey(keyData);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e) {
+            if (e.KeyData == Keys.Menu) {
+                if (this.SuppressMenuKey) { this.SuppressMenuKey = false; return; }
+                ToggleMenu();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            } else {
+                base.OnKeyDown(e);
+            }
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e) {
+            if (e.KeyData == Keys.Menu) {
+                if (this.SuppressMenuKey) { this.SuppressMenuKey = false; return; }
+                ToggleMenu();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            } else {
+                base.OnKeyUp(e);
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -46,67 +126,6 @@ namespace VhdAttach {
             OpenFromCommandLineArgs();
             UpdateRecent();
             staStolenExtension.Visible = !ServiceSettings.ContextMenu;
-        }
-
-        private void MainForm_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyData) {
-
-                case (Keys.Alt | Keys.Menu):
-                    mnu.Select();
-                    mnu.Items[0].Select();
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Control | Keys.O:
-                    mnuFileOpen_Click(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.F5:
-                    mnuToolsRefresh_Click(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.F6:
-                    mnuAttach_ButtonClick(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Alt | Keys.A:
-                    mnuAttach_ButtonClick(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Control | Keys.C:
-                    mnuEditCopy_Click(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Alt | Keys.D:
-                    mnuActionDetach_Click(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Alt | Keys.O:
-                    mnuFileOpen_Click(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-                case Keys.Control | Keys.N:
-                    mnuFileNew_Click(null, null);
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
-            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e) {
@@ -121,10 +140,10 @@ namespace VhdAttach {
         private void UpdateData(string vhdFileName) {
             if (vhdFileName == null) {
                 list.Items.Clear();
-                mnxAttach.Enabled = false;
-                mnxDetach.Enabled = false;
-                mnxAutoMount.Text = "Auto-mount";
-                mnxAutoMount.Enabled = false;
+                mnuAttach.Enabled = false;
+                mnuDetach.Enabled = false;
+                mnuAutoMount.Text = "Auto-mount";
+                mnuAutoMount.Enabled = false;
                 return;
             }
 
@@ -265,9 +284,9 @@ namespace VhdAttach {
                     } catch { }
 
 
-                    mnxAttach.Enabled = string.IsNullOrEmpty(attachedPath);
-                    mnxDetach.Enabled = !mnxAttach.Enabled;
-                    mnxAutoMount.Enabled = true;
+                    mnuAttach.Enabled = string.IsNullOrEmpty(attachedPath);
+                    mnuDetach.Enabled = !mnuAttach.Enabled;
+                    mnuAutoMount.Enabled = true;
 
                     bool isAutoMount = false;
                     foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
@@ -276,7 +295,7 @@ namespace VhdAttach {
                             break;
                         }
                     }
-                    mnxAutoMount.Checked = isAutoMount;
+                    mnuAutoMount.Checked = isAutoMount;
 
                     list.BeginUpdate();
                     list.Items.Clear();
@@ -286,7 +305,7 @@ namespace VhdAttach {
                     list.EndUpdate();
                 }
 
-                mnxAutoMount.Text = mnxAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
+                mnuAutoMount.Text = mnuAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
             } finally {
                 this.Cursor = Cursors.Default;
             }
@@ -315,12 +334,12 @@ namespace VhdAttach {
         }
 
         private void UpdateRecent() {
-            mnxFileOpen.DropDownItems.Clear();
-            foreach (var iRecentFile in this._recent.AsReadOnly()) {
+            mnuOpen.DropDownItems.Clear();
+            foreach (var iRecentFile in this.Recent.AsReadOnly()) {
                 var item2 = new ToolStripMenuItem(iRecentFile.Title);
                 item2.Tag = iRecentFile;
                 item2.Click += new EventHandler(recentItem_Click);
-                mnxFileOpen.DropDownItems.Add(item2);
+                mnuOpen.DropDownItems.Add(item2);
             }
         }
 
@@ -330,13 +349,13 @@ namespace VhdAttach {
             try {
                 var newDocument = new Medo.IO.VirtualDisk(recentItem.FileName);
                 UpdateData(newDocument.FileName);
-                this._vhdFileName = newDocument.FileName;
-                _recent.Push(recentItem.FileName);
+                this.VhdFileName = newDocument.FileName;
+                Recent.Push(recentItem.FileName);
                 UpdateRecent();
             } catch (Exception ex) {
                 var exFile = new FileInfo(recentItem.FileName);
                 if (Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}\n\nDo you wish to remove it from list?", exFile.Name, ex.Message), MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                    _recent.Remove(recentItem.FileName);
+                    Recent.Remove(recentItem.FileName);
                     UpdateRecent();
                 }
             }
@@ -345,13 +364,13 @@ namespace VhdAttach {
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             Medo.Windows.Forms.State.Save(this, list);
-            this._recent.Save();
+            this.Recent.Save();
         }
 
 
-        #region Menu: File
+        #region Menu
 
-        private void mnuFileNew_Click(object sender, EventArgs e) {
+        private void mnuFile_Click(object sender, EventArgs e) {
             using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*", FilterIndex = 0, OverwritePrompt = true, Title = "New disk", ValidateNames = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     using (var frm2 = new NewDiskForm(frm.FileName)) {
@@ -361,8 +380,8 @@ namespace VhdAttach {
                             try {
                                 var newDocument = new Medo.IO.VirtualDisk(fileName);
                                 UpdateData(newDocument.FileName);
-                                this._vhdFileName = newDocument.FileName;
-                                _recent.Push(fileName);
+                                this.VhdFileName = newDocument.FileName;
+                                Recent.Push(fileName);
                                 UpdateRecent();
                             } catch (Exception ex) {
                                 var exFile = new FileInfo(fileName);
@@ -374,7 +393,7 @@ namespace VhdAttach {
             }
         }
 
-        private void mnuFileOpen_Click(object sender, EventArgs e) {
+        private void mnuOpen_Click(object sender, EventArgs e) {
             using (var dialog = new OpenFileDialog()) {
                 dialog.AddExtension = true;
                 dialog.CheckFileExists = true;
@@ -387,8 +406,8 @@ namespace VhdAttach {
                     try {
                         var newDocument = new Medo.IO.VirtualDisk(dialog.FileName);
                         UpdateData(newDocument.FileName);
-                        this._vhdFileName = newDocument.FileName;
-                        _recent.Push(dialog.FileName);
+                        this.VhdFileName = newDocument.FileName;
+                        Recent.Push(dialog.FileName);
                         UpdateRecent();
                     } catch (Exception ex) {
                         var exFile = new FileInfo(dialog.FileName);
@@ -398,49 +417,19 @@ namespace VhdAttach {
             }
         }
 
-        private void mnuFileExit_Click(object sender, EventArgs e) {
-            this.Close();
-        }
-
-        #endregion
-
-
-        #region Menu: Edit
-
-        private void mnuEditCopy_Click(object sender, EventArgs e) {
-            if (list.SelectedItems.Count > 0) {
-                var sb = new StringBuilder();
-                foreach (var iItem in list.SelectedItems) {
-                    sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0} = \"{1}\"", ((ListViewItem)iItem).Text, ((ListViewItem)iItem).SubItems[1].Text));
-                }
-                Clipboard.SetText(sb.ToString());
-            }
-        }
-
-        private void mnuEditSelectAll_Click(object sender, EventArgs e) {
-            foreach (var iItem in list.Items) {
-                ((ListViewItem)iItem).Selected = true;
-            }
-        }
-
-        #endregion
-
-
-        #region Menu: Action
-
         private void mnuAttach_ButtonClick(object sender, EventArgs e) {
-            if (this._vhdFileName == null) { return; }
+            if (this.VhdFileName == null) { return; }
 
             if (Settings.UseService) {
-                using (var form = new AttachForm(new FileInfo(this._vhdFileName), false, false)) {
+                using (var form = new AttachForm(new FileInfo(this.VhdFileName), false, false)) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }
-                UpdateData(this._vhdFileName);
+                UpdateData(this.VhdFileName);
             } else {
                 mnu.Enabled = false;
                 var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
-                var startInfo = Utility.GetProcessStartInfo(exe, @"/Attach """ + this._vhdFileName + @"""");
+                var startInfo = Utility.GetProcessStartInfo(exe, @"/Attach """ + this.VhdFileName + @"""");
                 this.Cursor = Cursors.WaitCursor;
                 bwExecutor.RunWorkerAsync(startInfo);
             }
@@ -448,41 +437,41 @@ namespace VhdAttach {
         }
 
         private void mnuAttachReadOnly_Click(object sender, EventArgs e) {
-            if (this._vhdFileName == null) { return; }
+            if (this.VhdFileName == null) { return; }
 
             if (Settings.UseService) {
-                using (var form = new AttachForm(new FileInfo(this._vhdFileName), true, false)) {
+                using (var form = new AttachForm(new FileInfo(this.VhdFileName), true, false)) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }
-                UpdateData(this._vhdFileName);
+                UpdateData(this.VhdFileName);
             } else {
                 mnu.Enabled = false;
                 var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
-                var startInfo = Utility.GetProcessStartInfo(exe, @"/Attach """ + this._vhdFileName + @""" /ReadOnly");
+                var startInfo = Utility.GetProcessStartInfo(exe, @"/Attach """ + this.VhdFileName + @""" /ReadOnly");
                 this.Cursor = Cursors.WaitCursor;
                 bwExecutor.RunWorkerAsync(startInfo);
             }
             AllowSetForegroundWindowToExplorer();
         }
 
-        private void mnuActionDetach_Click(object sender, EventArgs e) {
-            if (this._vhdFileName == null) { return; }
+        private void mnuDetach_Click(object sender, EventArgs e) {
+            if (this.VhdFileName == null) { return; }
 
             if (Settings.UseService) {
 
-                using (var form = new DetachForm(new FileInfo[] { new FileInfo(this._vhdFileName) })) {
+                using (var form = new DetachForm(new FileInfo[] { new FileInfo(this.VhdFileName) })) {
                     form.StartPosition = FormStartPosition.CenterParent;
                     form.ShowDialog(this);
                 }
-                UpdateData(this._vhdFileName);
+                UpdateData(this.VhdFileName);
 
             } else {
 
                 mnu.Enabled = false;
 
                 var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
-                var startInfo = Utility.GetProcessStartInfo(exe, @"/Detach """ + this._vhdFileName + @"""");
+                var startInfo = Utility.GetProcessStartInfo(exe, @"/Detach """ + this.VhdFileName + @"""");
 
                 this.Cursor = Cursors.WaitCursor;
                 bwExecutor.RunWorkerAsync(startInfo);
@@ -490,26 +479,51 @@ namespace VhdAttach {
             }
         }
 
-        #endregion
 
-        #region Menu: Tools
-
-        private void mnuToolsRefresh_Click(object sender, EventArgs e) {
-            staStolenExtension.Visible = !ServiceSettings.ContextMenu;
-            UpdateData(this._vhdFileName);
+        private void mnuAutoMount_Click(object sender, EventArgs e) {
+            mnuAutoMount.Text = mnuAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
+            try {
+                this.Cursor = Cursors.WaitCursor;
+                var vhds = new List<string>();
+                if (mnuAutoMount.Checked) { //add if possible
+                    bool isIn = false;
+                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
+                        vhds.Add(fileName);
+                        if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                            isIn = true;
+                        }
+                    }
+                    if (isIn == false) {
+                        vhds.Add(this.VhdFileName);
+                    }
+                } else { //remove if exists
+                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
+                        if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) != 0) {
+                            vhds.Add(fileName);
+                        }
+                    }
+                }
+                var data = new SettingsRequestData(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
+                var resBytes = WcfPipeClient.Execute("WriteSettings", data.ToJson());
+                var res = ResponseData.FromJson(resBytes);
+                if (res.ExitCode != ExitCodes.OK) {
+                    Medo.MessageBox.ShowError(this, res.Message);
+                }
+            } finally {
+                this.Cursor = Cursors.Default;
+            }
         }
 
-        private void mnuToolsOptions_Click(object sender, EventArgs e) {
+
+        private void mnuOptions_Click(object sender, EventArgs e) {
             using (var form = new SettingsForm()) {
                 if (form.ShowDialog(this) == DialogResult.OK) {
-                    mnuToolsRefresh_Click(null, null);
+                    staStolenExtension.Visible = !ServiceSettings.ContextMenu;
+                    UpdateData(this.VhdFileName);
                 }
             }
         }
 
-        #endregion
-
-        #region Menu: Help
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
             mnuHelpReportABug_Click(null, null);
@@ -544,16 +558,24 @@ namespace VhdAttach {
 
         private void mnxList_Opening(object sender, CancelEventArgs e) {
             mnxListCopy.Enabled = (list.SelectedItems.Count > 0);
-            mnxListEditSelectAll.Enabled = (list.Items.Count > 0);
+            mnxListSelectAll.Enabled = (list.Items.Count > 0);
         }
 
 
         private void mnxListCopy_Click(object sender, EventArgs e) {
-            mnuEditCopy_Click(sender, e);
+            if (list.SelectedItems.Count > 0) {
+                var sb = new StringBuilder();
+                foreach (var iItem in list.SelectedItems) {
+                    sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0} = \"{1}\"", ((ListViewItem)iItem).Text, ((ListViewItem)iItem).SubItems[1].Text));
+                }
+                Clipboard.SetText(sb.ToString());
+            }
         }
 
-        private void mnxListEditSelectAll_Click(object sender, EventArgs e) {
-            mnuEditSelectAll_Click(sender, e);
+        private void mnxListSelectAll_Click(object sender, EventArgs e) {
+            foreach (var iItem in list.Items) {
+                ((ListViewItem)iItem).Selected = true;
+            }
         }
 
         #endregion
@@ -567,8 +589,8 @@ namespace VhdAttach {
                 try {
                     var newDocument = new Medo.IO.VirtualDisk(iFile.FullName);
                     UpdateData(newDocument.FileName);
-                    this._vhdFileName = newDocument.FileName;
-                    _recent.Push(iFile.FullName);
+                    this.VhdFileName = newDocument.FileName;
+                    Recent.Push(iFile.FullName);
 
                     //send all other files to second instances
                     for (int j = i + 1; j < filesToOpen.Length; ++j) {
@@ -619,7 +641,7 @@ namespace VhdAttach {
                 Medo.MessageBox.ShowError(this, string.Format("Error during execution of external process.\n\n{0}", e.Error.Message));
             }
             mnu.Enabled = true;
-            UpdateData(this._vhdFileName);
+            UpdateData(this.VhdFileName);
             this.Cursor = Cursors.Default;
         }
 
@@ -642,40 +664,6 @@ namespace VhdAttach {
             if (xEnd2 < 0) { return null; }
 
             return extract.Substring(xStart2 + start.Length, xEnd2 - xStart2 - start.Length);
-        }
-
-        private void mnxAutoMount_Click(object sender, EventArgs e) {
-            mnxAutoMount.Text = mnxAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
-            try {
-                this.Cursor = Cursors.WaitCursor;
-                var vhds = new List<string>();
-                if (mnxAutoMount.Checked) { //add if possible
-                    bool isIn = false;
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        vhds.Add(fileName);
-                        if (string.Compare(this._vhdFileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
-                            isIn = true;
-                        }
-                    }
-                    if (isIn == false) {
-                        vhds.Add(this._vhdFileName);
-                    }
-                } else { //remove if exists
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(this._vhdFileName, fileName, StringComparison.OrdinalIgnoreCase) != 0) {
-                            vhds.Add(fileName);
-                        }
-                    }
-                }
-                var data = new SettingsRequestData(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
-                var resBytes = WcfPipeClient.Execute("WriteSettings", data.ToJson());
-                var res = ResponseData.FromJson(resBytes);
-                if (res.ExitCode != ExitCodes.OK) {
-                    Medo.MessageBox.ShowError(this, res.Message);
-                }
-            } finally {
-                this.Cursor = Cursors.Default;
-            }
         }
 
 
@@ -718,8 +706,8 @@ namespace VhdAttach {
                     try {
                         var newDocument = new Medo.IO.VirtualDisk(files[0]);
                         UpdateData(newDocument.FileName);
-                        this._vhdFileName = newDocument.FileName;
-                        _recent.Push(files[0]);
+                        this.VhdFileName = newDocument.FileName;
+                        Recent.Push(files[0]);
                         UpdateRecent();
                     } catch (Exception ex) {
                         var exFile = new FileInfo(files[0]);
@@ -730,7 +718,17 @@ namespace VhdAttach {
         }
 
         private void staStolenExtensionText_Click(object sender, EventArgs e) {
-            mnuToolsOptions_Click(null, null);
+            mnuOptions_Click(null, null);
+        }
+
+
+        private void ToggleMenu() {
+            if (mnu.ContainsFocus) {
+                list.Select();
+            } else {
+                mnu.Select();
+                mnu.Items[0].Select();
+            }
         }
 
     }
