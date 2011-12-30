@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Runtime.Serialization.Json;
-using System.Windows.Forms;
-using System.IO;
-using System.Threading;
-using System.IO.Pipes;
+﻿using System.Diagnostics;
 
 namespace VhdAttach {
     internal static class Utility {

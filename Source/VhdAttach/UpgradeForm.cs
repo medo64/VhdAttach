@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+using System.IO;
 using System.Net;
 using System.Reflection;
-using System.Diagnostics;
-using System.IO;
+using System.Windows.Forms;
 
 namespace VhdAttach {
-    public partial class UpgradeForm : Form {
+    internal partial class UpgradeForm : Form {
         public UpgradeForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;

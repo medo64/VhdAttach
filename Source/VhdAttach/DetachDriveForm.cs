@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
-using System.Management;
-using System.Globalization;
-using System.Diagnostics;
-using System.Runtime.Serialization;
+using System.Windows.Forms;
 
 namespace VhdAttach {
-    partial class DetachDriveForm : Form {
+    internal partial class DetachDriveForm : Form {
 
         private IList<FileInfo> _files;
         private List<Exception> _exceptions;

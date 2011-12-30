@@ -6,7 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 
 namespace VhdAttach {
-    partial class AttachForm : Form {
+    internal partial class AttachForm : Form {
 
         private readonly IList<FileInfo> Files;
         private readonly bool MountReadOnly;

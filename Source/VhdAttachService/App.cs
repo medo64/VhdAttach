@@ -1,14 +1,11 @@
-﻿using System.ServiceProcess;
-using System.Threading;
-using System.Windows.Forms;
-using System;
+﻿using System;
 using System.Configuration.Install;
 using System.Reflection;
-using System.Diagnostics;
+using System.ServiceProcess;
 
 namespace VhdAttachService {
 
-    static class App {
+    internal static class App {
 
         [STAThread()]
         static void Main() {

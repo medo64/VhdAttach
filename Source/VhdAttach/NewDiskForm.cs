@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Medo.Localization.Croatia;
 
 namespace VhdAttach {
-    partial class NewDiskForm : Form {
+    internal partial class NewDiskForm : Form {
         public NewDiskForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;

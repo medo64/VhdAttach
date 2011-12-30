@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Globalization;
-using System.Net;
-using System.Net.Sockets;
-using System.IO;
-using System.Runtime.Serialization;
 
 namespace VhdAttach {
-    partial class SettingsForm : Form {
+    internal partial class SettingsForm : Form {
         public SettingsForm() {
             InitializeComponent();
             toolVhdOrder.Renderer = new ToolStripBorderlessSystemRenderer();

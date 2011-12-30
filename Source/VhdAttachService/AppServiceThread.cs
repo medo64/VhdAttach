@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.ServiceModel;
 using System.Threading;
-using System.Globalization;
 
 namespace VhdAttachService {
 

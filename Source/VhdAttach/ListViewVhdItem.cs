@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace VhdAttach {
-    class ListViewVhdItem : ListViewItem {
+    internal class ListViewVhdItem : ListViewItem {
 
         public ListViewVhdItem(string fileName) {
             this.FileName = fileName;

@@ -1,6 +1,6 @@
 using System.ServiceModel;
 
-class WcfPipeClient {
+internal class WcfPipeClient {
 
     private static readonly EndpointAddress ServiceAddress = new EndpointAddress("net.pipe://localhost/VhdAttach/Service");
     private static readonly IPipeService ServiceProxy = ChannelFactory<IPipeService>.CreateChannel(new NetNamedPipeBinding(), ServiceAddress);

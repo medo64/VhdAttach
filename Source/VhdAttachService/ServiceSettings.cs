@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Win32;
-using System.Security.AccessControl;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Security.AccessControl;
+using Microsoft.Win32;
 
 internal static class ServiceSettings {
 

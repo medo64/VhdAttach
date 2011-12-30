@@ -1,9 +1,6 @@
-using System;
-using System.Net;
-
 namespace VhdAttach {
 
-    static class Settings {
+    internal static class Settings {
 
         public static bool ShowMenu {
             get { return Medo.Configuration.Settings.Read("ShowMenu", false); }
