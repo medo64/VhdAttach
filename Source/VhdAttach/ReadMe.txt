@@ -23,7 +23,7 @@ SHORTCUT KEYS
 
 VERSION HISTORY
 
-    3.00 beta
+    3.00 (2012-01-21)
 
         o Added disk creation.
         o Some interface tweaks.
