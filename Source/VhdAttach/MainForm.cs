@@ -234,53 +234,47 @@ namespace VhdAttach {
 
 
                     try {
-                        var footer = new byte[512];
+                        var footerBytes = new byte[512];
                         using (var vhdFile = new FileStream(vhdFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                             vhdFile.Position = vhdFile.Length - 512;
-                            vhdFile.Read(footer, 0, 512);
+                            vhdFile.Read(footerBytes, 0, 512);
                         }
-                        if ((footer[0] == 0x63) && (footer[1] == 0x6f) && (footer[2] == 0x6e) && (footer[3] == 0x65) && (footer[4] == 0x63) && (footer[5] == 0x74) && (footer[6] == 0x69) && (footer[7] == 0x78)) {
-                            var timeStamp = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(BitConverter.ToUInt32(new byte[] { footer[27], footer[26], footer[25], footer[24] }, 0));
-                            items.Add(new ListViewItem(new string[] { "Creation time stamp", string.Format(CultureInfo.CurrentCulture, "{0}", timeStamp.ToLocalTime()) }));
-
-                            var creatorApplication = System.Text.ASCIIEncoding.ASCII.GetString(footer, 28, 4);
-                            var creatorApplicationText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", creatorApplication.TrimEnd());
-                            switch (creatorApplication) {
-                                case "vbox": creatorApplicationText = "Oracle VirtualBox"; break;
-                                case "vpc ": creatorApplicationText = "Microsoft Virtual PC"; break;
-                                case "vs  ": creatorApplicationText = "Microsoft Virtual Server"; break;
-                                case "win ": creatorApplicationText = "Microsoft Windows"; break;
-                            }
-                            var creatorVersionMajor = BitConverter.ToUInt16(new byte[] { footer[33], footer[32] }, 0);
-                            var creatorVersionMinor = BitConverter.ToUInt16(new byte[] { footer[35], footer[34] }, 0);
-                            items.Add(new ListViewItem(new string[] { "Creator application", string.Format(CultureInfo.InvariantCulture, "{0} {1}.{2}", creatorApplicationText, creatorVersionMajor, creatorVersionMinor) }));
-
-                            var creatorHostOs = BitConverter.ToUInt32(new byte[] { footer[39], footer[38], footer[37], footer[36] }, 0);
-                            var creatorHostOsText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", creatorHostOs);
-                            switch (creatorHostOs) {
-                                case 0x5769326B: creatorHostOsText = "Windows"; break;
-                                case 0x4D616320: creatorHostOsText = "Macintosh"; break;
-                            }
-                            items.Add(new ListViewItem(new string[] { "Creator host OS", creatorHostOsText }));
-
-                            var diskGeometryCylinder = BitConverter.ToUInt16(new byte[] { footer[57], footer[56] }, 0);
-                            var diskGeometryHeads = footer[58];
-                            var diskGeometrySectors = footer[59];
-                            items.Add(new ListViewItem(new string[] { "Disk geometry", string.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", CylinderSuffix.GetText(diskGeometryCylinder), HeadSuffix.GetText(diskGeometryHeads), SectorSuffix.GetText(diskGeometrySectors)) }));
-
-                            var diskType = BitConverter.ToUInt32(new byte[] { footer[63], footer[62], footer[61], footer[60] }, 0);
-                            var diskTypeText = string.Format(CultureInfo.CurrentCulture, "Unknown ({0}: 0x{0:x4})", diskType);
-                            switch (diskType) {
-                                case 0: diskTypeText = "None"; break;
-                                case 1: diskTypeText = "Reserved (deprecated: 0x0001)"; break;
-                                case 2: diskTypeText = "Fixed hard disk"; break;
-                                case 3: diskTypeText = "Dynamic hard disk"; break;
-                                case 4: diskTypeText = "Differencing hard disk"; break;
-                                case 5: diskTypeText = "Reserved (deprecated: 0x0005)"; break;
-                                case 6: diskTypeText = "Reserved (deprecated: 0x0006)"; break;
-                            }
-                            items.Add(new ListViewItem(new string[] { "Disk type", diskTypeText }));
+                        var footer = new VhdFooter(footerBytes);
+                        if (footer.Cookie != "conectix") {
+                            items.Add(new ListViewItem(new string[] { "Cookie", footer.Cookie }));
                         }
+
+                        items.Add(new ListViewItem(new string[] { "Creation time stamp", string.Format(CultureInfo.CurrentCulture, "{0}", footer.TimeStamp.ToLocalTime()) }));
+
+                        var creatorApplicationText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", footer.CreatorApplication.TrimEnd());
+                        switch (footer.CreatorApplication) {
+                            case "vbox": creatorApplicationText = "Oracle VirtualBox"; break;
+                            case "vpc ": creatorApplicationText = "Microsoft Virtual PC"; break;
+                            case "vs  ": creatorApplicationText = "Microsoft Virtual Server"; break;
+                            case "win ": creatorApplicationText = "Microsoft Windows"; break;
+                        }
+                        items.Add(new ListViewItem(new string[] { "Creator application", string.Format(CultureInfo.InvariantCulture, "{0} {1}.{2}", creatorApplicationText, footer.CreatorVersion.Major, footer.CreatorVersion.Minor) }));
+
+                        var creatorHostOsText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", (int)footer.CreatorHostOs);
+                        switch (footer.CreatorHostOs) {
+                            case VhdCreatorHostOs.Windows: creatorHostOsText = "Windows"; break;
+                            case VhdCreatorHostOs.Macintosh: creatorHostOsText = "Macintosh"; break;
+                        }
+                        items.Add(new ListViewItem(new string[] { "Creator host OS", creatorHostOsText }));
+
+                        items.Add(new ListViewItem(new string[] { "Disk geometry", string.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", CylinderSuffix.GetText(footer.DiskGeometryCylinders), HeadSuffix.GetText(footer.DiskGeometryHeads), SectorSuffix.GetText(footer.DiskGeometrySectors)) }));
+
+                        var diskTypeText = string.Format(CultureInfo.CurrentCulture, "Unknown ({0}: 0x{0:x4})", (int)footer.DiskType);
+                        switch ((int)footer.DiskType) {
+                            case 0: diskTypeText = "None"; break;
+                            case 1: diskTypeText = "Reserved (deprecated: 0x0001)"; break;
+                            case 2: diskTypeText = "Fixed hard disk"; break;
+                            case 3: diskTypeText = "Dynamic hard disk"; break;
+                            case 4: diskTypeText = "Differencing hard disk"; break;
+                            case 5: diskTypeText = "Reserved (deprecated: 0x0005)"; break;
+                            case 6: diskTypeText = "Reserved (deprecated: 0x0006)"; break;
+                        }
+                        items.Add(new ListViewItem(new string[] { "Disk type", diskTypeText }));
 
                     } catch { }
 

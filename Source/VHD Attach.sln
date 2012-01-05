@@ -4,7 +4,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach", "VhdAttach\VhdA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttachService", "VhdAttachService\VhdAttachService.csproj", "{6FACC55B-3441-4A4E-885B-269D82820F9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach Test", "VhdAttach Test\VhdAttach Test.csproj", "{0F83D9F3-817E-4207-AF11-9F120A7AFC30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CB3AC03-F3F4-4738-A554-6E90BF3BB54B}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+		VHD Attach.vsmdi = VHD Attach.vsmdi
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = VHD Attach.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -24,6 +36,12 @@ Global
 		{6FACC55B-3441-4A4E-885B-269D82820F9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FACC55B-3441-4A4E-885B-269D82820F9E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6FACC55B-3441-4A4E-885B-269D82820F9E}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F83D9F3-817E-4207-AF11-9F120A7AFC30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F83D9F3-817E-4207-AF11-9F120A7AFC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F83D9F3-817E-4207-AF11-9F120A7AFC30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F83D9F3-817E-4207-AF11-9F120A7AFC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F83D9F3-817E-4207-AF11-9F120A7AFC30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F83D9F3-817E-4207-AF11-9F120A7AFC30}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

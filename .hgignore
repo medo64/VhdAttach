@@ -10,11 +10,13 @@ syntax: glob
 *.rar
 *.SCC
 *.suo
+*.testsettings
 *.tmp
 *.vbproj.user
 *.vbproj.vspscc
 *.vbw
 *.vshost.exe
+*.vsmdi
 *.vspscc
 *.vssscc
 *.zip
@@ -24,7 +26,6 @@ syntax: glob
 */Debug/*
 */obj/*
 */TestResults/*
-
 
 syntax: regexp
 
