@@ -246,12 +246,14 @@ namespace VhdAttach {
 
                         items.Add(new ListViewItem(new string[] { "Creation time stamp", string.Format(CultureInfo.CurrentCulture, "{0}", footer.TimeStamp.ToLocalTime()) }));
 
-                        var creatorApplicationText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", footer.CreatorApplication.TrimEnd());
+                        var creatorApplicationText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", (int)footer.CreatorApplication);
                         switch (footer.CreatorApplication) {
-                            case "vbox": creatorApplicationText = "Oracle VirtualBox"; break;
-                            case "vpc ": creatorApplicationText = "Microsoft Virtual PC"; break;
-                            case "vs  ": creatorApplicationText = "Microsoft Virtual Server"; break;
-                            case "win ": creatorApplicationText = "Microsoft Windows"; break;
+                            case VhdCreatorApplication.JosipMedvedVhdAttach: creatorApplicationText = "Josip Medved's VHD Attach"; break;
+                            case VhdCreatorApplication.MicrosoftSysinternalsDisk2Vhd: creatorApplicationText = "Microsoft Sysinternals Disk2vhd"; break;
+                            case VhdCreatorApplication.MicrosoftVirtualPC: creatorApplicationText = "Microsoft Virtual PC"; break;
+                            case VhdCreatorApplication.MicrosoftVirtualServer: creatorApplicationText = "Microsoft Virtual Server"; break;
+                            case VhdCreatorApplication.MicrosoftWindows: creatorApplicationText = "Microsoft Windows"; break;
+                            case VhdCreatorApplication.OracleVirtualBox: creatorApplicationText = "Oracle VirtualBox"; break;
                         }
                         items.Add(new ListViewItem(new string[] { "Creator application", string.Format(CultureInfo.InvariantCulture, "{0} {1}.{2}", creatorApplicationText, footer.CreatorVersion.Major, footer.CreatorVersion.Minor) }));
 

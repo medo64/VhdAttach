@@ -20,7 +20,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual((UInt64)0xFFFFFFFFFFFFFFFF, target.DataOffset);
             Assert.AreEqual(new DateTime(2011, 8, 16, 5, 31, 12, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("win ", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.MicrosoftWindows, target.CreatorApplication);
             Assert.AreEqual(new Version(6, 1), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)3221225472, target.OriginalSize);
@@ -44,7 +44,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual((UInt64)0xFFFFFFFFFFFFFFFF, target.DataOffset);
             Assert.AreEqual(new DateTime(2011, 5, 29, 2, 41, 12, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("win ", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.MicrosoftWindows, target.CreatorApplication);
             Assert.AreEqual(new Version(6, 1), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)34359738368, target.OriginalSize);
@@ -68,7 +68,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual(0xFFFFFFFFFFFFFFFF, target.DataOffset);
             Assert.AreEqual(new DateTime(2011, 12, 6, 14, 14, 48, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("win ", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.MicrosoftWindows, target.CreatorApplication);
             Assert.AreEqual(new Version(6, 1), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)107374182400, target.OriginalSize);
@@ -92,7 +92,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual((UInt64)512, target.DataOffset);
             Assert.AreEqual(new DateTime(2011, 12, 14, 17, 14, 30, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("vbox", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.OracleVirtualBox, target.CreatorApplication);
             Assert.AreEqual(new Version(4, 1), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)21474836480, target.OriginalSize);
@@ -116,7 +116,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual((UInt64)512, target.DataOffset);
             Assert.AreEqual(new DateTime(2011, 2, 2, 10, 53, 33, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("d2v\0", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.MicrosoftSysinternalsDisk2Vhd, target.CreatorApplication);
             Assert.AreEqual(new Version(1, 0), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)160041885696, target.OriginalSize);
@@ -140,7 +140,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual((UInt64)512, target.DataOffset);
             Assert.AreEqual(new DateTime(2012, 1, 5, 16, 23, 53, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("win ", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.MicrosoftWindows, target.CreatorApplication);
             Assert.AreEqual(new Version(6, 1), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)1022999998464, target.OriginalSize);
@@ -164,7 +164,7 @@ namespace VhdAttachTest {
             Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
             Assert.AreEqual((UInt64)512, target.DataOffset);
             Assert.AreEqual(new DateTime(2012, 1, 5, 16, 23, 53, DateTimeKind.Utc), target.TimeStamp);
-            Assert.AreEqual("win ", target.CreatorApplication);
+            Assert.AreEqual(VhdCreatorApplication.MicrosoftWindows, target.CreatorApplication);
             Assert.AreEqual(new Version(6, 1), target.CreatorVersion);
             Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
             Assert.AreEqual((UInt64)1022999998464, target.OriginalSize);
@@ -173,10 +173,46 @@ namespace VhdAttachTest {
             Assert.AreEqual(16, target.DiskGeometryHeads);
             Assert.AreEqual(255, target.DiskGeometrySectors);
             Assert.AreEqual(VhdDiskType.DynamicHardDisk, target.DiskType);
-            Assert.AreEqual("FF-FF-E8-43", BitConverter.ToString(target.Checksum));
+            Assert.AreEqual("FF-FF-E8-44", BitConverter.ToString(target.Checksum));
             Assert.AreEqual(new Guid("5077d87d-9bfa-42a6-9033-c39796a69ae5"), target.UniqueId);
             Assert.AreEqual(false, target.SavedState);
             Assert.AreEqual(false, target.IsChecksumCorrect);
+        }
+
+
+        [TestMethod()]
+        public void VhdFooter_CreateEmpty() {
+            VhdFooter target = new VhdFooter();
+            Assert.AreEqual("conectix", target.Cookie);
+            Assert.AreEqual(VhdFeature.NoFeaturesEnabled, target.Features);
+            Assert.AreEqual(new Version(1, 0), target.FileFormatVersion);
+            Assert.AreEqual((UInt64)0, target.DataOffset);
+            Assert.AreEqual(VhdCreatorApplication.None, target.CreatorApplication);
+            Assert.AreEqual(new Version(0, 0), target.CreatorVersion);
+            Assert.AreEqual(VhdCreatorHostOs.Windows, target.CreatorHostOs);
+            Assert.AreEqual((UInt64)0, target.OriginalSize);
+            Assert.AreEqual((UInt64)0, target.CurrentSize);
+            Assert.AreEqual(0, target.DiskGeometryCylinders);
+            Assert.AreEqual(0, target.DiskGeometryHeads);
+            Assert.AreEqual(0, target.DiskGeometrySectors);
+            Assert.AreEqual(VhdDiskType.None, target.DiskType);
+            Assert.AreNotEqual(Guid.Empty, target.UniqueId);
+            Assert.AreEqual(false, target.SavedState);
+            Assert.AreEqual(true, target.IsChecksumCorrect);
+        }
+
+
+        [TestMethod()]
+        public void VhdFooter_Checksum() {
+            VhdFooter target = new VhdFooter();
+            var firstChecksum = BitConverter.ToString(target.Checksum);
+            target.BeginUpdate();
+            target.UniqueId = Guid.NewGuid();
+            Assert.AreEqual(firstChecksum, BitConverter.ToString(target.Checksum));
+            Assert.AreEqual(false, target.IsChecksumCorrect);
+            target.EndUpdate();
+            Assert.AreNotEqual(firstChecksum, BitConverter.ToString(target.Checksum));
+            Assert.AreEqual(true, target.IsChecksumCorrect);
         }
 
 

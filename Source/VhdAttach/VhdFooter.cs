@@ -9,6 +9,31 @@ namespace VhdAttach {
     internal class VhdFooter {
 
         /// <summary>
+        /// Create new instance.
+        /// </summary>
+        public VhdFooter() {
+            this.Bytes = new Byte[512];
+            this.BeginUpdate();
+            this.Cookie = "conectix";
+            this.Features = VhdFeature.NoFeaturesEnabled;
+            this.FileFormatVersion = new Version(1, 0);
+            this.DataOffset = 0;
+            this.TimeStamp = DateTime.UtcNow;
+            this.CreatorApplication = VhdCreatorApplication.None;
+            this.CreatorVersion = new Version(0, 0);
+            this.CreatorHostOs = VhdCreatorHostOs.Windows;
+            this.OriginalSize = 0;
+            this.CurrentSize = 0;
+            this.DiskGeometryCylinders = 0;
+            this.DiskGeometryHeads = 0;
+            this.DiskGeometrySectors = 0;
+            this.DiskType = VhdDiskType.None;
+            this.UniqueId = Guid.NewGuid();
+            this.SavedState = false;
+            this.EndUpdate();
+        }
+
+        /// <summary>
         /// Create new instance from existing footer bytes.
         /// </summary>
         /// <param name="Bytes">Footer bytes.</param>
@@ -28,6 +53,13 @@ namespace VhdAttach {
             get {
                 return ASCIIEncoding.ASCII.GetString(this.Bytes, 0, 8);
             }
+            set {
+                if (value == null) { throw new ArgumentNullException("value", "Value cannot be null."); }
+                var buffer = ASCIIEncoding.ASCII.GetBytes(value);
+                if (buffer.Length != 8) { throw new ArgumentException("Cookie must be 8 ASCII characters long.", "value"); }
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 0, 8);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -41,6 +73,11 @@ namespace VhdAttach {
             get {
                 return (VhdFeature)GetInt32(this.Bytes, 8);
             }
+            set {
+                var buffer = GetBytes((int)value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 8, 4);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -52,6 +89,13 @@ namespace VhdAttach {
                 var minor = GetUInt16(Bytes, 14);
                 return new Version(major, minor);
             }
+            set {
+                var major = GetBytes((UInt16)value.Major);
+                var minor = GetBytes((UInt16)value.Minor);
+                Buffer.BlockCopy(major, 0, this.Bytes, 12, 2);
+                Buffer.BlockCopy(minor, 0, this.Bytes, 14, 2);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -61,6 +105,11 @@ namespace VhdAttach {
             get {
                 return GetUInt64(this.Bytes, 16);
             }
+            set {
+                var buffer = GetBytes(value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 16, 8);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -68,16 +117,29 @@ namespace VhdAttach {
         /// </summary>
         public DateTime TimeStamp {
             get {
-                return new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(GetInt32(this.Bytes, 24));
+                return new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(GetUInt32(this.Bytes, 24));
+            }
+            set {
+                var origin = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                if (value < origin) { value = origin; }
+                var diff = (uint)(value - origin).TotalSeconds;
+                var buffer = GetBytes(diff);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 24, 4);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
             }
         }
 
         /// <summary>
         /// This field is used to document which application created the hard disk. The field is a left-justified text field. It uses a single-byte character set. If the hard disk is created by Microsoft Virtual PC, "vpc " is written in this field. If the hard disk image is created by Microsoft Virtual Server, then "vs  " is written in this field. Other applications should use their own unique identifiers.
         /// </summary>
-        public String CreatorApplication {
+        public VhdCreatorApplication CreatorApplication {
             get {
-                return ASCIIEncoding.ASCII.GetString(this.Bytes, 28, 4);
+                return (VhdCreatorApplication)GetInt32(this.Bytes, 28);
+            }
+            set {
+                var buffer = GetBytes((int)value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 28, 4);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
             }
         }
 
@@ -91,6 +153,13 @@ namespace VhdAttach {
                 return new Version(major, minor);
 
             }
+            set {
+                var major = GetBytes((UInt16)value.Major);
+                var minor = GetBytes((UInt16)value.Minor);
+                Buffer.BlockCopy(major, 0, this.Bytes, 32, 2);
+                Buffer.BlockCopy(minor, 0, this.Bytes, 34, 2);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -102,6 +171,11 @@ namespace VhdAttach {
             get {
                 return (VhdCreatorHostOs)GetInt32(this.Bytes, 36);
             }
+            set {
+                var buffer = GetBytes((int)value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 36, 4);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -110,6 +184,11 @@ namespace VhdAttach {
         public UInt64 OriginalSize {
             get {
                 return GetUInt64(this.Bytes, 40);
+            }
+            set {
+                var buffer = GetBytes(value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 40, 8);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
             }
         }
 
@@ -120,6 +199,11 @@ namespace VhdAttach {
             get {
                 return GetUInt64(this.Bytes, 48);
             }
+            set {
+                var buffer = GetBytes(value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 48, 8);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -128,6 +212,11 @@ namespace VhdAttach {
         public UInt16 DiskGeometryCylinders {
             get {
                 return GetUInt16(this.Bytes, 56);
+            }
+            set {
+                var buffer = GetBytes(value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 56, 2);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
             }
         }
 
@@ -138,6 +227,10 @@ namespace VhdAttach {
             get {
                 return this.Bytes[58];
             }
+            set {
+                this.Bytes[58] = value;
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -146,6 +239,10 @@ namespace VhdAttach {
         public Byte DiskGeometrySectors {
             get {
                 return this.Bytes[59];
+            }
+            set {
+                this.Bytes[59] = value;
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
             }
         }
 
@@ -156,6 +253,11 @@ namespace VhdAttach {
             get {
                 return (VhdDiskType)GetInt32(this.Bytes, 60);
             }
+            set {
+                var buffer = GetBytes((int)value);
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 60, 4);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -164,7 +266,14 @@ namespace VhdAttach {
         /// </summary>
         public Byte[] Checksum {
             get {
-                return GetFooterChecksum(this.Bytes);
+                var buffer = new Byte[4];
+                Buffer.BlockCopy(this.Bytes, 64, buffer, 0, 4);
+                return buffer;
+            }
+            set {
+                if (value == null) { throw new ArgumentNullException("value", "Value cannot be null."); }
+                if (value.Length != 4) { throw new ArgumentException("Value must be 4 bytes in length.", "value"); }
+                Buffer.BlockCopy(value, 0, this.Bytes, 64, 4);
             }
         }
 
@@ -173,7 +282,9 @@ namespace VhdAttach {
         /// </summary>
         public Boolean IsChecksumCorrect {
             get {
-                return (this.Checksum[0] == this.Bytes[64]) && (this.Checksum[1] == this.Bytes[65]) && (this.Checksum[2] == this.Bytes[66]) && (this.Checksum[3] == this.Bytes[67]);
+                var curr = this.Checksum;
+                var valid = GetFooterChecksum(this.Bytes);
+                return (curr[0] == valid[0]) && (curr[1] == valid[1]) && (curr[2] == valid[2]) && (curr[3] == valid[3]);
             }
         }
 
@@ -187,6 +298,11 @@ namespace VhdAttach {
                 Buffer.BlockCopy(this.Bytes, 68, buffer, 0, 16);
                 return new Guid(buffer);
             }
+            set {
+                var buffer = value.ToByteArray();
+                Buffer.BlockCopy(buffer, 0, this.Bytes, 68, 16);
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
+            }
         }
 
         /// <summary>
@@ -195,6 +311,10 @@ namespace VhdAttach {
         public Boolean SavedState {
             get {
                 return (this.Bytes[84] == 1);
+            }
+            set {
+                this.Bytes[84] = (value) ? (Byte)1 : (Byte)0;
+                if (this.UpdateCounter == 0) { this.UpdateChecksum(); }
             }
         }
 
@@ -206,8 +326,36 @@ namespace VhdAttach {
         public Byte[] Bytes { get; private set; }
 
 
+        private int UpdateCounter;
+
+        /// <summary>
+        /// Stops processing checksum updates until EndUpdate is called.
+        /// </summary>
+        public void BeginUpdate() {
+            this.UpdateCounter += 1;
+        }
+
+        /// <summary>
+        /// Recalculates fields not updated since BeginUpdate.
+        /// </summary>
+        public void EndUpdate() {
+            this.UpdateCounter = Math.Max(this.UpdateCounter - 1, 0);
+            if (this.UpdateCounter == 0) {
+                UpdateChecksum();
+            }
+        }
+
+        /// <summary>
+        /// Updates checksum.
+        /// </summary>
+        public void UpdateChecksum() {
+            var buffer = GetFooterChecksum(this.Bytes);
+            Buffer.BlockCopy(buffer, 0, this.Bytes, 64, 4);
+        }
+
+
         private static Byte[] GetFooterChecksum(byte[] footer) {
-            int checksum = 0;
+            uint checksum = 0;
             for (int i = 0; i < footer.Length; i++) {
                 if ((i >= 64) && (i < 68)) { continue; }
                 checksum += footer[i];
@@ -217,7 +365,16 @@ namespace VhdAttach {
         }
 
 
-        private static Byte[] GetBytes(int value) {
+        private static Byte[] GetBytes(UInt16 value) {
+            var bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian) {
+                return new byte[] { bytes[1], bytes[0] };
+            } else {
+                return bytes;
+            }
+        }
+
+        private static Byte[] GetBytes(Int32 value) {
             var bytes = BitConverter.GetBytes(value);
             if (BitConverter.IsLittleEndian) {
                 return new byte[] { bytes[3], bytes[2], bytes[1], bytes[0] };
@@ -225,6 +382,25 @@ namespace VhdAttach {
                 return bytes;
             }
         }
+
+        private static Byte[] GetBytes(UInt32 value) {
+            var bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian) {
+                return new byte[] { bytes[3], bytes[2], bytes[1], bytes[0] };
+            } else {
+                return bytes;
+            }
+        }
+
+        private static Byte[] GetBytes(UInt64 value) {
+            var bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian) {
+                return new byte[] { bytes[7], bytes[6], bytes[5], bytes[4], bytes[3], bytes[2], bytes[1], bytes[0] };
+            } else {
+                return bytes;
+            }
+        }
+
 
         private static UInt16 GetUInt16(byte[] bytes, int offset) {
             if (BitConverter.IsLittleEndian) {
@@ -242,6 +418,14 @@ namespace VhdAttach {
             }
         }
 
+        private static UInt32 GetUInt32(byte[] bytes, int offset) {
+            if (BitConverter.IsLittleEndian) {
+                return BitConverter.ToUInt32(new byte[] { bytes[offset + 3], bytes[offset + 2], bytes[offset + 1], bytes[offset + 0] }, 0);
+            } else {
+                return BitConverter.ToUInt32(bytes, offset);
+            }
+        }
+
         private static UInt64 GetUInt64(byte[] bytes, int offset) {
             if (BitConverter.IsLittleEndian) {
                 return BitConverter.ToUInt64(new byte[] { bytes[offset + 7], bytes[offset + 6], bytes[offset + 5], bytes[offset + 4], bytes[offset + 3], bytes[offset + 2], bytes[offset + 1], bytes[offset + 0] }, 0);
@@ -252,6 +436,16 @@ namespace VhdAttach {
 
     }
 
+
+    internal enum VhdCreatorApplication {
+        None = 0,
+        JosipMedvedVhdAttach = 0x6a6d7661,          //"jmva"
+        MicrosoftSysinternalsDisk2Vhd = 0x64327600, //"d2v\0"
+        MicrosoftVirtualPC = 0x76706320,            //"vps "
+        MicrosoftVirtualServer = 0x76732020,        //"vs  "
+        MicrosoftWindows = 0x77696e20,              //"win "
+        OracleVirtualBox = 0x76626f78,              //"vbox"
+    }
 
     internal enum VhdCreatorHostOs {
         Windows = 0x5769326B, //"Wi2k"
