@@ -17,7 +17,7 @@ namespace VhdAttach {
             this.Cookie = "conectix";
             this.Features = VhdFeature.NoFeaturesEnabled;
             this.FileFormatVersion = new Version(1, 0);
-            this.DataOffset = 0;
+            this.DataOffset = 0xFFFFFFFFFFFFFFFF;
             this.TimeStamp = DateTime.UtcNow;
             this.CreatorApplication = VhdCreatorApplication.None;
             this.CreatorVersion = new Version(0, 0);
@@ -318,6 +318,51 @@ namespace VhdAttach {
             }
         }
 
+        /// <summary>
+        /// Sets CurrentSize, Cylinders, Heads and Sectors.
+        /// </summary>
+        /// <param name="size">Size in bytes.</param>
+        public void SetSize(UInt64 size) {
+            ulong totalSectors = size / 512;
+            this.CurrentSize = totalSectors * 512;
+
+            ulong cylinders;
+            ulong heads;
+            ulong sectorsPerTrack;
+            ulong cylinderTimesHeads;
+
+            if (totalSectors > 65535 * 16 * 255) { totalSectors = 65535 * 16 * 255; }
+
+            if (totalSectors >= 65535 * 16 * 63) {
+                sectorsPerTrack = 255;
+                heads = 16;
+                cylinderTimesHeads = totalSectors / sectorsPerTrack;
+            } else {
+                sectorsPerTrack = 17;
+                cylinderTimesHeads = totalSectors / sectorsPerTrack;
+
+                heads = (cylinderTimesHeads + 1023) / 1024;
+
+                if (heads < 4) {
+                    heads = 4;
+                }
+                if (cylinderTimesHeads >= (heads * 1024) || heads > 16) {
+                    sectorsPerTrack = 31;
+                    heads = 16;
+                    cylinderTimesHeads = totalSectors / sectorsPerTrack;
+                }
+                if (cylinderTimesHeads >= (heads * 1024)) {
+                    sectorsPerTrack = 63;
+                    heads = 16;
+                    cylinderTimesHeads = totalSectors / sectorsPerTrack;
+                }
+            }
+            cylinders = cylinderTimesHeads / heads;
+            
+            this.DiskGeometryCylinders = (UInt16)cylinders;
+            this.DiskGeometryHeads = (Byte)heads;
+            this.DiskGeometrySectors = (Byte)sectorsPerTrack;
+        }
 
 
         /// <summary>
