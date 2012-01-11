@@ -61,13 +61,7 @@ namespace VhdAttach {
                     if (radFixed.Checked) {
                         using (var frm = new CreateFixedDiskForm(this.FileName, GetSizeInBytes())) {
                             if (frm.ShowDialog(this) == DialogResult.Cancel) {
-                                try {
-                                    File.Delete(this.FileName);
-                                } catch (IOException ex) {
-                                    this.Cursor = Cursors.Default;
-                                    Medo.MessageBox.ShowError(this, "File cannot be deleted after cancelation.\n\n" + ex.Message);
-                                    return;
-                                }
+                                return;
                             }
                         }
                     } else { //Dynamic

@@ -48,7 +48,7 @@
             this.prg.Location = new System.Drawing.Point(12, 12);
             this.prg.Name = "prg";
             this.prg.Size = new System.Drawing.Size(330, 23);
-            this.prg.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.prg.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.prg.TabIndex = 1;
             // 
             // bgw
@@ -75,7 +75,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Creating fixed disk";
-            this.Load += new System.EventHandler(this.CreateFixedDiskForm_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
+            this.Load += new System.EventHandler(this.Form_Load);
             this.ResumeLayout(false);
 
         }

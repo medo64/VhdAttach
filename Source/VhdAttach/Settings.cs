@@ -33,6 +33,10 @@ namespace VhdAttach {
             set { Medo.Configuration.Settings.Write("LastSizeFixed", value); }
         }
 
+        public static int WriteBufferSize {
+            get { return 1024 * 1024; }
+        }
+
     }
 
 }
