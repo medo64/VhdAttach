@@ -23,6 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.lblSize = new System.Windows.Forms.Label();
             this.dudSizeUnit = new System.Windows.Forms.DomainUpDown();
             this.nudSize = new System.Windows.Forms.NumericUpDown();
@@ -34,8 +35,10 @@
             this.radDynamic = new System.Windows.Forms.RadioButton();
             this.lblSizeInBytes = new System.Windows.Forms.Label();
             this.txtSizeInBytes = new System.Windows.Forms.TextBox();
+            this.erpError = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudSize)).BeginInit();
             this.grpType.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.erpError)).BeginInit();
             this.SuspendLayout();
             // 
             // lblSize
@@ -134,7 +137,6 @@
             // radFixed
             // 
             this.radFixed.AutoSize = true;
-            this.radFixed.Enabled = false;
             this.radFixed.Location = new System.Drawing.Point(9, 54);
             this.radFixed.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.radFixed.Name = "radFixed";
@@ -176,6 +178,10 @@
             this.txtSizeInBytes.TabStop = false;
             this.txtSizeInBytes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // erpError
+            // 
+            this.erpError.ContainerControl = this;
+            // 
             // NewDiskForm
             // 
             this.AcceptButton = this.btnOK;
@@ -206,6 +212,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSize)).EndInit();
             this.grpType.ResumeLayout(false);
             this.grpType.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.erpError)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,5 +231,6 @@
         private System.Windows.Forms.RadioButton radDynamic;
         private System.Windows.Forms.Label lblSizeInBytes;
         private System.Windows.Forms.TextBox txtSizeInBytes;
+        private System.Windows.Forms.ErrorProvider erpError;
     }
 }

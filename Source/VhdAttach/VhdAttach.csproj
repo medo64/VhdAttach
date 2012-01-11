@@ -118,6 +118,12 @@
     <Compile Include="AttachForm.Designer.cs">
       <DependentUpon>AttachForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateFixedDiskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateFixedDiskForm.Designer.cs">
+      <DependentUpon>CreateFixedDiskForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DetachDriveForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,6 +183,9 @@
   <ItemGroup>
     <EmbeddedResource Include="AttachForm.resx">
       <DependentUpon>AttachForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateFixedDiskForm.resx">
+      <DependentUpon>CreateFixedDiskForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DetachDriveForm.resx">
       <DependentUpon>DetachDriveForm.cs</DependentUpon>
