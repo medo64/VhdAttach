@@ -1,8 +1,8 @@
 [Setup]
 AppName=VHD Attach
-AppVerName=VHD Attach 3.00
+AppVerName=VHD Attach 3.01
 DefaultDirName={pf}\Josip Medved\VHD Attach
-OutputBaseFilename=vhdattach300
+OutputBaseFilename=vhdattach301
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
@@ -22,9 +22,11 @@ ChangesAssociations=yes
 DisableWelcomePage=yes
 
 [Files]
-Source: "VhdAttach.exe";         DestDir: "{app}";                      Flags: ignoreversion;
-Source: "VhdAttachService.exe";  DestDir: "{app}";                      Flags: ignoreversion;
-Source: "ReadMe.txt";            DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
+Source: "VhdAttach.exe";                DestDir: "{app}";                      Flags: ignoreversion;
+Source: "VhdAttachService.exe";         DestDir: "{app}";                      Flags: ignoreversion;
+Source: "ReadMe.txt";                   DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
+Source: "VhdAttach.exe.config";         DestDir: "{app}";
+Source: "VhdAttachService.exe.config";  DestDir: "{app}";
 
 
 [Tasks]

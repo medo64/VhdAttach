@@ -162,6 +162,7 @@
     </Compile>
     <Compile Include="Utility.cs" />
     <Compile Include="Wcf\WcfPipeClient.cs" />
+    <None Include="App.config" />
     <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest">
       <SubType>Designer</SubType>
