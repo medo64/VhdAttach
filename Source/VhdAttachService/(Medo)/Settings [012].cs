@@ -16,6 +16,7 @@
 //2008-11-07: Inserted Args [001] class in order to perform proper command line parsing.
 //2009-07-04: Compatibility with Mono 2.4.
 //2010-10-31: Added option to skip registry writes (NoRegistryWrites).
+//2011-08-26: Added Defaults property.
 
 
 using Microsoft.Win32;
@@ -182,13 +183,19 @@ namespace Medo.Configuration {
                         }
                     } catch (SecurityException) { }
 
+                    //Defaults
+                    if ((Settings.Defaults != null) && (Settings.Defaults.ContainsKey(currKey))) {
+                        retValue = Settings.Defaults[currKey];
+                        goto Done;
+                    }
+
                     //Default
                     retValue = defaultValue;
                     goto Done;
 
                 } finally {
                     Cache.Write(currKey, retValue);
-                    Trace.TraceInformation(string.Format(CultureInfo.InvariantCulture, "{0}=\"{1}\"", key, retValue.Replace("\"", "\"\"")) + "  {Medo.Configuration.Settings}");
+                    Trace.TraceInformation(string.Format(CultureInfo.InvariantCulture, "{0}=\"{1}\"", key, retValue) + "  {Medo.Configuration.Settings}");
                 }
 
             Done:
@@ -299,6 +306,12 @@ namespace Medo.Configuration {
                             }
                         }
                     } catch (SecurityException) { }
+
+                    //Defaults
+                    if ((Settings.Defaults != null) && (Settings.Defaults.ContainsKey(currKey))) {
+                        retValue = int.Parse(Settings.Defaults[currKey], NumberStyles.Integer, CultureInfo.InvariantCulture);
+                        goto Done;
+                    }
 
                     //Default
                     retValue = defaultValue;
@@ -448,6 +461,18 @@ namespace Medo.Configuration {
                         }
                     } catch (SecurityException) { }
 
+                    //Defaults
+                    if ((Settings.Defaults != null) && (Settings.Defaults.ContainsKey(currKey))) {
+                        string strValue = Settings.Defaults[currKey];
+                        int intValue;
+                        if (int.TryParse(strValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue)) {
+                            retValue = intValue != 0;
+                        } else {
+                            retValue = bool.Parse(strValue as string);
+                        }
+                        goto Done;
+                    }
+
                     //Default
                     retValue = defaultValue;
                     goto Done;
@@ -569,6 +594,12 @@ namespace Medo.Configuration {
                             }
                         }
                     } catch (SecurityException) { }
+
+                    //Defaults
+                    if ((Settings.Defaults != null) && (Settings.Defaults.ContainsKey(currKey))) {
+                        retValue = double.Parse(Settings.Defaults[currKey], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        goto Done;
+                    }
 
                     //Default
                     retValue = defaultValue;
@@ -822,6 +853,33 @@ namespace Medo.Configuration {
         }
 
         #endregion
+
+
+
+        private static Dictionary<string, string> Defaults = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        /// <summary>
+        /// Sets defaults to be used as last priority.
+        /// </summary>
+        /// <param name="key">Setting key.</param>
+        /// <param name="value">Setting value.</param>
+        public static void SetDefaults(string key, string value) {
+            if (Settings.Defaults.ContainsKey(key)) {
+                Settings.Defaults[key] = value;
+            } else {
+                Settings.Defaults.Add(key, value);
+            }
+        }
+        /// <summary>
+        /// Sets defaults to be used as last priority.
+        /// </summary>
+        /// <param name="defaults">Name/value collection of settings.</param>
+        public static void SetDefaults(IDictionary<string, string> defaults) {
+            if (defaults != null) {
+                foreach (var item in defaults) {
+                    SetDefaults(item.Key, item.Value);
+                }
+            }
+        }
 
 
         private static bool IsRunningOnMono {

@@ -1,4 +1,4 @@
-//Josip Medved <jmedved@jmedved.com> http://www.jmedved.com
+//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
 
 //2008-01-02: New version.
 //2008-01-05: Top line now contains product name.
@@ -10,6 +10,7 @@
 //2009-10-25: Adjusted disposing of buttons.
 //2010-11-03: Informational version is used for program name.
 //            Content background is now in Window system color.
+//2011-09-01: Added DEBUG sufix for DEBUG builds.
 
 
 using System;
@@ -75,6 +76,9 @@ namespace Medo.Windows.Forms {
 
                 if (productText == null) { productText = GetAppProductText(assembly); }
                 string versionText = GetAppTitleText(assembly) + " " + assemblyName.Version.ToString();
+#if DEBUG
+                versionText += " DEBUG";
+#endif
                 string copyrightText = GetAppCopyright(assembly);
                 string applicationPath = Assembly.GetEntryAssembly().Location;
 
