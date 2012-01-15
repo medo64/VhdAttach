@@ -23,6 +23,10 @@ SHORTCUT KEYS
 
 VERSION HISTORY
 
+    3.01 (2012-01-16)
+
+        o Works on Windows Thin PC (after .NET Framework 4.0 installation).
+
     3.00 (2012-01-14)
 
         o Added disk creation.
