@@ -78,6 +78,7 @@ namespace VhdAttach {
 
                 case Keys.F1:
                     mnuApp.ShowDropDown();
+                    mnuAppAbout.Select();
                     return true;
 
 
