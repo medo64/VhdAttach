@@ -1,8 +1,8 @@
 [Setup]
 AppName=VHD Attach
-AppVerName=VHD Attach 3.00
+AppVerName=VHD Attach 0.00
 DefaultDirName={pf}\Josip Medved\VHD Attach
-OutputBaseFilename=vhdattach300
+OutputBaseFilename=vhdattach000
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
