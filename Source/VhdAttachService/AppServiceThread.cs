@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.ServiceModel;
 using System.Threading;
+using Medo.Net;
 
 namespace VhdAttachService {
 
@@ -24,7 +24,13 @@ namespace VhdAttachService {
         public static void Stop() {
             try {
                 _cancelEvent.Set();
-                while (_thread.IsAlive) { Thread.Sleep(10); }
+                for (int i = 0; i < 10; i++) {
+                    if (_thread.IsAlive == false) { break; }
+                    Thread.Sleep(10);
+                }
+                if (_thread.IsAlive) {
+                    _thread.Abort();
+                }
                 _thread = null;
             } catch { }
         }
@@ -40,36 +46,30 @@ namespace VhdAttachService {
                             disk.Close();
                         }
                         Thread.Sleep(1000);
-                    } catch (Exception) {}
+                    } catch (Exception) { }
                 }
 
 
-                WcfPipeServer.Start();
-                WaitForOpenPipe();
-                while (!_cancelEvent.WaitOne(0, false)) {
-                    if (WcfPipeServer.State != CommunicationState.Opened) {
-                        Trace.WriteLine(string.Format(CultureInfo.InvariantCulture, "W: Unexpected pipe status ({0})." , WcfPipeServer.State));
-                        WcfPipeServer.Stop();
-                        WcfPipeServer.Start();
-                        WaitForOpenPipe();
-                        if (WcfPipeServer.State == CommunicationState.Opened) { Trace.WriteLine("I: Pipe re-opened."); }
+                try {
+                    PipeServer.Start();
+                    while (!_cancelEvent.WaitOne(0, false)) {
+                        try {
+                            var response = PipeServer.Receive();
+                            if (response != null) {
+                                PipeServer.Reply(response);
+                            }
+                        } catch (Exception ex) {
+                            Debug.WriteLine(ex.Message);
+                            PipeServer.Stop();
+                            PipeServer.Start();
+                            Thread.Sleep(50);
+                        }
                     }
-                    Thread.Sleep(100);
+                } finally {
+                    PipeServer.Stop();
                 }
-                WcfPipeServer.Stop();
 
             } catch (ThreadAbortException) { }
-        }
-
-        private static void WaitForOpenPipe() {
-            var sw = new Stopwatch();
-            sw.Start();
-            while (!_cancelEvent.WaitOne(0, false)) {
-                if (WcfPipeServer.State == CommunicationState.Opened) { break; }
-                if (sw.ElapsedMilliseconds > 10000) { break; } //assume that waiting is futile
-                Thread.Sleep(10);
-            }
-            sw.Stop();
         }
 
     }

@@ -49,9 +49,7 @@ namespace VhdAttach {
                     iFile = this.Files[i];
                     bw.ReportProgress(-1, iFile.Name);
 
-                    var data = new AttachRequestData(iFile.FullName, this.MountReadOnly, this.InitializeDisk);
-                    var resBytes = WcfPipeClient.Execute("Attach", data.ToJson());
-                    var res = ResponseData.FromJson(resBytes);
+                    var res = PipeClient.Attach(iFile.FullName, this.MountReadOnly, this.InitializeDisk);
                     if (res.ExitCode != ExitCodes.OK) {
                         this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(res.Message)));
                     }

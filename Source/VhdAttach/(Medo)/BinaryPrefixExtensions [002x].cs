@@ -25,7 +25,7 @@ namespace Medo.Extensions {
 		/// </summary>
 		/// <param name="value">Value to convert.</param>
 		/// <param name="measurementUnit">Measurement unit to which prefix will be attached.</param>
-		public static string ToBinaryPrefixString(this long value, string measurementUnit) {
+		public static string ToBinaryPrefixString(long value, string measurementUnit) {
 			return ConvertToString(value, measurementUnit, null, CultureInfo.CurrentCulture, prefixBigValues , prefixBigSymbols );
 		}
 
@@ -35,7 +35,7 @@ namespace Medo.Extensions {
 		/// <param name="value">Value to convert.</param>
 		/// <param name="measurementUnit">Measurement unit to which prefix will be attached.</param>
 		/// <param name="format">A numeric format string for value part.</param>
-        public static string ToBinaryPrefixString(this long value, string measurementUnit, string format)
+        public static string ToBinaryPrefixString(long value, string measurementUnit, string format)
         {
 			return ConvertToString(value, measurementUnit, format, CultureInfo.CurrentCulture, prefixBigValues, prefixBigSymbols);
 		}
@@ -47,7 +47,7 @@ namespace Medo.Extensions {
 		/// <param name="measurementUnit">Measurement unit to which prefix will be attached.</param>
 		/// <param name="format">A numeric format string for value part.</param>
 		/// <param name="formatProvider">An System.IFormatProvider that supplies culture-specific formatting information for value part.</param>
-        public static string ToBinaryPrefixString(this long value, string measurementUnit, string format, IFormatProvider formatProvider)
+        public static string ToBinaryPrefixString(long value, string measurementUnit, string format, IFormatProvider formatProvider)
         {
 			return ConvertToString(value, measurementUnit, format, formatProvider, prefixBigValues, prefixBigSymbols);
 		}
@@ -58,7 +58,7 @@ namespace Medo.Extensions {
 		/// </summary>
 		/// <param name="value">Value to convert.</param>
 		/// <param name="measurementUnit">Measurement unit to which prefix will be attached.</param>
-        public static string ToLongBinaryPrefixString(this long value, string measurementUnit)
+        public static string ToLongBinaryPrefixString(long value, string measurementUnit)
         {
 			return ConvertToString(value, measurementUnit, null, CultureInfo.CurrentCulture, prefixBigValues, prefixBigTexts);
 		}
@@ -69,7 +69,7 @@ namespace Medo.Extensions {
 		/// <param name="value">Value to convert.</param>
 		/// <param name="measurementUnit">Measurement unit to which prefix will be attached.</param>
 		/// <param name="format">A numeric format string for value part.</param>
-        public static string ToLongBinaryPrefixString(this long value, string measurementUnit, string format)
+        public static string ToLongBinaryPrefixString(long value, string measurementUnit, string format)
         {
 			return ConvertToString(value, measurementUnit, format, CultureInfo.CurrentCulture, prefixBigValues, prefixBigTexts);
 		}
@@ -81,7 +81,7 @@ namespace Medo.Extensions {
 		/// <param name="measurementUnit">Measurement unit to which prefix will be attached.</param>
 		/// <param name="format">A numeric format string for value part.</param>
 		/// <param name="formatProvider">An System.IFormatProvider that supplies culture-specific formatting information for value part.</param>
-        public static string ToLongBinaryPrefixString(this long value, string measurementUnit, string format, IFormatProvider formatProvider)
+        public static string ToLongBinaryPrefixString(long value, string measurementUnit, string format, IFormatProvider formatProvider)
         {
 			return ConvertToString(value, measurementUnit, format, formatProvider, prefixBigValues, prefixBigTexts);
 		}

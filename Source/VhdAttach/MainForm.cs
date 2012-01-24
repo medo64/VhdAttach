@@ -159,7 +159,7 @@ namespace VhdAttach {
 
                     try {
                         var fi = new FileInfo(document.FileName);
-                        items.Add(new ListViewItem(new string[] { "File size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", fi.Length.ToBinaryPrefixString("B", "0"), fi.Length) }));
+                        items.Add(new ListViewItem(new string[] { "File size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(fi.Length, "B", "0"), fi.Length) }));
                     } catch { }
 
                     document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo);
@@ -202,14 +202,14 @@ namespace VhdAttach {
                         int blockSize;
                         int sectorSize;
                         document.GetSize(out virtualSize, out physicalSize, out blockSize, out sectorSize);
-                        items.Add(new ListViewItem(new string[] { "Virtual size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", virtualSize.ToBinaryPrefixString("B", "0"), virtualSize) }));
+                        items.Add(new ListViewItem(new string[] { "Virtual size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(virtualSize, "B", "0"), virtualSize) }));
                         if (fileInfo.Length != physicalSize) {
-                            items.Add(new ListViewItem(new string[] { "Physical size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", physicalSize.ToBinaryPrefixString("B", "0"), physicalSize) }));
+                            items.Add(new ListViewItem(new string[] { "Physical size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(physicalSize, "B", "0"), physicalSize) }));
                         }
                         if (blockSize != 0) {
-                            items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", ((long)blockSize).ToBinaryPrefixString("B", "0"), blockSize) }));
+                            items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(((long)blockSize), "B", "0"), blockSize) }));
                         }
-                        items.Add(new ListViewItem(new string[] { "Sector size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", ((long)sectorSize).ToBinaryPrefixString("B", "0"), sectorSize) }));
+                        items.Add(new ListViewItem(new string[] { "Sector size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(((long)sectorSize), "B", "0"), sectorSize) }));
                     } catch { }
 
                     try {
@@ -497,9 +497,7 @@ namespace VhdAttach {
                         }
                     }
                 }
-                var data = new SettingsRequestData(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
-                var resBytes = WcfPipeClient.Execute("WriteSettings", data.ToJson());
-                var res = ResponseData.FromJson(resBytes);
+                var res = PipeClient.WriteSettings(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
                 if (res.ExitCode != ExitCodes.OK) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }

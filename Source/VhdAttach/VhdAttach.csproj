@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VhdAttach</RootNamespace>
     <AssemblyName>VhdAttach</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
     <ApplicationIcon>Properties\App.ico</ApplicationIcon>
@@ -26,7 +26,8 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -50,44 +51,28 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="%28Medo%29\AboutBox [011].cs" />
     <Compile Include="%28Medo%29\Args [001].cs" />
-    <Compile Include="%28Medo%29\BinaryPrefixExtensions [002].cs" />
+    <Compile Include="%28Medo%29\BinaryPrefixExtensions [002x].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
     <Compile Include="%28Medo%29\ErrorReport [018].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
+    <Compile Include="%28Medo%29\NamedPipe [001].cs" />
     <Compile Include="%28Medo%29\NumberDeclination [001].cs" />
     <Compile Include="%28Medo%29\RecentFiles [002].cs" />
     <Compile Include="%28Medo%29\Settings [012].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\StringAdder [002].cs" />
     <Compile Include="%28Medo%29\TaskbarProgress [002].cs" />
+    <Compile Include="%28Medo%29\TinyPair [004].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
     <Compile Include="..\VhdAttachService\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttachService\WCF\IPipeService.cs">
-      <Link>WCF\IPipeService.cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttachService\Wcf\Json\AttachRequestData.cs">
-      <Link>WCF\Json\AttachRequestData.cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttachService\Wcf\Json\DetachRequestData.cs">
-      <Link>WCF\Json\DetachRequestData.cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttachService\Wcf\Json\ResponseData.cs">
-      <Link>WCF\Json\ResponseData.cs</Link>
-    </Compile>
-    <Compile Include="..\VhdAttachService\Wcf\Json\SettingsRequestData.cs">
-      <Link>WCF\Json\SettingsRequestData.cs</Link>
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="AttachForm.cs">
@@ -128,6 +113,8 @@
     <Compile Include="NewDiskForm.Designer.cs">
       <DependentUpon>NewDiskForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PipeClient.cs" />
+    <Compile Include="PipeResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\SolutionInfo.cs" />
     <Compile Include="VhdFooter.cs" />
@@ -146,7 +133,6 @@
       <DependentUpon>UpgradeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility.cs" />
-    <Compile Include="Wcf\WcfPipeClient.cs" />
     <None Include="App.config" />
     <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest">

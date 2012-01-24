@@ -30,9 +30,7 @@ namespace VhdAttach {
                 foreach (ListViewVhdItem item in listAutoAttach.Items) {
                     vhds.Add(item.FileName);
                 }
-                var data = new SettingsRequestData(checkAttach.Checked, checkAttachReadOnly.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
-                var resBytes = WcfPipeClient.Execute("WriteSettings", data.ToJson());
-                var res = ResponseData.FromJson(resBytes);
+                var res = PipeClient.WriteSettings(checkAttach.Checked, checkAttachReadOnly.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
                 if (res.ExitCode != ExitCodes.OK) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
@@ -162,8 +160,7 @@ namespace VhdAttach {
         }
 
         private void btnRegisterExtension_Click(object sender, EventArgs e) {
-            var resBytes = WcfPipeClient.Execute("RegisterExtension", new byte[] { 0x6e, 0x75, 0x6c, 0x6c });
-            var res = ResponseData.FromJson(resBytes);
+            var res = PipeClient.RegisterExtension();
             if (res.ExitCode != ExitCodes.OK) {
                 Medo.MessageBox.ShowError(this, res.Message);
             }

@@ -39,9 +39,7 @@ namespace VhdAttach {
                     iFile = this._files[i];
                     bw.ReportProgress(-1, iFile.Name);
 
-                    var data = new DetachRequestData(iFile.FullName);
-                    var resBytes = WcfPipeClient.Execute("Detach", data.ToJson());
-                    var res = ResponseData.FromJson(resBytes);
+                    var res = PipeClient.Detach(iFile.FullName);
                     if (res.ExitCode != ExitCodes.OK) {
                         this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(res.Message)));
                     }
