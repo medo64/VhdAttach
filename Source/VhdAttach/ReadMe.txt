@@ -23,6 +23,10 @@ SHORTCUT KEYS
 
 VERSION HISTORY
 
+    3.02 (2012-01-24)
+
+        o Removing application config files to simplify installation.
+
     3.01 (2012-01-16)
 
         o Works on Windows Thin PC (after .NET Framework 4.0 installation).
