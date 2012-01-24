@@ -133,7 +133,6 @@
       <DependentUpon>UpgradeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Utility.cs" />
-    <None Include="App.config" />
     <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest">
       <SubType>Designer</SubType>

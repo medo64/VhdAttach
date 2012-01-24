@@ -25,8 +25,6 @@ DisableWelcomePage=yes
 Source: "VhdAttach.exe";                DestDir: "{app}";                      Flags: ignoreversion;
 Source: "VhdAttachService.exe";         DestDir: "{app}";                      Flags: ignoreversion;
 Source: "ReadMe.txt";                   DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
-Source: "VhdAttach.exe.config";         DestDir: "{app}";
-Source: "VhdAttachService.exe.config";  DestDir: "{app}";
 
 
 [Tasks]
