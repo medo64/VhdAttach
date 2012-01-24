@@ -116,9 +116,6 @@
     <Content Include="Properties\App.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest" />
   </ItemGroup>
