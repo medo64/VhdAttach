@@ -1,15 +1,16 @@
 ﻿//Copyright (c) 2012 Josip Medved <jmedved@jmedved.com>
 
 //2010-01-23: Initial version.
+//2010-01-25: Exposing handle via GetHandle method.
 
 
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Security.Permissions;
 using System.Threading;
-using System.Security.AccessControl;
 
 namespace Medo.IO {
 
@@ -36,7 +37,15 @@ namespace Medo.IO {
         /// </summary>
         public string FullPipeName { get { return @"\\.\pipe\" + this.PipeName; } }
 
-        private NativeMethods.FileSafeHandle Handle = null;
+        private NativeMethods.FileSafeHandle SafeHandle = null;
+
+        /// <summary>
+        /// Gets native handle.
+        /// </summary>
+        [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
+        public IntPtr GetHandle() {
+            return (this.SafeHandle != null) ? this.SafeHandle.DangerousGetHandle() : IntPtr.Zero;
+        }
 
 
         /// <summary>
@@ -46,9 +55,9 @@ namespace Medo.IO {
         /// <exception cref="System.IO.IOException">Cannot create named pipe.</exception>
         [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
         public void Create() {
-            if (this.Handle != null) { throw new InvalidOperationException("Pipe is already open."); }
-            this.Handle = NativeMethods.CreateNamedPipe(this.FullPipeName, NativeMethods.PIPE_ACCESS_DUPLEX, NativeMethods.PIPE_TYPE_BYTE | NativeMethods.PIPE_READMODE_BYTE | NativeMethods.PIPE_WAIT, NativeMethods.PIPE_UNLIMITED_INSTANCES, 4096, 4096, NativeMethods.NMPWAIT_USE_DEFAULT_WAIT, IntPtr.Zero);
-            if (this.Handle.IsInvalid) { throw new IOException("Cannot create named pipe.", new Win32Exception()); }
+            if (this.SafeHandle != null) { throw new InvalidOperationException("Pipe is already open."); }
+            this.SafeHandle = NativeMethods.CreateNamedPipe(this.FullPipeName, NativeMethods.PIPE_ACCESS_DUPLEX, NativeMethods.PIPE_TYPE_BYTE | NativeMethods.PIPE_READMODE_BYTE | NativeMethods.PIPE_WAIT, NativeMethods.PIPE_UNLIMITED_INSTANCES, 4096, 4096, NativeMethods.NMPWAIT_USE_DEFAULT_WAIT, IntPtr.Zero);
+            if (this.SafeHandle.IsInvalid) { throw new IOException("Cannot create named pipe.", new Win32Exception()); }
         }
 
         /// <summary>
@@ -58,7 +67,7 @@ namespace Medo.IO {
         /// <exception cref="System.IO.IOException">Cannot create named pipe.</exception>
         [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
         public void CreateWithFullAccess() {
-            if (this.Handle != null) { throw new InvalidOperationException("Pipe is already open."); }
+            if (this.SafeHandle != null) { throw new InvalidOperationException("Pipe is already open."); }
 
             var sec = new RawSecurityDescriptor(ControlFlags.DiscretionaryAclPresent, null, null, null, null);
             var sa = new NativeMethods.SECURITY_ATTRIBUTES();
@@ -70,24 +79,23 @@ namespace Medo.IO {
             sa.lpSecurityDescriptor = Marshal.AllocHGlobal(secBinary.Length);
             Marshal.Copy(secBinary, 0, sa.lpSecurityDescriptor, secBinary.Length);
 
-            this.Handle = NativeMethods.CreateNamedPipe(this.FullPipeName, NativeMethods.PIPE_ACCESS_DUPLEX, NativeMethods.PIPE_TYPE_BYTE | NativeMethods.PIPE_READMODE_BYTE | NativeMethods.PIPE_WAIT, NativeMethods.PIPE_UNLIMITED_INSTANCES, 4096, 4096, NativeMethods.NMPWAIT_USE_DEFAULT_WAIT, ref sa);
-            if (this.Handle.IsInvalid) { throw new IOException("Cannot create named pipe.", new Win32Exception()); }
+            this.SafeHandle = NativeMethods.CreateNamedPipe(this.FullPipeName, NativeMethods.PIPE_ACCESS_DUPLEX, NativeMethods.PIPE_TYPE_BYTE | NativeMethods.PIPE_READMODE_BYTE | NativeMethods.PIPE_WAIT, NativeMethods.PIPE_UNLIMITED_INSTANCES, 4096, 4096, NativeMethods.NMPWAIT_USE_DEFAULT_WAIT, ref sa);
+            if (this.SafeHandle.IsInvalid) { throw new IOException("Cannot create named pipe.", new Win32Exception()); }
         }
 
         /// <summary>
         /// Opens existing named pipe.
         /// </summary>
-        /// <param name="timeout">Timeout in milliseconds</param>
         /// <exception cref="System.InvalidOperationException">Pipe is already open.</exception>
         /// <exception cref="System.IO.IOException">Cannot find open named pipe. -or- Cannot open named pipe.</exception>
         [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
         public void Open() {
-            if (this.Handle != null) { throw new InvalidOperationException("Pipe is already open."); }
+            if (this.SafeHandle != null) { throw new InvalidOperationException("Pipe is already open."); }
             if (NativeMethods.WaitNamedPipe(this.FullPipeName, NativeMethods.NMPWAIT_USE_DEFAULT_WAIT) == false) {
                 throw new IOException("Cannot find open named pipe.", new Win32Exception());
             }
-            this.Handle = NativeMethods.CreateFile(this.FullPipeName, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, 0, System.IntPtr.Zero, NativeMethods.OPEN_EXISTING, NativeMethods.FILE_ATTRIBUTE_NORMAL, System.IntPtr.Zero);
-            if (this.Handle.IsInvalid) { throw new IOException("Cannot open named pipe.", new Win32Exception()); }
+            this.SafeHandle = NativeMethods.CreateFile(this.FullPipeName, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, 0, System.IntPtr.Zero, NativeMethods.OPEN_EXISTING, NativeMethods.FILE_ATTRIBUTE_NORMAL, System.IntPtr.Zero);
+            if (this.SafeHandle.IsInvalid) { throw new IOException("Cannot open named pipe.", new Win32Exception()); }
         }
 
         /// <summary>
@@ -95,9 +103,9 @@ namespace Medo.IO {
         /// </summary>
         [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
         public void Close() {
-            if (this.Handle != null) {
-                this.Handle.Close();
-                this.Handle = null;
+            if (this.SafeHandle != null) {
+                this.SafeHandle.Close();
+                this.SafeHandle = null;
             }
         }
 
@@ -106,7 +114,7 @@ namespace Medo.IO {
         /// </summary>
         /// <exception cref="System.IO.IOException">Cannot connect to pipe.</exception>
         public void Connect() {
-            if (NativeMethods.ConnectNamedPipe(this.Handle, IntPtr.Zero) == false) {
+            if (NativeMethods.ConnectNamedPipe(this.SafeHandle, IntPtr.Zero) == false) {
                 throw new IOException("Cannot connect to pipe.", new Win32Exception());
             }
         }
@@ -116,7 +124,7 @@ namespace Medo.IO {
         /// </summary>
         /// <exception cref="System.IO.IOException">Cannot disconnect pipe.</exception>
         public void Disconnect() {
-            if (NativeMethods.DisconnectNamedPipe(this.Handle) == false) {
+            if (NativeMethods.DisconnectNamedPipe(this.SafeHandle) == false) {
                 throw new IOException("Cannot disconnect pipe.", new Win32Exception());
             }
         }
@@ -126,7 +134,7 @@ namespace Medo.IO {
         /// </summary>
         /// <exception cref="System.IO.IOException">Cannot flush pipe.</exception>
         public void Flush() {
-            if (NativeMethods.FlushFileBuffers(this.Handle) == false) {
+            if (NativeMethods.FlushFileBuffers(this.SafeHandle) == false) {
                 throw new IOException("Cannot flush pipe.", new Win32Exception());
             }
         }
@@ -143,9 +151,9 @@ namespace Medo.IO {
         /// </summary>
         public int BytesToRead {
             get {
-                if (this.Handle == null) { return 0; }
+                if (this.SafeHandle == null) { return 0; }
                 uint available = 0, bytesRead = 0, thismsg = 0;
-                if (NativeMethods.PeekNamedPipe(this.Handle, null, 0, ref bytesRead, ref available, ref thismsg)) {
+                if (NativeMethods.PeekNamedPipe(this.SafeHandle, null, 0, ref bytesRead, ref available, ref thismsg)) {
                     return (int)available;
                 } else {
                     return 0;
@@ -158,7 +166,7 @@ namespace Medo.IO {
         /// </summary>
         /// <exception cref="System.IO.IOException">Pipe is not open. -or- Cannot read from named pipe. -or- Not all bytes can be read.</exception>
         public byte[] ReadAvailable() {
-            if (this.Handle == null) { throw new InvalidOperationException("Pipe is not open."); }
+            if (this.SafeHandle == null) { throw new InvalidOperationException("Pipe is not open."); }
 
             var available = this.BytesToRead;
             if (available == 0) { return new byte[] { }; }
@@ -166,7 +174,7 @@ namespace Medo.IO {
             byte[] buffer = new byte[available];
             uint read = 0;
             NativeOverlapped overlapped = new NativeOverlapped();
-            if (!NativeMethods.ReadFile(this.Handle, buffer, (uint)buffer.Length, ref read, ref overlapped)) {
+            if (!NativeMethods.ReadFile(this.SafeHandle, buffer, (uint)buffer.Length, ref read, ref overlapped)) {
                 throw new IOException("Cannot read from named pipe.", new Win32Exception());
             }
             if (read != available) {
@@ -181,11 +189,11 @@ namespace Medo.IO {
         /// <param name="buffer">Buffer.</param>
         /// <exception cref="System.IO.IOException">Pipe is not open. -or- Cannot write to pipe. -or- Not all data is written to pipe.</exception>
         public void Write(byte[] buffer) {
-            if (this.Handle.Equals(IntPtr.Zero)) { throw new InvalidOperationException("Pipe is not open."); }
+            if (this.SafeHandle.Equals(IntPtr.Zero)) { throw new InvalidOperationException("Pipe is not open."); }
 
             uint written = 0;
             var overlapped = new NativeOverlapped();
-            if (NativeMethods.WriteFile(this.Handle, buffer, (uint)buffer.Length, ref written, ref overlapped)) {
+            if (NativeMethods.WriteFile(this.SafeHandle, buffer, (uint)buffer.Length, ref written, ref overlapped)) {
                 if (written != buffer.Length) {
                     throw new IOException("Not all data is written to pipe.", new Win32Exception());
                 }

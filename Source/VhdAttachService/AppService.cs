@@ -1,4 +1,5 @@
-﻿using System.ServiceProcess;
+﻿using System.Diagnostics;
+using System.ServiceProcess;
 
 namespace VhdAttachService {    
     internal class AppService : ServiceBase {
@@ -14,10 +15,12 @@ namespace VhdAttachService {
         }
 
         protected override void OnStart(string[] args) {
+            Debug.WriteLine("AppService : Start requested.");
             AppServiceThread.Start();
         }
 
         protected override void OnStop() {
+            Debug.WriteLine("AppService : Stop requested.");
             AppServiceThread.Stop();
         }
 

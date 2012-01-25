@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Threading;
-using Medo.Net;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.IO;
 
 namespace VhdAttachService {
 
@@ -19,20 +20,23 @@ namespace VhdAttachService {
             _thread = new Thread(Run);
             _thread.Name = "Service";
             _thread.Start();
+            Debug.WriteLine("Service thread started.");
         }
 
         public static void Stop() {
+            Debug.WriteLine("Service thread stopping...");
             try {
                 _cancelEvent.Set();
-                for (int i = 0; i < 10; i++) {
-                    if (_thread.IsAlive == false) { break; }
-                    Thread.Sleep(10);
-                }
+                PipeServer.Pipe.Close();
+                NativeMethods.DeleteFile(PipeServer.Pipe.FullPipeName); //I have no idea why exactly this unblocks ConnectNamedPipe...
+                for (int i = 0; i < 10; i++) { Thread.Sleep(100); }
                 if (_thread.IsAlive) {
+                    Debug.WriteLine("Service thread aborting...");
                     _thread.Abort();
                 }
                 _thread = null;
             } catch { }
+            Debug.WriteLine("Service thread stoped.");
         }
 
         private static void Run() {
@@ -59,6 +63,7 @@ namespace VhdAttachService {
                                 PipeServer.Reply(response);
                             }
                         } catch (Exception ex) {
+                            if (_cancelEvent.WaitOne(0, false)) { return; }
                             Debug.WriteLine(ex.Message);
                             PipeServer.Stop();
                             PipeServer.Start();
@@ -66,10 +71,23 @@ namespace VhdAttachService {
                         }
                     }
                 } finally {
+                    Debug.WriteLine("AppServiceThread.Run: Finally.");
                     PipeServer.Stop();
                 }
 
-            } catch (ThreadAbortException) { }
+            } catch (ThreadAbortException) {
+                Debug.WriteLine("AppServiceThread.Run: Thread aborted.");
+            }
+        }
+
+
+
+        private static class NativeMethods {
+
+            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern Boolean DeleteFile(String lpFileName);
+
         }
 
     }

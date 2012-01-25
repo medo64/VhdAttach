@@ -20,11 +20,22 @@ namespace VhdAttachService {
 
             } else if (Medo.Application.Args.Current.ContainsKey("Install")) {
 
+                try {
+                    using (ServiceController sc = new ServiceController(AppService.Instance.ServiceName)) {
+                        if (sc.Status != ServiceControllerStatus.Stopped) { sc.Stop(); }
+                    }
+                } catch (Exception) { }
+
                 ManagedInstallerClass.InstallHelper(new string[] { Assembly.GetExecutingAssembly().Location });
                 System.Environment.Exit(0);
 
             } else if (Medo.Application.Args.Current.ContainsKey("Uninstall")) {
 
+                try {
+                    using (ServiceController sc = new ServiceController(AppService.Instance.ServiceName)) {
+                        if (sc.Status != ServiceControllerStatus.Stopped) { sc.Stop(); }
+                    }
+                } catch (Exception) { }
                 try {
                     ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
                     System.Environment.Exit(0);
