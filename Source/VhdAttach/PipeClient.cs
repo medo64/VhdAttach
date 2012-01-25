@@ -51,7 +51,7 @@ namespace VhdAttach {
                 Pipe.Write(packetOut.GetBytes());
                 var timer = new Stopwatch();
                 timer.Start();
-                while (timer.ElapsedMilliseconds < 100000) {
+                while (timer.ElapsedMilliseconds < 1000) {
                     if (Pipe.HasBytesToRead) { break; }
                 }
                 if (Pipe.HasBytesToRead) {
