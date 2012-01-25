@@ -26,70 +26,74 @@ namespace VhdAttachService {
             var packet = TinyPairPacket.Parse(buffer);
             if (packet != null) {
                 if (packet.Product != "VhdAttach") { return null; }
-                switch (packet.Operation) {
-                    case "Attach": {    
-                            try {
-                                string diskPath;
-                                using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
-                                    disk.Open();
-                                    var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
-                                    if (packet.Data["MountReadOnly"] == "true") { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
-                                    disk.Attach(options);
-                                    diskPath = disk.GetAttachedPath();
-                                    disk.Close();
+                try {
+                    switch (packet.Operation) {
+                        case "Attach": {
+                                try {
+                                    string diskPath;
+                                    using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
+                                        disk.Open();
+                                        var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
+                                        if (packet.Data["MountReadOnly"] == "true") { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
+                                        disk.Attach(options);
+                                        diskPath = disk.GetAttachedPath();
+                                        disk.Close();
+                                    }
+                                    if (packet.Data["InitializeDisk"] == "true") {
+                                        DiskIO.InitializeDisk(diskPath);
+                                    }
+                                } catch (Exception ex) {
+                                    throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(packet.Data["Path"])).Name), ex);
                                 }
-                                if (packet.Data["InitializeDisk"] == "true") {
-                                    DiskIO.InitializeDisk(diskPath);
+                            } return GetResponse(packet, ExitCodes.OK, "");
+
+                        case "Detach": {
+                                try {
+                                    using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
+                                        disk.Open();
+                                        disk.Detach();
+                                        disk.Close();
+                                    }
+                                } catch (Exception ex) {
+                                    throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(packet.Data["Path"])).Name), ex);
                                 }
-                            } catch (Exception ex) {
-                                throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(packet.Data["Path"])).Name), ex);
-                            }
-                        } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet, ExitCodes.OK, "");
 
-                    case "Detach": {
-                            try {
-                                using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
-                                    disk.Open();
-                                    disk.Detach();
-                                    disk.Close();
+                        case "DetachDrive": {
+                                try {
+                                    DetachDrive(packet.Data["Path"]);
+                                } catch (Exception ex) {
+                                    throw new InvalidOperationException(string.Format("Disk drive \"{0}\" cannot be detached.", packet.Data["Path"]), ex);
+                                    throw new InvalidOperationException(ex.Message);
                                 }
-                            } catch (Exception ex) {
-                                throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(packet.Data["Path"])).Name), ex);
-                            }
-                        } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet, ExitCodes.OK, "");
 
-                    case "DetachDrive": {
-                            try {
-                                DetachDrive(packet.Data["Path"]);
-                            } catch (Exception ex) {
-                                throw new InvalidOperationException(string.Format("Disk drive \"{0}\" cannot be detached.", packet.Data["Path"]), ex);
-                                throw new InvalidOperationException(ex.Message);
-                            }
-                        } return GetResponse(packet, ExitCodes.OK, "");
+                        case "WriteSettings": {
+                                try {
+                                    ServiceSettings.ContextMenuAttach = bool.Parse(packet.Data["ContextMenuAttach"]);
+                                    ServiceSettings.ContextMenuAttachReadOnly = bool.Parse(packet.Data["ContextMenuAttachReadOnly"]);
+                                    ServiceSettings.ContextMenuDetach = bool.Parse(packet.Data["ContextMenuDetach"]);
+                                    ServiceSettings.ContextMenuDetachDrive = bool.Parse(packet.Data["ContextMenuDetachDrive"]);
+                                    ServiceSettings.AutoAttachVhdList = packet.Data["AutoAttachList"].Split('|');
+                                } catch (Exception ex) {
+                                    Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
+                                    throw new InvalidOperationException("Settings cannot be written.", ex);
+                                }
+                            } return GetResponse(packet, ExitCodes.OK, "");
 
-                    case "WriteSettings": {
-                            try {
-                                ServiceSettings.ContextMenuAttach = bool.Parse(packet.Data["ContextMenuAttach"]);
-                                ServiceSettings.ContextMenuAttachReadOnly = bool.Parse(packet.Data["ContextMenuAttachReadOnly"]);
-                                ServiceSettings.ContextMenuDetach = bool.Parse(packet.Data["ContextMenuDetach"]);
-                                ServiceSettings.ContextMenuDetachDrive = bool.Parse(packet.Data["ContextMenuDetachDrive"]);
-                                ServiceSettings.AutoAttachVhdList = packet.Data["AutoAttachList"].Split('|');
-                            } catch (Exception ex) {
-                                Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
-                                throw new InvalidOperationException("Settings cannot be written.", ex);
-                            }
-                        } return GetResponse(packet, ExitCodes.OK, "");
+                        case "RegisterExtension": {
+                                try {
+                                    ServiceSettings.ContextMenu = true;
+                                } catch (Exception ex) {
+                                    Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
+                                    throw new InvalidOperationException("Settings cannot be written.", ex);
+                                }
+                            } return GetResponse(packet, ExitCodes.OK, "");
 
-                    case "RegisterExtension": {
-                            try {
-                                ServiceSettings.ContextMenu = true;
-                            } catch (Exception ex) {
-                                Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
-                                throw new InvalidOperationException("Settings cannot be written.", ex);
-                            }
-                        } return GetResponse(packet, ExitCodes.OK, "");
-
-                    default: return GetResponse(packet, ExitCodes.UnknownCommand, "Unknown command.");
+                        default: return GetResponse(packet, ExitCodes.UnknownCommand, "Unknown command.");
+                    }
+                } catch (Exception ex) {
+                    return GetResponse(packet, ExitCodes.GenericError, ex.Message);
                 }
             } else {
                 return null;

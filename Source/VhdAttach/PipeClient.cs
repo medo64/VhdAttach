@@ -21,6 +21,12 @@ namespace VhdAttach {
             return Send("Detach", data);
         }
 
+        public static PipeResponse DetachDrive(string path) {
+            var data = new Dictionary<string, string>();
+            data.Add("Path", path);
+            return Send("DetachDrive", data);
+        }
+
         public static PipeResponse WriteSettings(bool contextMenuAttach, bool contextMenuAttachReadOnly, bool contextMenuDetach, bool contextMenuDetachDrive, string[] autoAttachList) {
             var data = new Dictionary<string, string>();
             data.Add("ContextMenuAttach", contextMenuAttach.ToString(CultureInfo.InvariantCulture));
