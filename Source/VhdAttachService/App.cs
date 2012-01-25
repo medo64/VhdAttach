@@ -21,15 +21,15 @@ namespace VhdAttachService {
             } else if (Medo.Application.Args.Current.ContainsKey("Install")) {
 
                 ManagedInstallerClass.InstallHelper(new string[] { Assembly.GetExecutingAssembly().Location });
-                System.Environment.Exit(ExitCodes.OK);
+                System.Environment.Exit(0);
 
             } else if (Medo.Application.Args.Current.ContainsKey("Uninstall")) {
 
                 try {
                     ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
-                    System.Environment.Exit(ExitCodes.OK);
+                    System.Environment.Exit(0);
                 } catch (System.Configuration.Install.InstallException) { //no service with that name
-                    System.Environment.Exit(ExitCodes.GenericError);
+                    System.Environment.Exit(1);
                 }
 
             } else {

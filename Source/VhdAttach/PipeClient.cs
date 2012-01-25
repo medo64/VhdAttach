@@ -57,9 +57,9 @@ namespace VhdAttach {
                 if (Pipe.HasBytesToRead) {
                     var buffer = Pipe.ReadAvailable();
                     var packetIn = Medo.Net.TinyPairPacket.Parse(buffer);
-                    return new PipeResponse(int.Parse(packetIn.Data["ExitCode"], CultureInfo.InvariantCulture), packetIn.Data["Message"]);
+                    return new PipeResponse(bool.Parse(packetIn.Data["IsError"]), packetIn.Data["Message"]);
                 } else {
-                    return new PipeResponse(ExitCodes.UnknownCommand, "Cannot contact service.");
+                    return new PipeResponse(true, "Cannot contact service.");
                 }
             } finally {
                 Pipe.Close();

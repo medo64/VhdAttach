@@ -28,7 +28,7 @@ namespace VhdAttach {
                 NativeMethods.SetCurrentProcessExplicitAppUserModelID(appId);
             } else {
                 Medo.MessageBox.ShowError(null, "This program requires Windows 7 or later.");
-                System.Environment.Exit(ExitCodes.NoWindows7);
+                System.Environment.Exit(1);
             }
 
 
@@ -48,7 +48,7 @@ namespace VhdAttach {
                     }
 
                     if (files.Count == 0) {
-                        System.Environment.Exit(ExitCodes.NoFiles);
+                        System.Environment.Exit(1);
                         return;
                     }
 
@@ -65,7 +65,7 @@ namespace VhdAttach {
                         Application.Run(appForm);
                         System.Environment.Exit(System.Environment.ExitCode);
                     } else {
-                        System.Environment.Exit(ExitCodes.UnknownCommand);
+                        System.Environment.Exit(1);
                     }
 
 

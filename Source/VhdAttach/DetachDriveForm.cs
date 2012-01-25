@@ -40,7 +40,7 @@ namespace VhdAttach {
                     bw.ReportProgress(-1, iDirectory.Name);
 
                     var res = PipeClient.DetachDrive(iDirectory.FullName);
-                    if (res.ExitCode != ExitCodes.OK) {
+                    if (res.IsError) {
                         this._exceptions.Add(new InvalidOperationException(iDirectory.Name, new Exception(res.Message)));
                     }
                 }
@@ -79,7 +79,7 @@ namespace VhdAttach {
                 Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Normal);
             } else {
                 Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Error);
-                System.Environment.ExitCode = ExitCodes.CannotExecute;
+                System.Environment.ExitCode = 1;
                 foreach (var iException in this._exceptions) {
                     Medo.MessageBox.ShowError(this, string.Format("Drive \"{0}\" cannot be detached.\n\n{1}", iException.Message, iException.InnerException.Message));
                 }

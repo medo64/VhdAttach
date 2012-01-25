@@ -31,7 +31,7 @@ namespace VhdAttach {
                     vhds.Add(item.FileName);
                 }
                 var res = PipeClient.WriteSettings(checkAttach.Checked, checkAttachReadOnly.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
-                if (res.ExitCode != ExitCodes.OK) {
+                if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
             } finally {
@@ -161,7 +161,7 @@ namespace VhdAttach {
 
         private void btnRegisterExtension_Click(object sender, EventArgs e) {
             var res = PipeClient.RegisterExtension();
-            if (res.ExitCode != ExitCodes.OK) {
+            if (res.IsError) {
                 Medo.MessageBox.ShowError(this, res.Message);
             }
             this.DialogResult = DialogResult.OK;

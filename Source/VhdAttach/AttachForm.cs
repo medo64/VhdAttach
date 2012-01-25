@@ -50,7 +50,7 @@ namespace VhdAttach {
                     bw.ReportProgress(-1, iFile.Name);
 
                     var res = PipeClient.Attach(iFile.FullName, this.MountReadOnly, this.InitializeDisk);
-                    if (res.ExitCode != ExitCodes.OK) {
+                    if (res.IsError) {
                         this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(res.Message)));
                     }
                 }
@@ -75,7 +75,7 @@ namespace VhdAttach {
                 Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Normal);
             } else {
                 Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Error);
-                System.Environment.ExitCode = ExitCodes.CannotExecute;
+                System.Environment.ExitCode = 1;
                 foreach (var iException in this._exceptions) {
                     Medo.MessageBox.ShowError(this, string.Format("Virtual disk file \"{0}\" cannot be attached.\n\n{1}", iException.Message, iException.InnerException.Message));
                 }

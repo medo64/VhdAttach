@@ -66,9 +66,6 @@
     <Compile Include="%28Medo%29\Settings [012].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
-    <Compile Include="..\VhdAttach\ExitCodes.cs">
-      <Link>ExitCodes.cs</Link>
-    </Compile>
     <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>

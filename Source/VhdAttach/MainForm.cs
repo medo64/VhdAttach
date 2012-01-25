@@ -498,7 +498,7 @@ namespace VhdAttach {
                     }
                 }
                 var res = PipeClient.WriteSettings(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
-                if (res.ExitCode != ExitCodes.OK) {
+                if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
             } finally {

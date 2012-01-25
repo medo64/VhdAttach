@@ -45,7 +45,7 @@ namespace VhdAttachService {
                                 } catch (Exception ex) {
                                     throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(packet.Data["Path"])).Name), ex);
                                 }
-                            } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet);
 
                         case "Detach": {
                                 try {
@@ -57,7 +57,7 @@ namespace VhdAttachService {
                                 } catch (Exception ex) {
                                     throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(packet.Data["Path"])).Name), ex);
                                 }
-                            } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet);
 
                         case "DetachDrive": {
                                 try {
@@ -66,7 +66,7 @@ namespace VhdAttachService {
                                     throw new InvalidOperationException(string.Format("Disk drive \"{0}\" cannot be detached.", packet.Data["Path"]), ex);
                                     throw new InvalidOperationException(ex.Message);
                                 }
-                            } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet);
 
                         case "WriteSettings": {
                                 try {
@@ -79,7 +79,7 @@ namespace VhdAttachService {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);
                                 }
-                            } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet);
 
                         case "RegisterExtension": {
                                 try {
@@ -88,12 +88,12 @@ namespace VhdAttachService {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);
                                 }
-                            } return GetResponse(packet, ExitCodes.OK, "");
+                            } return GetResponse(packet);
 
-                        default: return GetResponse(packet, ExitCodes.UnknownCommand, "Unknown command.");
+                        default: throw new InvalidOperationException("Unknown command.");
                     }
                 } catch (Exception ex) {
-                    return GetResponse(packet, ExitCodes.GenericError, ex.Message);
+                    return GetResponse(packet, ex);
                 }
             } else {
                 return null;
@@ -112,10 +112,21 @@ namespace VhdAttachService {
         }
 
 
-        public static TinyPairPacket GetResponse(TinyPairPacket packet, int exitCode, string message) {
+        public static TinyPairPacket GetResponse(TinyPairPacket packet) {
             var data = new Dictionary<string, string>();
-            data.Add("ExitCode", exitCode.ToString(CultureInfo.InvariantCulture));
-            data.Add("Message", message);
+            data.Add("IsError", false.ToString(CultureInfo.InvariantCulture));
+            data.Add("Message", "");
+            return new TinyPairPacket(packet.Product, packet.Operation, data);
+        }
+
+        public static TinyPairPacket GetResponse(TinyPairPacket packet, Exception ex) {
+            var data = new Dictionary<string, string>();
+            data.Add("IsError", true.ToString(CultureInfo.InvariantCulture));
+            if (ex.InnerException != null) {
+                data.Add("Message", ex.Message + "\r\n" + ex.InnerException.Message);
+            } else {
+                data.Add("Message", ex.Message);
+            }
             return new TinyPairPacket(packet.Product, packet.Operation, data);
         }
 
