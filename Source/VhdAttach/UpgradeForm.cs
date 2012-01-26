@@ -34,6 +34,7 @@ namespace VhdAttach {
                 using (var response = (HttpWebResponse)request.GetResponse()) {
                     switch (response.StatusCode) {
                         case HttpStatusCode.Forbidden: e.Result = null; break; //no upgrade
+                        case HttpStatusCode.Gone: e.Result = null; break; //no upgrade
                         case HttpStatusCode.SeeOther: e.Result = response.Headers["Location"]; break; //upgrade at Location
                         default: throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + ").");
                     }
@@ -131,7 +132,12 @@ namespace VhdAttach {
         }
 
         private void bcwDownload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            if (bcwDownload.CancellationPending) {
+                this.Close();
+                return;
+            }
             if (e.Error != null) {
+                if (this.IsDisposed) { return; }
                 prb.Value = 0;
                 lblStatus.Text = "Cannot upgrade.";
                 Medo.MessageBox.ShowWarning(this, "Cannot download upgrade at this time.\n\n" + e.Error.Message);
@@ -139,6 +145,7 @@ namespace VhdAttach {
             } else if (e.Cancelled) {
                 this.Close();
             } else {
+                if (this.IsDisposed) { return; }
                 lblStatus.Text = "Ready for upgrade.";
                 var path = e.Result as string;
                 if (path != null) {
