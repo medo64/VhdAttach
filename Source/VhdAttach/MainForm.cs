@@ -536,7 +536,7 @@ namespace VhdAttach {
         }
 
         private void mnuHelpReportABug_Click(object sender, EventArgs e) {
-            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/ErrorReport/"));
+            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/feedback/"));
         }
 
         private void mnuHelpAbout_Click(object sender, EventArgs e) {
