@@ -564,9 +564,22 @@ namespace VhdAttach {
 
         private void mnxListCopy_Click(object sender, EventArgs e) {
             if (list.SelectedItems.Count > 0) {
+                var maxLength = 0;
+                foreach (ListViewItem item in list.Items) {
+                    if (maxLength < item.Text.Length) { maxLength = item.Text.Length; }
+                }
+
                 var sb = new StringBuilder();
-                foreach (var iItem in list.SelectedItems) {
-                    sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0} = \"{1}\"", ((ListViewItem)iItem).Text, ((ListViewItem)iItem).SubItems[1].Text));
+                foreach (ListViewItem item in list.SelectedItems) {
+                    var key = item.Text;
+                    if (key.Length < maxLength) {
+                        key += " ";
+                        if (key.Length < maxLength) {
+                            key += new string('.', maxLength - key.Length);
+                        }
+                    }
+                    var value = item.SubItems[1].Text;
+                    sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, value));
                 }
                 Clipboard.SetText(sb.ToString());
             }
