@@ -2,16 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach", "VhdAttach\VhdAttach.csproj", "{523842B0-C6A8-4126-B9DE-0D9D814F838E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttachService", "VhdAttachService\VhdAttachService.csproj", "{6FACC55B-3441-4A4E-885B-269D82820F9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach-Service", "VhdAttach-Service\VhdAttach-Service.csproj", "{6FACC55B-3441-4A4E-885B-269D82820F9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach Test", "VhdAttach Test\VhdAttach Test.csproj", "{0F83D9F3-817E-4207-AF11-9F120A7AFC30}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9CB3AC03-F3F4-4738-A554-6E90BF3BB54B}"
-	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-		VHD Attach.vsmdi = VHD Attach.vsmdi
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach-Test", "VhdAttach-Test\VhdAttach-Test.csproj", "{0F83D9F3-817E-4207-AF11-9F120A7AFC30}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution

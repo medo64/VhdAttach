@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -72,7 +72,7 @@
     <Compile Include="%28Medo%29\TinyPair [004].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
-    <Compile Include="..\VhdAttachService\ServiceSettings.cs">
+    <Compile Include="..\VhdAttach-Service\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
     </Compile>
     <Compile Include="App.cs" />
