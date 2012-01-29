@@ -125,12 +125,18 @@ namespace VhdAttach {
             }
         }
 
+
         private void Form_Load(object sender, EventArgs e) {
             Medo.Windows.Forms.State.Load(this, list);
             OpenFromCommandLineArgs();
             UpdateRecent();
             staStolenExtension.Visible = !ServiceSettings.ContextMenu;
             Form_Resize(null, null);
+        }
+
+        private void Form_FormClosing(object sender, FormClosingEventArgs e) {
+            Medo.Windows.Forms.State.Save(this, list);
+            this.Recent.Save();
         }
 
         private void Form_Resize(object sender, EventArgs e) {
@@ -140,7 +146,6 @@ namespace VhdAttach {
             }
             list.Columns[1].Width = list.ClientSize.Width - list.Columns[0].Width - SystemInformation.VerticalScrollBarWidth;
         }
-
 
 
         private void UpdateData(string vhdFileName) {
@@ -368,13 +373,6 @@ namespace VhdAttach {
                 }
             }
         }
-
-
-        private void Form_FormClosing(object sender, FormClosingEventArgs e) {
-            Medo.Windows.Forms.State.Save(this, list);
-            this.Recent.Save();
-        }
-
 
         #region Menu
 
@@ -668,7 +666,6 @@ namespace VhdAttach {
             return extract.Substring(xStart2 + start.Length, xEnd2 - xStart2 - start.Length);
         }
 
-
         private static void AllowSetForegroundWindowToExplorer() {
             var pathToExplorer = Path.Combine(Environment.GetEnvironmentVariable("SystemRoot"), "explorer.exe");
             foreach (var process in Process.GetProcesses()) {
@@ -684,6 +681,7 @@ namespace VhdAttach {
             }
         }
 
+
         private static class NativeMethods {
 
             [DllImportAttribute("user32.dll", EntryPoint = "AllowSetForegroundWindow")]
@@ -691,6 +689,7 @@ namespace VhdAttach {
             public static extern bool AllowSetForegroundWindow(int dwProcessId);
 
         }
+
 
         private void list_DragEnter(object sender, DragEventArgs e) {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) {

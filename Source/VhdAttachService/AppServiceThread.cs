@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
-using System.IO;
+using System.Threading;
 
 namespace VhdAttachService {
 
