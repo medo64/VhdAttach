@@ -23,6 +23,12 @@ SHORTCUT KEYS
 
 VERSION HISTORY
 
+    3.10 (2012-02-18)
+
+        o Possible to create fixed virtual disks.
+        o Requires only .NET 2.0.
+        o Refreshing GUI.
+
     3.02 (2012-01-24)
 
         o Removing application config files to simplify installation.
@@ -33,7 +39,7 @@ VERSION HISTORY
 
     3.00 (2012-01-14)
 
-        o Added disk creation.
+        o Added dynamic disk creation.
         o Some interface tweaks.
         o Added upgrade procedure.
         o Setup improvements.
