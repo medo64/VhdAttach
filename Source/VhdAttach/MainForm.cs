@@ -33,6 +33,8 @@ namespace VhdAttach {
             Medo.Windows.Forms.TaskbarProgress.DefaultOwner = this;
             Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
 
+            mnu.Renderer = new ToolStripBorderlessProfessionalRenderer();
+
             this.Recent = new Medo.Configuration.RecentFiles();
         }
 

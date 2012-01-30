@@ -170,24 +170,27 @@
             // 
             // buttonMoveVhdUp
             // 
+            this.buttonMoveVhdUp.AutoSize = false;
             this.buttonMoveVhdUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttonMoveVhdUp.Enabled = false;
             this.buttonMoveVhdUp.Image = ((System.Drawing.Image)(resources.GetObject("buttonMoveVhdUp.Image")));
             this.buttonMoveVhdUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonMoveVhdUp.Name = "buttonMoveVhdUp";
-            this.buttonMoveVhdUp.Size = new System.Drawing.Size(23, 20);
+            this.buttonMoveVhdUp.Size = new System.Drawing.Size(23, 23);
             this.buttonMoveVhdUp.Text = "Move Up";
             this.buttonMoveVhdUp.ToolTipText = "Move up (Alt+Up)";
             this.buttonMoveVhdUp.Click += new System.EventHandler(this.buttonMoveVhdUp_Click);
             // 
             // buttonMoveVhdDown
             // 
+            this.buttonMoveVhdDown.AutoSize = false;
             this.buttonMoveVhdDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttonMoveVhdDown.Enabled = false;
             this.buttonMoveVhdDown.Image = ((System.Drawing.Image)(resources.GetObject("buttonMoveVhdDown.Image")));
             this.buttonMoveVhdDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonMoveVhdDown.Name = "buttonMoveVhdDown";
-            this.buttonMoveVhdDown.Size = new System.Drawing.Size(23, 20);
+            this.buttonMoveVhdDown.RightToLeftAutoMirrorImage = true;
+            this.buttonMoveVhdDown.Size = new System.Drawing.Size(23, 23);
             this.buttonMoveVhdDown.Text = "Move down";
             this.buttonMoveVhdDown.ToolTipText = "Move down (Alt+Down)";
             this.buttonMoveVhdDown.Click += new System.EventHandler(this.buttonMoveVhdDown_Click);
