@@ -331,6 +331,14 @@ namespace VhdAttach {
 
         private string GetPathLetters(int physicalDrive) {
             var attachedPathLetters = new StringBuilder();
+            foreach (var letter in GetDriveLetters(physicalDrive)) {
+                if (attachedPathLetters.Length > 0) { attachedPathLetters.Append(", "); }
+                attachedPathLetters.Append(letter + ":");
+            }
+            return attachedPathLetters.ToString();
+        }
+
+        private IEnumerable<char> GetDriveLetters(int physicalDrive) {
             var wmiQuery = new ObjectQuery("SELECT Antecedent, Dependent FROM Win32_LogicalDiskToPartition");
             using (var wmiSearcher = new ManagementObjectSearcher(wmiQuery)) {
                 foreach (var iReturn in wmiSearcher.Get()) {
@@ -339,13 +347,11 @@ namespace VhdAttach {
                     int diskNumber;
                     if (int.TryParse(disk, NumberStyles.Integer, CultureInfo.InvariantCulture, out diskNumber)) {
                         if (physicalDrive == diskNumber) {
-                            if (attachedPathLetters.Length > 0) { attachedPathLetters.Append(", "); }
-                            attachedPathLetters.Append(partition);
+                            yield return partition[0];
                         }
                     }
                 }
             }
-            return attachedPathLetters.ToString();
         }
 
         private void UpdateRecent() {

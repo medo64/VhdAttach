@@ -49,7 +49,6 @@ namespace VhdAttach {
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAutoMount = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuRefresh = new System.Windows.Forms.ToolStripButton();
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.staStolenExtension = new System.Windows.Forms.StatusStrip();
@@ -265,12 +264,6 @@ namespace VhdAttach {
             this.mnuAutoMount.ToolTipText = "Selects whether VHD is mounted upon next system restart";
             this.mnuAutoMount.Click += new System.EventHandler(this.mnuAutoMount_Click);
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
-            this.toolStripSeparator1.Visible = false;
-            // 
             // mnuRefresh
             // 
             this.mnuRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -288,6 +281,7 @@ namespace VhdAttach {
             this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuNew,
             this.mnuOpen,
+            this.mnuRefresh,
             this.toolStripSeparator3,
             this.mnuAttach,
             this.mnuDetach,
@@ -295,9 +289,7 @@ namespace VhdAttach {
             this.mnuOptions,
             this.toolStripSeparator4,
             this.toolStripSeparator2,
-            this.mnuAutoMount,
-            this.toolStripSeparator1,
-            this.mnuRefresh});
+            this.mnuAutoMount});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
@@ -376,7 +368,6 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton mnuAutoMount;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton mnuRefresh;
         private System.Windows.Forms.ToolStrip mnu;
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
