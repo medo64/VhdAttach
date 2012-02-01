@@ -34,12 +34,12 @@ namespace VhdAttachService {
                                     using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
                                         disk.Open();
                                         var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
-                                        if (packet.Data["MountReadOnly"] == "true") { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
+                                        if (packet.Data["MountReadOnly"].Equals("True", StringComparison.OrdinalIgnoreCase)) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
                                         disk.Attach(options);
                                         diskPath = disk.GetAttachedPath();
                                         disk.Close();
                                     }
-                                    if (packet.Data["InitializeDisk"] == "true") {
+                                    if (packet.Data["InitializeDisk"].Equals("True", StringComparison.OrdinalIgnoreCase)) {
                                         DiskIO.InitializeDisk(diskPath);
                                     }
                                 } catch (Exception ex) {
