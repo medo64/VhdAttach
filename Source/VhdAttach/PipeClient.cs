@@ -42,14 +42,14 @@ namespace VhdAttach {
 
         private static Medo.IO.NamedPipe Pipe = new Medo.IO.NamedPipe("JosipMedved-VhdAttach-Commands");
 
-        private static PipeResponse Send(string operation, Dictionary<string, string> data) {
+        private static PipeResponse Send(string operation, Dictionary<string, string> data, int timeout = 2500) {
             var packetOut = new Medo.Net.TinyPairPacket("VhdAttach", operation, data);
             try {
                 Pipe.Open();
                 Pipe.Write(packetOut.GetBytes());
                 var timer = new Stopwatch();
                 timer.Start();
-                while (timer.ElapsedMilliseconds < 1000) {
+                while (timer.ElapsedMilliseconds < timeout) {
                     if (Pipe.HasBytesToRead) { break; }
                 }
                 if (Pipe.HasBytesToRead) {
