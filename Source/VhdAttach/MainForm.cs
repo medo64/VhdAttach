@@ -88,7 +88,7 @@ namespace VhdAttach {
 
 
                 case Keys.F5:
-                    UpdateData(this.VhdFileName);
+                    mnuRefresh.PerformClick();
                     return true;
 
 
@@ -425,6 +425,10 @@ namespace VhdAttach {
                     }
                 }
             }
+        }
+
+        private void mnuRefresh_Click(object sender, EventArgs e) {
+            UpdateData(this.VhdFileName);
         }
 
         private void mnuAttach_ButtonClick(object sender, EventArgs e) {

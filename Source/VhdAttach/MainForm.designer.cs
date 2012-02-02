@@ -51,6 +51,7 @@ namespace VhdAttach {
             this.mnuAutoMount = new System.Windows.Forms.ToolStripButton();
             this.mnuRefresh = new System.Windows.Forms.ToolStripButton();
             this.mnu = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.staStolenExtension = new System.Windows.Forms.StatusStrip();
             this.staStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
             this.mnxList.SuspendLayout();
@@ -273,7 +274,7 @@ namespace VhdAttach {
             this.mnuRefresh.Size = new System.Drawing.Size(23, 24);
             this.mnuRefresh.Text = "Refresh";
             this.mnuRefresh.ToolTipText = "Refresh (F5)";
-            this.mnuRefresh.Visible = false;
+            this.mnuRefresh.Click += new System.EventHandler(this.mnuRefresh_Click);
             // 
             // mnu
             // 
@@ -281,6 +282,7 @@ namespace VhdAttach {
             this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuNew,
             this.mnuOpen,
+            this.toolStripSeparator1,
             this.mnuRefresh,
             this.toolStripSeparator3,
             this.mnuAttach,
@@ -296,6 +298,11 @@ namespace VhdAttach {
             this.mnu.Size = new System.Drawing.Size(582, 27);
             this.mnu.Stretch = true;
             this.mnu.TabIndex = 1;
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
             // 
             // staStolenExtension
             // 
@@ -375,6 +382,7 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.StatusStrip staStolenExtension;
         private System.Windows.Forms.ToolStripStatusLabel staStolenExtensionText;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 
