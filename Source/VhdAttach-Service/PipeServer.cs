@@ -17,13 +17,13 @@ namespace VhdAttachService {
             Pipe.CreateWithFullAccess();
         }
 
-        public static TinyPairPacket Receive() {
+        public static TinyPacket Receive() {
             Pipe.Connect();
 
             while (Pipe.HasBytesToRead == false) { Thread.Sleep(100); }
             var buffer = Pipe.ReadAvailable();
 
-            var packet = TinyPairPacket.Parse(buffer);
+            var packet = TinyPacket.Parse(buffer);
             if (packet != null) {
                 if (packet.Product != "VhdAttach") { return null; }
                 try {
@@ -31,50 +31,50 @@ namespace VhdAttachService {
                         case "Attach": {
                                 try {
                                     string diskPath;
-                                    using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
+                                    using (var disk = new Medo.IO.VirtualDisk(packet["Path"])) {
                                         disk.Open();
                                         var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
-                                        if (packet.Data["MountReadOnly"].Equals("True", StringComparison.OrdinalIgnoreCase)) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
+                                        if (packet["MountReadOnly"].Equals("True", StringComparison.OrdinalIgnoreCase)) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
                                         disk.Attach(options);
                                         diskPath = disk.GetAttachedPath();
                                         disk.Close();
                                     }
-                                    if (packet.Data["InitializeDisk"].Equals("True", StringComparison.OrdinalIgnoreCase)) {
+                                    if (packet["InitializeDisk"].Equals("True", StringComparison.OrdinalIgnoreCase)) {
                                         DiskIO.InitializeDisk(diskPath);
                                     }
                                 } catch (Exception ex) {
-                                    throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(packet.Data["Path"])).Name), ex);
+                                    throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be attached.", (new FileInfo(packet["Path"])).Name), ex);
                                 }
                             } return GetResponse(packet);
 
                         case "Detach": {
                                 try {
-                                    using (var disk = new Medo.IO.VirtualDisk(packet.Data["Path"])) {
+                                    using (var disk = new Medo.IO.VirtualDisk(packet["Path"])) {
                                         disk.Open();
                                         disk.Detach();
                                         disk.Close();
                                     }
                                 } catch (Exception ex) {
-                                    throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(packet.Data["Path"])).Name), ex);
+                                    throw new InvalidOperationException(string.Format("Virtual disk file \"{0}\" cannot be detached.", (new FileInfo(packet["Path"])).Name), ex);
                                 }
                             } return GetResponse(packet);
 
                         case "DetachDrive": {
                                 try {
-                                    DetachDrive(packet.Data["Path"]);
+                                    DetachDrive(packet["Path"]);
                                 } catch (Exception ex) {
-                                    throw new InvalidOperationException(string.Format("Drive \"{0}\" cannot be detached.", packet.Data["Path"]), ex);
+                                    throw new InvalidOperationException(string.Format("Drive \"{0}\" cannot be detached.", packet["Path"]), ex);
                                     throw new InvalidOperationException(ex.Message);
                                 }
                             } return GetResponse(packet);
 
                         case "WriteSettings": {
                                 try {
-                                    ServiceSettings.ContextMenuAttach = bool.Parse(packet.Data["ContextMenuAttach"]);
-                                    ServiceSettings.ContextMenuAttachReadOnly = bool.Parse(packet.Data["ContextMenuAttachReadOnly"]);
-                                    ServiceSettings.ContextMenuDetach = bool.Parse(packet.Data["ContextMenuDetach"]);
-                                    ServiceSettings.ContextMenuDetachDrive = bool.Parse(packet.Data["ContextMenuDetachDrive"]);
-                                    ServiceSettings.AutoAttachVhdList = packet.Data["AutoAttachList"].Split('|');
+                                    ServiceSettings.ContextMenuAttach = bool.Parse(packet["ContextMenuAttach"]);
+                                    ServiceSettings.ContextMenuAttachReadOnly = bool.Parse(packet["ContextMenuAttachReadOnly"]);
+                                    ServiceSettings.ContextMenuDetach = bool.Parse(packet["ContextMenuDetach"]);
+                                    ServiceSettings.ContextMenuDetachDrive = bool.Parse(packet["ContextMenuDetachDrive"]);
+                                    ServiceSettings.AutoAttachVhdList = packet["AutoAttachList"].Split('|');
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);
@@ -100,7 +100,7 @@ namespace VhdAttachService {
             }
         }
 
-        public static void Reply(TinyPairPacket response) {
+        public static void Reply(TinyPacket response) {
             var buffer = response.GetBytes();
             Pipe.Write(buffer);
             Pipe.Flush();
@@ -112,14 +112,14 @@ namespace VhdAttachService {
         }
 
 
-        public static TinyPairPacket GetResponse(TinyPairPacket packet) {
+        public static TinyPacket GetResponse(TinyPacket packet) {
             var data = new Dictionary<string, string>();
             data.Add("IsError", false.ToString(CultureInfo.InvariantCulture));
             data.Add("Message", "");
-            return new TinyPairPacket(packet.Product, packet.Operation, data);
+            return new TinyPacket(packet.Product, packet.Operation, data);
         }
 
-        public static TinyPairPacket GetResponse(TinyPairPacket packet, Exception ex) {
+        public static TinyPacket GetResponse(TinyPacket packet, Exception ex) {
             var data = new Dictionary<string, string>();
             data.Add("IsError", true.ToString(CultureInfo.InvariantCulture));
             if (ex.InnerException != null) {
@@ -127,7 +127,7 @@ namespace VhdAttachService {
             } else {
                 data.Add("Message", ex.Message);
             }
-            return new TinyPairPacket(packet.Product, packet.Operation, data);
+            return new TinyPacket(packet.Product, packet.Operation, data);
         }
 
 

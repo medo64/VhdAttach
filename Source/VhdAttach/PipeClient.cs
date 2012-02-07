@@ -43,7 +43,7 @@ namespace VhdAttach {
         private static Medo.IO.NamedPipe Pipe = new Medo.IO.NamedPipe("JosipMedved-VhdAttach-Commands");
 
         private static PipeResponse Send(string operation, Dictionary<string, string> data, int timeout = 2500) {
-            var packetOut = new Medo.Net.TinyPairPacket("VhdAttach", operation, data);
+            var packetOut = new Medo.Net.TinyPacket("VhdAttach", operation, data);
             try {
                 Pipe.Open();
                 Pipe.Write(packetOut.GetBytes());
@@ -54,8 +54,8 @@ namespace VhdAttach {
                 }
                 if (Pipe.HasBytesToRead) {
                     var buffer = Pipe.ReadAvailable();
-                    var packetIn = Medo.Net.TinyPairPacket.Parse(buffer);
-                    return new PipeResponse(bool.Parse(packetIn.Data["IsError"]), packetIn.Data["Message"]);
+                    var packetIn = Medo.Net.TinyPacket.Parse(buffer);
+                    return new PipeResponse(bool.Parse(packetIn["IsError"]), packetIn["Message"]);
                 } else {
                     return new PipeResponse(true, "Cannot contact service.");
                 }

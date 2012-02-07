@@ -65,6 +65,7 @@
     <Compile Include="%28Medo%29\ErrorReport [018].cs" />
     <Compile Include="%28Medo%29\NamedPipe [002].cs" />
     <Compile Include="%28Medo%29\Settings [012].cs" />
+    <Compile Include="%28Medo%29\TinyMessage [005].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005].cs" />
     <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
@@ -82,7 +83,6 @@
     </Compile>
     <Compile Include="AppServiceThread.cs" />
     <Compile Include="ServiceSettings.cs" />
-    <Compile Include="%28Medo%29\TinyPair [004].cs" />
     <Compile Include="VirtualDiskServiceHelper.cs" />
   </ItemGroup>
   <ItemGroup>
