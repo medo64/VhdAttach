@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 
 namespace VhdAttach {
     internal static class PipeClient {
@@ -42,7 +43,7 @@ namespace VhdAttach {
 
         private static Medo.IO.NamedPipe Pipe = new Medo.IO.NamedPipe("JosipMedved-VhdAttach-Commands");
 
-        private static PipeResponse Send(string operation, Dictionary<string, string> data, int timeout = 2500) {
+        private static PipeResponse Send(string operation, Dictionary<string, string> data, int timeout = 5000) {
             var packetOut = new Medo.Net.TinyPacket("VhdAttach", operation, data);
             try {
                 Pipe.Open();
@@ -51,7 +52,9 @@ namespace VhdAttach {
                 timer.Start();
                 while (timer.ElapsedMilliseconds < timeout) {
                     if (Pipe.HasBytesToRead) { break; }
+                    Thread.Sleep(100);
                 }
+                timer.Stop();
                 if (Pipe.HasBytesToRead) {
                     var buffer = Pipe.ReadAvailable();
                     var packetIn = Medo.Net.TinyPacket.Parse(buffer);
