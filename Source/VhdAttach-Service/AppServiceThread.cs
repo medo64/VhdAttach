@@ -27,7 +27,9 @@ namespace VhdAttachService {
                 _cancelEvent.Set();
                 PipeServer.Pipe.Close();
                 NativeMethods.DeleteFile(PipeServer.Pipe.FullPipeName); //I have no idea why exactly this unblocks ConnectNamedPipe...
-                for (int i = 0; i < 10; i++) { Thread.Sleep(100); }
+                for (int i = 0; i < 10; i++) {
+                    if (_thread.IsAlive) { Thread.Sleep(100); } else { break; }
+                }
                 if (_thread.IsAlive) {
                     Debug.WriteLine("Service thread aborting...");
                     _thread.Abort();
