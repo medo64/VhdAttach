@@ -55,6 +55,10 @@ namespace VhdAttach {
                     this.Cursor = Cursors.Default;
                     Medo.MessageBox.ShowError(this, "File cannot be deleted.\n\n" + ex.Message);
                     return;
+                } catch (UnauthorizedAccessException ex) {
+                    this.Cursor = Cursors.Default;
+                    Medo.MessageBox.ShowError(this, "File cannot be deleted.\n\n" + ex.Message);
+                    return;
                 }
 
                 try {
