@@ -16,12 +16,12 @@ namespace VhdAttachService {
 
         protected override void OnStart(string[] args) {
             Debug.WriteLine("AppService : Start requested.");
-            AppServiceThread.Start();
+            Service.Start();
         }
 
         protected override void OnStop() {
             Debug.WriteLine("AppService : Stop requested.");
-            AppServiceThread.Stop();
+            Service.Stop();
         }
 
     }

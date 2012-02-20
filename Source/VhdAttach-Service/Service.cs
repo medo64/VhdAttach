@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace VhdAttachService {
 
-    internal static class AppServiceThread {
+    internal static class Service {
 
         private static Thread _thread;
         private static ManualResetEvent _cancelEvent;

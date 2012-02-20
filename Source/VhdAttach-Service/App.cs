@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Configuration.Install;
+using System.Diagnostics;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Windows.Forms;
 
 namespace VhdAttachService {
 
@@ -13,10 +15,13 @@ namespace VhdAttachService {
 
             if (Medo.Application.Args.Current.ContainsKey("Interactive")) {
 
-                AppServiceThread.Start();
-                Medo.Windows.Forms.AboutBox.ShowDialog();
-                AppServiceThread.Stop();
-                System.Environment.Exit(0);
+                Tray.Show();
+                Service.Start();
+                Tray.SetStatusToRunningInteractive();
+                Application.Run();
+                Service.Stop();
+                Tray.Hide();
+                Environment.Exit(0);
 
             } else if (Medo.Application.Args.Current.ContainsKey("Install")) {
 
@@ -44,7 +49,18 @@ namespace VhdAttachService {
                 }
 
             } else {
-                ServiceBase.Run(new ServiceBase[] { AppService.Instance });
+
+                if (Environment.UserInteractive) {
+                    Tray.Show();
+                    ServiceStatusThread.Start();
+                    Application.Run();
+                    ServiceStatusThread.Stop();
+                    Tray.Hide();
+                    Environment.Exit(0);
+                } else {
+                    ServiceBase.Run(new ServiceBase[] { AppService.Instance });
+                }
+
             }
         }
 

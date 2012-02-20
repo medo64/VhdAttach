@@ -81,12 +81,18 @@
     <Compile Include="AppServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="AppServiceThread.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="ServiceSettings.cs" />
+    <Compile Include="ServiceStatusThread.cs" />
+    <Compile Include="Tray.cs" />
     <Compile Include="VirtualDiskServiceHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
+    <EmbeddedResource Include="Resources\Service_RunningInteractive_12.png" />
+    <EmbeddedResource Include="Resources\Service_Running_12.png" />
+    <EmbeddedResource Include="Resources\Service_Stopped_12.png" />
+    <EmbeddedResource Include="Resources\Service_Unknown_12.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\App.snk" />
