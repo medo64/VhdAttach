@@ -23,6 +23,10 @@ SHORTCUT KEYS
 
 VERSION HISTORY
 
+    3.11 (2012-02-27)
+
+        o Bug-fixing.
+
     3.10 (2012-02-18)
 
         o Possible to create fixed virtual disks.
