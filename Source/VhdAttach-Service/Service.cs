@@ -45,6 +45,7 @@ namespace VhdAttachService {
                 foreach (var file in ServiceSettings.AutoAttachVhdList) {
                     try {
                         string fileName;
+                        var access = Medo.IO.VirtualDiskAccessMask.All;
                         var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
                         if (file.StartsWith("/")) {
                             /*
@@ -60,11 +61,12 @@ namespace VhdAttachService {
                                     case "NODRIVELETTER": options |= Medo.IO.VirtualDiskAttachOptions.NoDriveLetter; break;
                                 }
                             }
+                            if ((options & Medo.IO.VirtualDiskAttachOptions.ReadOnly) == Medo.IO.VirtualDiskAttachOptions.ReadOnly) { access = Medo.IO.VirtualDiskAccessMask.AttachReadOnly; }
                         } else {
                             fileName = file;
                         }
                         using (var disk = new Medo.IO.VirtualDisk(fileName)) {
-                            disk.Open();
+                            disk.Open(access);
                             disk.Attach(options);
                             disk.Close();
                         }

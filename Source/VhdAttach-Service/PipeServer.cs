@@ -30,16 +30,24 @@ namespace VhdAttachService {
                     switch (packet.Operation) {
                         case "Attach": {
                                 try {
-                                    string diskPath;
+                                    var isReadOnly = packet["MountReadOnly"].Equals("True", StringComparison.OrdinalIgnoreCase);
+                                    var shouldInitialize = packet["InitializeDisk"].Equals("True", StringComparison.OrdinalIgnoreCase);
+                                    string diskPath = null;
                                     using (var disk = new Medo.IO.VirtualDisk(packet["Path"])) {
-                                        disk.Open();
+                                        var access = Medo.IO.VirtualDiskAccessMask.All;
                                         var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
-                                        if (packet["MountReadOnly"].Equals("True", StringComparison.OrdinalIgnoreCase)) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
+                                        if (isReadOnly) {
+                                            if (shouldInitialize == false) {
+                                                access = Medo.IO.VirtualDiskAccessMask.AttachReadOnly;
+                                            }
+                                            options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly;
+                                        }
+                                        disk.Open();
                                         disk.Attach(options);
-                                        diskPath = disk.GetAttachedPath();
+                                        if (shouldInitialize) { diskPath = disk.GetAttachedPath(); }
                                         disk.Close();
                                     }
-                                    if (packet["InitializeDisk"].Equals("True", StringComparison.OrdinalIgnoreCase)) {
+                                    if (shouldInitialize) {
                                         DiskIO.InitializeDisk(diskPath);
                                     }
                                 } catch (Exception ex) {
@@ -50,7 +58,7 @@ namespace VhdAttachService {
                         case "Detach": {
                                 try {
                                     using (var disk = new Medo.IO.VirtualDisk(packet["Path"])) {
-                                        disk.Open();
+                                        disk.Open(Medo.IO.VirtualDiskAccessMask.AttachReadOnly);
                                         disk.Detach();
                                         disk.Close();
                                     }
@@ -231,7 +239,7 @@ namespace VhdAttachService {
 
             if (vhdFile != null) {
                 using (var disk = new Medo.IO.VirtualDisk(vhdFile.FullName)) {
-                    disk.Open();
+                    disk.Open(Medo.IO.VirtualDiskAccessMask.AttachReadOnly);
                     disk.Detach();
                     disk.Close();
                 }
