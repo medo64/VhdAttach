@@ -44,13 +44,34 @@ namespace VhdAttachService {
 
                 foreach (var file in ServiceSettings.AutoAttachVhdList) {
                     try {
-                        using (var disk = new Medo.IO.VirtualDisk(file)) {
+                        string fileName;
+                        var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
+                        if (file.StartsWith("/")) {
+                            /*
+                             * Each file can have additional settings area that starts with / and ends with next /.
+                             * E.g. "/readonly,nodriveletter/D:\Test.vhd"
+                             */
+                            var iEndPipe = file.IndexOf("/", 1);
+                            var additionalSettings = file.Substring(1, iEndPipe - 1);
+                            fileName = file.Substring(iEndPipe + 1);
+                            foreach (var setting in additionalSettings.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) {
+                                switch (additionalSettings.ToUpperInvariant()) {
+                                    case "READONLY": options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; break;
+                                    case "NODRIVELETTER": options |= Medo.IO.VirtualDiskAttachOptions.NoDriveLetter; break;
+                                }
+                            }
+                        } else {
+                            fileName = file;
+                        }
+                        using (var disk = new Medo.IO.VirtualDisk(fileName)) {
                             disk.Open();
-                            disk.Attach(Medo.IO.VirtualDiskAttachOptions.PermanentLifetime);
+                            disk.Attach(options);
                             disk.Close();
                         }
                         Thread.Sleep(1000);
-                    } catch (Exception) { }
+                    } catch (Exception ex) {
+                        Trace.TraceError("E: Cannot attach file \"" + file + "\". " + ex.Message);
+                    }
                 }
 
 

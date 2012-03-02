@@ -37,6 +37,7 @@
             this.toolVhdOrder = new System.Windows.Forms.ToolStrip();
             this.buttonMoveVhdUp = new System.Windows.Forms.ToolStripButton();
             this.buttonMoveVhdDown = new System.Windows.Forms.ToolStripButton();
+            this.buttonVhdReadOnly = new System.Windows.Forms.ToolStripButton();
             this.buttonVhdRemove = new System.Windows.Forms.Button();
             this.buttonVhdAdd = new System.Windows.Forms.Button();
             this.listAutoAttach = new System.Windows.Forms.ListView();
@@ -160,7 +161,8 @@
             this.toolVhdOrder.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolVhdOrder.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonMoveVhdUp,
-            this.buttonMoveVhdDown});
+            this.buttonMoveVhdDown,
+            this.buttonVhdReadOnly});
             this.toolVhdOrder.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolVhdOrder.Location = new System.Drawing.Point(343, 27);
             this.toolVhdOrder.Name = "toolVhdOrder";
@@ -194,6 +196,19 @@
             this.buttonMoveVhdDown.Text = "Move down";
             this.buttonMoveVhdDown.ToolTipText = "Move down (Alt+Down)";
             this.buttonMoveVhdDown.Click += new System.EventHandler(this.buttonMoveVhdDown_Click);
+            // 
+            // buttonVhdReadOnly
+            // 
+            this.buttonVhdReadOnly.AutoSize = false;
+            this.buttonVhdReadOnly.CheckOnClick = true;
+            this.buttonVhdReadOnly.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buttonVhdReadOnly.Image = ((System.Drawing.Image)(resources.GetObject("buttonVhdReadOnly.Image")));
+            this.buttonVhdReadOnly.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buttonVhdReadOnly.Margin = new System.Windows.Forms.Padding(0, 8, 0, 2);
+            this.buttonVhdReadOnly.Name = "buttonVhdReadOnly";
+            this.buttonVhdReadOnly.Size = new System.Drawing.Size(23, 23);
+            this.buttonVhdReadOnly.Text = "Read-only";
+            this.buttonVhdReadOnly.Click += new System.EventHandler(this.buttonVhdReadOnly_Click);
             // 
             // buttonVhdRemove
             // 
@@ -255,6 +270,7 @@
             this.imagesAutoAttach.Images.SetKeyName(1, "StatusWarning [16x16].png");
             this.imagesAutoAttach.Images.SetKeyName(2, "Status_SeriousWarning_16.png");
             this.imagesAutoAttach.Images.SetKeyName(3, "StatusError [16x16].png");
+            this.imagesAutoAttach.Images.SetKeyName(4, "Lock (16x16).png");
             // 
             // btnRegisterExtension
             // 
@@ -320,5 +336,6 @@
         private System.Windows.Forms.ImageList imagesAutoAttach;
         private System.Windows.Forms.CheckBox checkAttachReadOnly;
         private System.Windows.Forms.Button btnRegisterExtension;
+        private System.Windows.Forms.ToolStripButton buttonVhdReadOnly;
     }
 }

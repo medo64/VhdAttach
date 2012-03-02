@@ -28,7 +28,7 @@ namespace VhdAttach {
 
                 var vhds = new List<string>();
                 foreach (ListViewVhdItem item in listAutoAttach.Items) {
-                    vhds.Add(item.FileName);
+                    vhds.Add(item.GetSettingFileName());
                 }
                 var res = PipeClient.WriteSettings(checkAttach.Checked, checkAttachReadOnly.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
                 if (res.IsError) {
@@ -76,15 +76,25 @@ namespace VhdAttach {
             }
         }
 
+        private void buttonVhdReadOnly_Click(object sender, EventArgs e) {
+            if (listAutoAttach.FocusedItem != null) {
+                var item = (ListViewVhdItem)listAutoAttach.FocusedItem;
+                item.IsReadOnly = !item.IsReadOnly;
+            }
+        }
+
         private void listAutoAttach_SelectedIndexChanged(object sender, EventArgs e) {
             if (listAutoAttach.FocusedItem != null) {
                 buttonVhdRemove.Enabled = true;
                 buttonMoveVhdUp.Enabled = (listAutoAttach.FocusedItem.Index > 0);
                 buttonMoveVhdDown.Enabled = (listAutoAttach.FocusedItem.Index < (listAutoAttach.Items.Count - 1));
+                buttonVhdReadOnly.Enabled = true;
+                buttonVhdReadOnly.Checked = ((ListViewVhdItem)(listAutoAttach.FocusedItem)).IsReadOnly;
             } else {
                 buttonVhdRemove.Enabled = false;
                 buttonMoveVhdUp.Enabled = false;
                 buttonMoveVhdDown.Enabled = false;
+                buttonVhdReadOnly.Enabled = false;
             }
         }
 
