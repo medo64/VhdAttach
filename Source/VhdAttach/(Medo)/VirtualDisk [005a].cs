@@ -10,17 +10,16 @@
 //2009-08-20: Added pragma warning around WaitHandle.
 //2009-08-23: Added GetSize, GetIdentifier, GetVirtualStorageType and GetProviderSubtype.
 //2010-02-12: Changed generation of Win32 API exceptions.
+//2012-03-01: Added ISO image operations (experimental).
 
 
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
-
 
 namespace Medo.IO {
 
@@ -45,6 +44,11 @@ namespace Medo.IO {
         /// Gets file name of VHD.
         /// </summary>
         public string FileName { get; private set; }
+
+        /// <summary>
+        /// Gets format of open virtual device. If device is not open, format will be AutoDetect. Once device is opened, format will change to either Iso or Vhd.
+        /// </summary>
+        public VirtualDiskFormat Format { get; private set; }
 
         /// <summary>
         /// Gets whether connection to file is currently open.
@@ -74,12 +78,46 @@ namespace Medo.IO {
         /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Open(VirtualDiskAccessMask fileAccess) {
+            this.Open(fileAccess, VirtualDiskFormat.AutoDetect);
+        }
+
+        /// <summary>
+        /// Opens connection to file.
+        /// </summary>
+        /// <param name="fileAccess">Defines required access.</param>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
+        private void Open(VirtualDiskAccessMask fileAccess, VirtualDiskFormat format) {
             var parameters = new NativeMethods.OPEN_VIRTUAL_DISK_PARAMETERS();
             parameters.Version = NativeMethods.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_1;
             parameters.Version1.RWDepth = NativeMethods.OPEN_VIRTUAL_DISK_RW_DEPTH_DEFAULT;
 
             var storageType = new NativeMethods.VIRTUAL_STORAGE_TYPE();
-            storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+            switch (format) {
+                case VirtualDiskFormat.AutoDetect:
+                    if (this.FileName.EndsWith(".iso", StringComparison.OrdinalIgnoreCase)) {
+                        storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
+                        fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
+                        fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
+                        this.Format = VirtualDiskFormat.Iso;
+                    } else {
+                        storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                        this.Format = VirtualDiskFormat.Vhd;
+                    }
+                    break;
+
+                case VirtualDiskFormat.Vhd:
+                    storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                    this.Format = VirtualDiskFormat.Vhd;
+                    break;
+
+                case VirtualDiskFormat.Iso: storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
+                    fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
+                    fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
+                    this.Format = VirtualDiskFormat.Iso;
+                    break;
+            }
             storageType.VendorId = NativeMethods.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
 
             int res = NativeMethods.OpenVirtualDisk(ref storageType, this.FileName, (NativeMethods.VIRTUAL_DISK_ACCESS_MASK)fileAccess, NativeMethods.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, ref parameters, ref _handle);
@@ -276,6 +314,8 @@ namespace Medo.IO {
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.IOException">Access is denied.</exception>
         public void Attach(VirtualDiskAttachOptions options) {
+            if (this.Format == VirtualDiskFormat.Iso) { options |= VirtualDiskAttachOptions.ReadOnly; }
+
             var parameters = new NativeMethods.ATTACH_VIRTUAL_DISK_PARAMETERS();
             parameters.Version = NativeMethods.ATTACH_VIRTUAL_DISK_VERSION.ATTACH_VIRTUAL_DISK_VERSION_1;
 
@@ -1713,7 +1753,23 @@ namespace Medo.IO {
     }
 
 
-
+    /// <summary>
+    /// Determines format of a file.
+    /// </summary>
+    public enum VirtualDiskFormat {
+        /// <summary>
+        /// Tries to open file as virtual disk unless file name ends in .iso.
+        /// </summary>
+        AutoDetect = 0,
+        /// <summary>
+        /// Forces format to be VHD.
+        /// </summary>
+        Vhd = 1,
+        /// <summary>
+        /// Forces format to be ISO.
+        /// </summary>
+        Iso = 2,
+    }
 
 
     /// <summary>

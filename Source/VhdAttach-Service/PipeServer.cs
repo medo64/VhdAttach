@@ -30,10 +30,11 @@ namespace VhdAttachService {
                     switch (packet.Operation) {
                         case "Attach": {
                                 try {
+                                    var path = packet["Path"];
                                     var isReadOnly = packet["MountReadOnly"].Equals("True", StringComparison.OrdinalIgnoreCase);
                                     var shouldInitialize = packet["InitializeDisk"].Equals("True", StringComparison.OrdinalIgnoreCase);
                                     string diskPath = null;
-                                    using (var disk = new Medo.IO.VirtualDisk(packet["Path"])) {
+                                    using (var disk = new Medo.IO.VirtualDisk(path)) {
                                         var access = Medo.IO.VirtualDiskAccessMask.All;
                                         var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
                                         if (isReadOnly) {
@@ -42,7 +43,7 @@ namespace VhdAttachService {
                                             }
                                             options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly;
                                         }
-                                        disk.Open();
+                                        disk.Open(access);
                                         disk.Attach(options);
                                         if (shouldInitialize) { diskPath = disk.GetAttachedPath(); }
                                         disk.Close();
@@ -57,7 +58,8 @@ namespace VhdAttachService {
 
                         case "Detach": {
                                 try {
-                                    using (var disk = new Medo.IO.VirtualDisk(packet["Path"])) {
+                                    var path = packet["Path"];
+                                    using (var disk = new Medo.IO.VirtualDisk(path)) {
                                         disk.Open(Medo.IO.VirtualDiskAccessMask.AttachReadOnly);
                                         disk.Detach();
                                         disk.Close();
