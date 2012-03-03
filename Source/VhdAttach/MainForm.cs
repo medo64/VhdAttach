@@ -367,7 +367,11 @@ namespace VhdAttach {
                 dialog.CheckFileExists = true;
                 dialog.CheckPathExists = true;
                 dialog.DefaultExt = "vhd";
-                dialog.Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*";
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) {
+                    dialog.Filter = "Supported files (*.vhd;*.iso)|*.vhd;*.iso|Virtual disk files (*.vhd)|*.vhd|ISO image files (*.iso)|*.iso|All files (*.*)|*.*";
+                } else {
+                    dialog.Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*";
+                }
                 dialog.Multiselect = false;
                 dialog.ShowReadOnly = false;
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
