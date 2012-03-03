@@ -82,6 +82,7 @@
     <Compile Include="AttachForm.Designer.cs">
       <DependentUpon>AttachForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LettersFromDrivePath.cs" />
     <Compile Include="ToolStripBorderlessProfessionalRenderer.cs" />
     <Compile Include="CreateFixedDiskForm.cs">
       <SubType>Form</SubType>

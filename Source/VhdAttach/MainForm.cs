@@ -182,21 +182,36 @@ namespace VhdAttach {
                         attachedPath = document.GetAttachedPath();
 
                         try {
-                            int physicalDrive;
+                            int driveNumber;
                             if (attachedPath.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture)) {
-                                if (int.TryParse(attachedPath.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out physicalDrive)) {
-                                    attachedPathLetters = GetPathLetters(physicalDrive);
+                                if (int.TryParse(attachedPath.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+                                    attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
                                     if (string.IsNullOrEmpty(attachedPathLetters)) {
                                         Thread.Sleep(1000);
-                                        attachedPathLetters = GetPathLetters(physicalDrive);
+                                        attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
                                     }
                                     if (string.IsNullOrEmpty(attachedPathLetters)) {
                                         Thread.Sleep(1000);
-                                        attachedPathLetters = GetPathLetters(physicalDrive);
+                                        attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
                                     }
                                     if (string.IsNullOrEmpty(attachedPathLetters)) {
                                         Thread.Sleep(1000);
-                                        attachedPathLetters = GetPathLetters(physicalDrive);
+                                        attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
+                                    }
+                                }
+                            } else if (attachedPath.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture)) {
+                                if (int.TryParse(attachedPath.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
+                                        Thread.Sleep(1000);
+                                        attachedPathLetters = string.Join(",", LettersFromDrivePath.GetLetters(attachedPath));
+                                    }
+                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
+                                        Thread.Sleep(1000);
+                                        attachedPathLetters = string.Join(",", GetCdromLetters(driveNumber));
+                                    }
+                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
+                                        Thread.Sleep(1000);
+                                        attachedPathLetters = string.Join(",", GetCdromLetters(driveNumber));
                                     }
                                 }
                             }
@@ -331,13 +346,34 @@ namespace VhdAttach {
             this.Text = GetFileTitle(vhdFileName) + " - " + Medo.Reflection.EntryAssembly.Title;
         }
 
-        private string GetPathLetters(int physicalDrive) {
+        private string GetPhysicalDriveLetters(int driveNumber) {
             var attachedPathLetters = new StringBuilder();
-            foreach (var letter in GetDriveLetters(physicalDrive)) {
+            foreach (var letter in GetDriveLetters(driveNumber)) {
                 if (attachedPathLetters.Length > 0) { attachedPathLetters.Append(", "); }
                 attachedPathLetters.Append(letter + ":");
             }
             return attachedPathLetters.ToString();
+        }
+
+        private string[] GetCdromLetters(int driveNumber) {
+            var list = new List<string>();
+
+            var wmiQuery = new ObjectQuery("SELECT * FROM Win32_LogicalDisk where DriveType=5");
+            using (var wmiSearcher = new ManagementObjectSearcher(wmiQuery)) {
+                foreach (var iReturn in wmiSearcher.Get()) {
+                    var antecedent = GetSubsubstring(iReturn["Antecedent"] as string, "Win32_PhysicalMedia.Tag", "", ""); 
+                    var dependent = iReturn["Dependent"].ToString();
+                    int number;
+                    //if (int.TryParse(port, NumberStyles.Integer, CultureInfo.InvariantCulture, out number)) {
+                    //    if (driveNumber == number) {
+                    //        var drive = iReturn["Drive"].ToString();
+                    //        list.Add(drive);
+                    //    }
+                    //}
+                }
+            }
+
+            return list.ToArray();
         }
 
         private IEnumerable<char> GetDriveLetters(int physicalDrive) {
