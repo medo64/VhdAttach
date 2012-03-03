@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -176,52 +175,19 @@ namespace VhdAttach {
                     } catch { }
 
                     document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo);
-                    string attachedPath = null;
-                    string attachedPathLetters = null;
+                    string attachedDevice = null;
+                    string[] attachedPaths = null;
                     try {
-                        attachedPath = document.GetAttachedPath();
-
-                        try {
-                            int driveNumber;
-                            if (attachedPath.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture)) {
-                                if (int.TryParse(attachedPath.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
-                                    attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
-                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
-                                        Thread.Sleep(1000);
-                                        attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
-                                    }
-                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
-                                        Thread.Sleep(1000);
-                                        attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
-                                    }
-                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
-                                        Thread.Sleep(1000);
-                                        attachedPathLetters = GetPhysicalDriveLetters(driveNumber);
-                                    }
-                                }
-                            } else if (attachedPath.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture)) {
-                                if (int.TryParse(attachedPath.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
-                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
-                                        Thread.Sleep(1000);
-                                        attachedPathLetters = string.Join(",", LettersFromDrivePath.GetLetters(attachedPath));
-                                    }
-                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
-                                        Thread.Sleep(1000);
-                                        attachedPathLetters = string.Join(",", GetCdromLetters(driveNumber));
-                                    }
-                                    if (string.IsNullOrEmpty(attachedPathLetters)) {
-                                        Thread.Sleep(1000);
-                                        attachedPathLetters = string.Join(",", GetCdromLetters(driveNumber));
-                                    }
-                                }
-                            }
-                        } catch { }
+                        attachedDevice = document.GetAttachedPath();
+                        attachedPaths = LettersFromDrivePath.GetLetters(attachedDevice);
                     } catch { }
-                    if (attachedPath != null) {
-                        items.Add(new ListViewItem(new string[] { "Attached path", attachedPath }) { Group = GroupFileSystem });
+                    if (attachedDevice != null) {
+                        items.Add(new ListViewItem(new string[] { "Attached device", attachedDevice }) { Group = GroupFileSystem });
                     }
-                    if (string.IsNullOrEmpty(attachedPathLetters) == false) {
-                        items.Add(new ListViewItem(new string[] { "Attached drive", attachedPathLetters }) { Group = GroupFileSystem });
+                    if (attachedPaths != null) {
+                        for (int i = 0; i < attachedPaths.Length; i++) {
+                            items.Add(new ListViewItem(new string[] { ((i == 0) ? "Attached path" : ""), attachedPaths[i] }) { Group = GroupFileSystem });
+                        }
                     }
 
                     try {
@@ -312,7 +278,7 @@ namespace VhdAttach {
                     }
 
 
-                    mnuAttach.Enabled = string.IsNullOrEmpty(attachedPath);
+                    mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
                     mnuDetach.Enabled = !mnuAttach.Enabled;
                     mnuAutoMount.Enabled = true;
 
@@ -344,52 +310,6 @@ namespace VhdAttach {
 
 
             this.Text = GetFileTitle(vhdFileName) + " - " + Medo.Reflection.EntryAssembly.Title;
-        }
-
-        private string GetPhysicalDriveLetters(int driveNumber) {
-            var attachedPathLetters = new StringBuilder();
-            foreach (var letter in GetDriveLetters(driveNumber)) {
-                if (attachedPathLetters.Length > 0) { attachedPathLetters.Append(", "); }
-                attachedPathLetters.Append(letter + ":");
-            }
-            return attachedPathLetters.ToString();
-        }
-
-        private string[] GetCdromLetters(int driveNumber) {
-            var list = new List<string>();
-
-            var wmiQuery = new ObjectQuery("SELECT * FROM Win32_LogicalDisk where DriveType=5");
-            using (var wmiSearcher = new ManagementObjectSearcher(wmiQuery)) {
-                foreach (var iReturn in wmiSearcher.Get()) {
-                    var antecedent = GetSubsubstring(iReturn["Antecedent"] as string, "Win32_PhysicalMedia.Tag", "", ""); 
-                    var dependent = iReturn["Dependent"].ToString();
-                    int number;
-                    //if (int.TryParse(port, NumberStyles.Integer, CultureInfo.InvariantCulture, out number)) {
-                    //    if (driveNumber == number) {
-                    //        var drive = iReturn["Drive"].ToString();
-                    //        list.Add(drive);
-                    //    }
-                    //}
-                }
-            }
-
-            return list.ToArray();
-        }
-
-        private IEnumerable<char> GetDriveLetters(int physicalDrive) {
-            var wmiQuery = new ObjectQuery("SELECT Antecedent, Dependent FROM Win32_LogicalDiskToPartition");
-            using (var wmiSearcher = new ManagementObjectSearcher(wmiQuery)) {
-                foreach (var iReturn in wmiSearcher.Get()) {
-                    var disk = GetSubsubstring((string)iReturn["Antecedent"], "Win32_DiskPartition.DeviceID", "Disk #", ",");
-                    var partition = GetSubsubstring((string)iReturn["Dependent"], "Win32_LogicalDisk.DeviceID", "", "");
-                    int diskNumber;
-                    if (int.TryParse(disk, NumberStyles.Integer, CultureInfo.InvariantCulture, out diskNumber)) {
-                        if (physicalDrive == diskNumber) {
-                            yield return partition[0];
-                        }
-                    }
-                }
-            }
         }
 
         private void UpdateRecent() {
@@ -623,13 +543,19 @@ namespace VhdAttach {
                 foreach (ListViewItem item in list.SelectedItems) {
                     var key = item.Text;
                     if (key.Length < maxLength) {
-                        key += " ";
-                        if (key.Length < maxLength) {
-                            key += new string('.', maxLength - key.Length);
+                        if (key.Length > 0) {
+                            key += " ";
+                            if (key.Length < maxLength) {
+                                key += new string('.', maxLength - key.Length);
+                            }
                         }
                     }
                     var value = item.SubItems[1].Text;
-                    sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, value));
+                    if (key.Length > 0) {
+                        sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", key, value));
+                    } else {
+                        sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0}  {1}", new string(' ', maxLength), value));
+                    }
                 }
                 Clipboard.SetText(sb.ToString());
             }
@@ -708,26 +634,6 @@ namespace VhdAttach {
             this.Cursor = Cursors.Default;
         }
 
-
-        private string GetSubsubstring(string value, string type, string start, string end) {
-            var xStart0 = value.IndexOf(":" + type + "=\"");
-            if (xStart0 < 0) { return null; }
-            var xStart1 = value.IndexOf("\"", xStart0 + 1);
-            if (xStart1 < 0) { return null; }
-            var xEnd1 = value.IndexOf("\"", xStart1 + 1);
-            if (xEnd1 < 0) { return null; }
-            var extract = value.Substring(xStart1 + 1, xEnd1 - xStart1 - 1);
-
-            int xStart2 = 0;
-            if (!string.IsNullOrEmpty(start)) { xStart2 = extract.IndexOf(start); }
-            if (xStart2 < 0) { return null; }
-
-            int xEnd2 = extract.Length;
-            if (!string.IsNullOrEmpty(end)) { xEnd2 = extract.IndexOf(end); }
-            if (xEnd2 < 0) { return null; }
-
-            return extract.Substring(xStart2 + start.Length, xEnd2 - xStart2 - start.Length);
-        }
 
         private static void AllowSetForegroundWindowToExplorer() {
             var pathToExplorer = Path.Combine(Environment.GetEnvironmentVariable("SystemRoot"), "explorer.exe");
