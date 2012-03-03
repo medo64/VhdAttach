@@ -179,7 +179,7 @@ namespace VhdAttach {
                     string[] attachedPaths = null;
                     try {
                         attachedDevice = document.GetAttachedPath();
-                        attachedPaths = LettersFromDrivePath.GetLetters(attachedDevice);
+                        attachedPaths = PathFromDevice.GetPath(attachedDevice);
                     } catch { }
                     if (attachedDevice != null) {
                         items.Add(new ListViewItem(new string[] { "Attached device", attachedDevice }) { Group = GroupFileSystem });

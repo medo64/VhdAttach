@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace VhdAttach {
-    internal static class LettersFromDrivePath {
+    internal static class PathFromDevice {
 
-        public static string[] GetLetters(string drivePath) {
+        public static string[] GetPath(string device) {
             int driveNumber;
-            if (drivePath.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture) && int.TryParse(drivePath.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+            if (device.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture) && int.TryParse(device.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
                 return GetLettersFromPhysicalDrive(driveNumber);
-            } else if (drivePath.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(drivePath.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+            } else if (device.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(device.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
                 return GetLettersFromCdRom(driveNumber);
             } else {
                 return null;
@@ -92,8 +92,6 @@ namespace VhdAttach {
             return null;
         }
 
-        #endregion
-
 
         private static class NativeMethods {
 
@@ -104,6 +102,8 @@ namespace VhdAttach {
                 UInt32 ucchMax);
 
         }
+
+        #endregion
 
     }
 }

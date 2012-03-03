@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Management;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Medo.Net;
@@ -143,36 +142,7 @@ namespace VhdAttachService {
 
 
         private static void DetachDrive(string path) {
-            FileSystemInfo iDirectory = null;
-            var wmiQuery = new ObjectQuery("SELECT Antecedent, Dependent FROM Win32_LogicalDiskToPartition");
-            var wmiSearcher = new ManagementObjectSearcher(wmiQuery);
-
-            var iFile = new FileInfo(path);
-            try {
-                if ((iFile.Attributes & FileAttributes.Directory) == FileAttributes.Directory) {
-                    iDirectory = new DirectoryInfo(iFile.FullName);
-                } else {
-                    iDirectory = iFile;
-                    throw new FormatException("Argument is not a directory.");
-                }
-            } catch (IOException) {
-                iDirectory = new DirectoryInfo(iFile.FullName);
-            }
-
-
-            var wmiPhysicalDiskNumber = -1;
-            foreach (var iReturn in wmiSearcher.Get()) {
-                var disk = GetSubsubstring((string)iReturn["Antecedent"], "Win32_DiskPartition.DeviceID", "Disk #", ",");
-                var partition = GetSubsubstring((string)iReturn["Dependent"], "Win32_LogicalDisk.DeviceID", "", "");
-                if (iDirectory.Name.StartsWith(partition, StringComparison.InvariantCultureIgnoreCase)) {
-                    if (int.TryParse(disk, NumberStyles.Integer, CultureInfo.InvariantCulture, out wmiPhysicalDiskNumber)) {
-                        break;
-                    } else {
-                        throw new FormatException("Cannot retrieve physical disk number.");
-                    }
-                }
-            }
-
+            var device = DeviceFromPath.GetDevice(path);
 
             #region VDS COM
 
@@ -218,14 +188,9 @@ namespace VhdAttachService {
                         VDS_DISK_PROP diskProperties;
                         disk.GetProperties(out diskProperties);
 
-                        if (diskProperties.pwszName.StartsWith(@"\\?\PhysicalDrive")) {
-                            int vdsDiskNumber;
-                            if (int.TryParse(diskProperties.pwszName.Substring(17), NumberStyles.Integer, CultureInfo.CurrentCulture, out vdsDiskNumber)) {
-                                if (vdsDiskNumber == wmiPhysicalDiskNumber) {
-                                    vhdFile = new FileInfo(vdiskProperties.pPath);
-                                    break;
-                                }
-                            }
+                        if (diskProperties.pwszName.Equals(device, StringComparison.OrdinalIgnoreCase)) {
+                            vhdFile = new FileInfo(vdiskProperties.pPath);
+                            break;
                         } else {
                             Trace.TraceError(diskProperties.pwszName + " = " + vdiskProperties.pPath);
                         }
@@ -238,7 +203,6 @@ namespace VhdAttachService {
 
             #endregion
 
-
             if (vhdFile != null) {
                 using (var disk = new Medo.IO.VirtualDisk(vhdFile.FullName)) {
                     disk.Open();
@@ -248,26 +212,6 @@ namespace VhdAttachService {
             } else {
                 throw new FormatException(string.Format("Drive \"{0}\" is not a virtual hard disk.", path));
             }
-        }
-
-        private static string GetSubsubstring(string value, string type, string start, string end) {
-            var xStart0 = value.IndexOf(":" + type + "=\"");
-            if (xStart0 < 0) { return null; }
-            var xStart1 = value.IndexOf("\"", xStart0 + 1);
-            if (xStart1 < 0) { return null; }
-            var xEnd1 = value.IndexOf("\"", xStart1 + 1);
-            if (xEnd1 < 0) { return null; }
-            var extract = value.Substring(xStart1 + 1, xEnd1 - xStart1 - 1);
-
-            int xStart2 = 0;
-            if (!string.IsNullOrEmpty(start)) { xStart2 = extract.IndexOf(start); }
-            if (xStart2 < 0) { return null; }
-
-            int xEnd2 = extract.Length;
-            if (!string.IsNullOrEmpty(end)) { xEnd2 = extract.IndexOf(end); }
-            if (xEnd2 < 0) { return null; }
-
-            return extract.Substring(xStart2 + start.Length, xEnd2 - xStart2 - start.Length);
         }
 
 

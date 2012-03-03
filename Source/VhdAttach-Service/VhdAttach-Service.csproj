@@ -71,6 +71,7 @@
     <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="DeviceFromPath.cs" />
     <Compile Include="DiskIO.cs" />
     <Compile Include="PipeServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
