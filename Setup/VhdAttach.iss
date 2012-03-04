@@ -40,7 +40,8 @@ Name: "{userstartmenu}\VHD Attach";  Filename: "{app}\VhdAttach.exe"
 [Registry]
 Root: HKCU;  Subkey: "Software\Josip Medved";                                                                                                          Flags: uninsdeletekeyifempty
 Root: HKCU;  Subkey: "Software\Josip Medved\VhdAttach";               ValueType: none;                                                                 Flags: deletekey uninsdeletekey;
-Root: HKCU;  Subkey: "Software\Josip Medved\VHD Attach";              ValueType: dword;   ValueName: "Installed";         ValueData: "1";              Flags: uninsdeletekey
+Root: HKCU;  Subkey: "Software\Josip Medved\VHD Attach";              ValueType: none;    ValueName: "Installed";                                      Flags: deletevalue uninsdeletevalue
+Root: HKLM;  Subkey: "Software\Josip Medved\VHD Attach";              ValueType: dword;   ValueName: "Installed";         ValueData: "1";              Flags: uninsdeletekey
 
 Root: HKCR;  Subkey: ".vhd";                                          ValueType: string;  ValueName: "";                  ValueData: "VhdAttachFile";  Flags: uninsclearvalue;
 
