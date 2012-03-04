@@ -52,11 +52,17 @@ namespace VhdAttach {
             this.mnuRefresh = new System.Windows.Forms.ToolStripButton();
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.staStolenExtension = new System.Windows.Forms.StatusStrip();
-            this.staStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.staErrorStolenExtension = new System.Windows.Forms.StatusStrip();
+            this.staErrorStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.staErrorServiceMissing = new System.Windows.Forms.StatusStrip();
+            this.staErrorServiceMissingText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.staErrorServiceNotRunning = new System.Windows.Forms.StatusStrip();
+            this.staErrorServiceNotRunningText = new System.Windows.Forms.ToolStripStatusLabel();
             this.mnxList.SuspendLayout();
             this.mnu.SuspendLayout();
-            this.staStolenExtension.SuspendLayout();
+            this.staErrorStolenExtension.SuspendLayout();
+            this.staErrorServiceMissing.SuspendLayout();
+            this.staErrorServiceNotRunning.SuspendLayout();
             this.SuspendLayout();
             // 
             // list
@@ -304,35 +310,78 @@ namespace VhdAttach {
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
             // 
-            // staStolenExtension
+            // staErrorStolenExtension
             // 
-            this.staStolenExtension.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.staStolenExtensionText});
-            this.staStolenExtension.Location = new System.Drawing.Point(0, 350);
-            this.staStolenExtension.Name = "staStolenExtension";
-            this.staStolenExtension.Size = new System.Drawing.Size(582, 25);
-            this.staStolenExtension.TabIndex = 3;
-            this.staStolenExtension.Text = "statusStrip1";
-            this.staStolenExtension.Visible = false;
+            this.staErrorStolenExtension.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.staErrorStolenExtensionText});
+            this.staErrorStolenExtension.Location = new System.Drawing.Point(0, 370);
+            this.staErrorStolenExtension.Name = "staErrorStolenExtension";
+            this.staErrorStolenExtension.Size = new System.Drawing.Size(582, 25);
+            this.staErrorStolenExtension.TabIndex = 3;
+            this.staErrorStolenExtension.Visible = false;
             // 
-            // staStolenExtensionText
+            // staErrorStolenExtensionText
             // 
-            this.staStolenExtensionText.Image = ((System.Drawing.Image)(resources.GetObject("staStolenExtensionText.Image")));
-            this.staStolenExtensionText.IsLink = true;
-            this.staStolenExtensionText.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.staStolenExtensionText.Margin = new System.Windows.Forms.Padding(1, 3, 0, 2);
-            this.staStolenExtensionText.Name = "staStolenExtensionText";
-            this.staStolenExtensionText.Size = new System.Drawing.Size(370, 20);
-            this.staStolenExtensionText.Text = "Another application is registered for VHD extension.";
-            this.staStolenExtensionText.Click += new System.EventHandler(this.staStolenExtensionText_Click);
+            this.staErrorStolenExtensionText.Image = ((System.Drawing.Image)(resources.GetObject("staErrorStolenExtensionText.Image")));
+            this.staErrorStolenExtensionText.IsLink = true;
+            this.staErrorStolenExtensionText.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.staErrorStolenExtensionText.Margin = new System.Windows.Forms.Padding(1, 3, 0, 2);
+            this.staErrorStolenExtensionText.Name = "staErrorStolenExtensionText";
+            this.staErrorStolenExtensionText.Size = new System.Drawing.Size(370, 20);
+            this.staErrorStolenExtensionText.Text = "Another application is registered for VHD extension.";
+            this.staErrorStolenExtensionText.Click += new System.EventHandler(this.staStolenExtensionText_Click);
+            // 
+            // staErrorServiceMissing
+            // 
+            this.staErrorServiceMissing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.staErrorServiceMissingText});
+            this.staErrorServiceMissing.Location = new System.Drawing.Point(0, 370);
+            this.staErrorServiceMissing.Name = "staErrorServiceMissing";
+            this.staErrorServiceMissing.Size = new System.Drawing.Size(582, 25);
+            this.staErrorServiceMissing.TabIndex = 4;
+            this.staErrorServiceMissing.Visible = false;
+            // 
+            // staErrorServiceMissingText
+            // 
+            this.staErrorServiceMissingText.Image = ((System.Drawing.Image)(resources.GetObject("staErrorServiceMissingText.Image")));
+            this.staErrorServiceMissingText.IsLink = true;
+            this.staErrorServiceMissingText.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.staErrorServiceMissingText.Margin = new System.Windows.Forms.Padding(1, 3, 0, 2);
+            this.staErrorServiceMissingText.Name = "staErrorServiceMissingText";
+            this.staErrorServiceMissingText.Size = new System.Drawing.Size(274, 20);
+            this.staErrorServiceMissingText.Text = "Service is not installed. Click to install.";
+            this.staErrorServiceMissingText.Click += new System.EventHandler(this.staErrorServiceMissingText_Click);
+            // 
+            // staErrorServiceNotRunning
+            // 
+            this.staErrorServiceNotRunning.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.staErrorServiceNotRunningText});
+            this.staErrorServiceNotRunning.Location = new System.Drawing.Point(0, 370);
+            this.staErrorServiceNotRunning.Name = "staErrorServiceNotRunning";
+            this.staErrorServiceNotRunning.Size = new System.Drawing.Size(582, 25);
+            this.staErrorServiceNotRunning.TabIndex = 5;
+            this.staErrorServiceNotRunning.Visible = false;
+            // 
+            // staErrorServiceNotRunningText
+            // 
+            this.staErrorServiceNotRunningText.Image = ((System.Drawing.Image)(resources.GetObject("staErrorServiceNotRunningText.Image")));
+            this.staErrorServiceNotRunningText.IsLink = true;
+            this.staErrorServiceNotRunningText.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.staErrorServiceNotRunningText.Margin = new System.Windows.Forms.Padding(1, 3, 0, 2);
+            this.staErrorServiceNotRunningText.Name = "staErrorServiceNotRunningText";
+            this.staErrorServiceNotRunningText.Size = new System.Drawing.Size(258, 20);
+            this.staErrorServiceNotRunningText.Text = "Service is not running. Click to start.";
+            this.staErrorServiceNotRunningText.Click += new System.EventHandler(this.staErrorServiceNotRunningText_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 395);
-            this.Controls.Add(this.staStolenExtension);
             this.Controls.Add(this.list);
+            this.Controls.Add(this.staErrorServiceMissing);
+            this.Controls.Add(this.staErrorServiceNotRunning);
+            this.Controls.Add(this.staErrorStolenExtension);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -345,8 +394,12 @@ namespace VhdAttach {
             this.mnxList.ResumeLayout(false);
             this.mnu.ResumeLayout(false);
             this.mnu.PerformLayout();
-            this.staStolenExtension.ResumeLayout(false);
-            this.staStolenExtension.PerformLayout();
+            this.staErrorStolenExtension.ResumeLayout(false);
+            this.staErrorStolenExtension.PerformLayout();
+            this.staErrorServiceMissing.ResumeLayout(false);
+            this.staErrorServiceMissing.PerformLayout();
+            this.staErrorServiceNotRunning.ResumeLayout(false);
+            this.staErrorServiceNotRunning.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -380,9 +433,13 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
         private System.Windows.Forms.ToolStripMenuItem mnuAppDonate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-        private System.Windows.Forms.StatusStrip staStolenExtension;
-        private System.Windows.Forms.ToolStripStatusLabel staStolenExtensionText;
+        private System.Windows.Forms.StatusStrip staErrorStolenExtension;
+        private System.Windows.Forms.ToolStripStatusLabel staErrorStolenExtensionText;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.StatusStrip staErrorServiceMissing;
+        private System.Windows.Forms.ToolStripStatusLabel staErrorServiceMissingText;
+        private System.Windows.Forms.StatusStrip staErrorServiceNotRunning;
+        private System.Windows.Forms.ToolStripStatusLabel staErrorServiceNotRunningText;
     }
 }
 

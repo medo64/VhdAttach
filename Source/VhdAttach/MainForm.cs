@@ -12,6 +12,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Medo.Extensions;
 using Medo.Localization.Croatia;
+using System.ServiceProcess;
 
 namespace VhdAttach {
 
@@ -131,7 +132,9 @@ namespace VhdAttach {
             Medo.Windows.Forms.State.Load(this, list);
             OpenFromCommandLineArgs();
             UpdateRecent();
-            staStolenExtension.Visible = !ServiceSettings.ContextMenu;
+
+            CheckErrors();
+
             Form_Resize(null, null);
         }
 
@@ -391,6 +394,7 @@ namespace VhdAttach {
 
         private void mnuRefresh_Click(object sender, EventArgs e) {
             UpdateData(this.VhdFileName);
+            CheckErrors();
         }
 
         private void mnuAttach_ButtonClick(object sender, EventArgs e) {
@@ -492,7 +496,7 @@ namespace VhdAttach {
         private void mnuOptions_Click(object sender, EventArgs e) {
             using (var form = new SettingsForm()) {
                 if (form.ShowDialog(this) == DialogResult.OK) {
-                    staStolenExtension.Visible = !ServiceSettings.ContextMenu;
+                    staErrorStolenExtension.Visible = !ServiceSettings.ContextMenu;
                     UpdateData(this.VhdFileName);
                 }
             }
@@ -695,6 +699,46 @@ namespace VhdAttach {
             mnuOptions_Click(null, null);
         }
 
+        private void staErrorServiceMissingText_Click(object sender, EventArgs e) {
+            try {
+                var directory = (new FileInfo(Assembly.GetExecutingAssembly().Location)).DirectoryName;
+                Process.Start(Path.Combine(directory, "VhdAttachService.exe"), "/Install").WaitForExit();
+            } catch (Exception ex) {
+                Medo.MessageBox.ShowWarning(this, string.Format("Cannot install service.\n\n{0}", ex.Message));
+            }
+            CheckErrors();
+        }
+
+        private void staErrorServiceNotRunningText_Click(object sender, EventArgs e) {
+            try {
+                var directory = (new FileInfo(Assembly.GetExecutingAssembly().Location)).DirectoryName;
+                Process.Start(Path.Combine(directory, "VhdAttachService.exe"), "/Start").WaitForExit();
+            } catch (Exception ex) {
+                Medo.MessageBox.ShowWarning(this, string.Format("Cannot install service.\n\n{0}", ex.Message));
+            }
+            CheckErrors();
+        }
+
+
+        private void CheckErrors() {
+            staErrorStolenExtension.Visible = false;
+            staErrorServiceMissing.Visible = false;
+            staErrorServiceNotRunning.Visible = false;
+
+            using (var service = new ServiceController("VhdAttach")) {
+                try {
+                    if (service.Status != ServiceControllerStatus.Running) {
+                        staErrorServiceNotRunning.Visible = true;
+                    }
+                } catch (InvalidOperationException) {
+                    staErrorServiceMissing.Visible = true;
+                }
+            }
+
+            if (ServiceSettings.ContextMenu == false) {
+                staErrorStolenExtension.Visible = true;
+            }
+        }
 
         private void ToggleMenu() {
             if (mnu.ContainsFocus) {

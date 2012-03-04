@@ -48,6 +48,18 @@ namespace VhdAttachService {
                     System.Environment.Exit(1);
                 }
 
+            } else if (Medo.Application.Args.Current.ContainsKey("Start")) {
+
+                try {
+                    using (var service = new ServiceController("VhdAttach")) {
+                        if (service.Status != ServiceControllerStatus.Running) {
+                            service.Start();
+                            service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 1));
+                        }
+                    }
+                } catch (Exception) { }
+                System.Environment.Exit(0);
+
             } else {
 
                 if (Environment.UserInteractive) {
