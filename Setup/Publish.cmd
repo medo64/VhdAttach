@@ -24,7 +24,7 @@ ECHO.
 IF [%CERTIFICATE_TIMESTAMP%]==[] (
     "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /v %FILES_EXECUTABLE%
 ) ELSE (
-    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /t %CERTIFICATE_TIMESTAMP% /v %FILES_EXECUTABLE%
+    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /tr %CERTIFICATE_TIMESTAMP% /v %FILES_EXECUTABLE%
 )
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
@@ -50,7 +50,7 @@ ECHO.
 IF [%CERTIFICATE_TIMESTAMP%]==[] (
     "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /v ".\Temp\%_SETUPEXE%"
 ) ELSE (
-    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /t %CERTIFICATE_TIMESTAMP% /v ".\Temp\%_SETUPEXE%"
+    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /tr %CERTIFICATE_TIMESTAMP% /v ".\Temp\%_SETUPEXE%"
 )
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
