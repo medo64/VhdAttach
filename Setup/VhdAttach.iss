@@ -92,4 +92,5 @@ var
     ResultCode: Integer;
 begin
     Exec(ExpandConstant('{app}\VhdAttachService.exe'), '/Uninstall', '', SW_SHOW, ewWaitUntilTerminated, ResultCode)
+    Result := Result;
 end;
