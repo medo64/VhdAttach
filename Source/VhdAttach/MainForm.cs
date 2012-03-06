@@ -508,9 +508,7 @@ namespace VhdAttach {
         }
 
         private void mnuAppUpgrade_Click(object sender, EventArgs e) {
-            using (var frm = new UpgradeForm()) {
-                frm.ShowDialog(this);
-            }
+            Medo.Services.Upgrade.ShowDialog(this, new Uri("http://jmedved.com/upgrade/"));
         }
 
         private void mnuAppDonate_Click(object sender, EventArgs e) {

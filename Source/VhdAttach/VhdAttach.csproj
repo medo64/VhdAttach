@@ -57,7 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="%28Medo%29\AboutBox [011].cs" />
+    <Compile Include="%28Medo%29\AboutBox [012].cs" />
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\BinaryPrefixExtensions [002x].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
@@ -72,6 +72,7 @@
     <Compile Include="%28Medo%29\TaskbarProgress [002].cs" />
     <Compile Include="%28Medo%29\TinyMessage [005].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
+    <Compile Include="%28Medo%29\Upgrade [001].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005a].cs" />
     <Compile Include="..\VhdAttach-Service\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
@@ -129,12 +130,6 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolStripBorderlessSystemRenderer.cs" />
-    <Compile Include="UpgradeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UpgradeForm.Designer.cs">
-      <DependentUpon>UpgradeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utility.cs" />
     <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest">
@@ -168,9 +163,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpgradeForm.resx">
-      <DependentUpon>UpgradeForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
