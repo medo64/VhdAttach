@@ -1,19 +1,20 @@
 //Copyright (c) 2012 Josip Medved <jmedved@jmedved.com>
 
 //2012-03-05: Initial version.
+//2012-03-13: UI adjustments.
 
 
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
 using System.Threading;
-using System.Globalization;
+using System.Windows.Forms;
 
 namespace Medo.Services {
 
@@ -169,7 +170,7 @@ namespace Medo.Services {
                 this.Controls.Add(btnDownload);
                 this.Controls.Add(btnCancel);
 
-                var width = 7 + btnUpgrade.Width + 7 + btnDownload.Width + 21 + btnCancel.Width + 7;
+                var width = 7 + btnUpgrade.Width + 7 + btnDownload.Width + 5 * 7 + btnCancel.Width + 7;
                 var height = 7 + prgProgress.Height + 7 + lblStatus.Height + 21 + btnCancel.Height + 7;
                 this.ClientSize = new Size(width, height);
 
@@ -196,6 +197,10 @@ namespace Medo.Services {
 
 
             void Form_FormClosing(object sender, FormClosingEventArgs e) {
+                prgProgress.Style = ProgressBarStyle.Continuous;
+                prgProgress.Value = 0;
+                lblStatus.Text = Resources.StatusCancelling;
+                btnCancel.Enabled = false;
                 if (this.bwCheck.IsBusy) { this.bwCheck.CancelAsync(); }
                 if (this.bwDownload.IsBusy) { this.bwDownload.CancelAsync(); }
                 e.Cancel = (this.bwCheck.IsBusy) || (this.bwDownload.IsBusy);
@@ -228,13 +233,14 @@ namespace Medo.Services {
                             lblStatus.Text = Resources.StatusUpgradeIsAvailable;
                             btnUpgrade.Visible = true;
                             btnDownload.Visible = true;
+                            btnUpgrade.Focus();
                         } else {
                             lblStatus.Text = Resources.StatusUpgradeIsNotAvailable;
                             btnCancel.DialogResult = DialogResult.OK;
                             btnCancel.Text = Resources.Close;
                         }
                     } else {
-                        MessageBox.ShowDialog(this, Resources.ErrorCannotCheck + "\n\n" + e.Error.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.ShowDialog(this, Resources.ErrorCannotCheck + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         this.DialogResult = DialogResult.Cancel;
                     }
                 } else {
@@ -302,7 +308,7 @@ namespace Medo.Services {
                                 System.Windows.Forms.Application.Exit();
                                 this.DialogResult = DialogResult.OK;
                             } catch (Win32Exception ex) {
-                                MessageBox.ShowDialog(this, Resources.ErrorCannotUpgrade + "\n\n" + ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.ShowDialog(this, Resources.ErrorCannotUpgrade + "\n\n" + ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 this.DialogResult = DialogResult.Cancel;
                             }
                         } else {
@@ -317,7 +323,7 @@ namespace Medo.Services {
                             }
                         }
                     } else {
-                        MessageBox.ShowDialog(this, Resources.ErrorCannotDownload + "\n\n" + e.Error.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.ShowDialog(this, Resources.ErrorCannotDownload + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         this.DialogResult = DialogResult.Cancel;
                     }
                 } else {
@@ -355,6 +361,7 @@ namespace Medo.Services {
             internal static string ErrorCannotUpgrade { get { return GetInCurrentLanguage("Cannot upgrade.", "Nadogradnja nije moguæa."); } }
             internal static string ErrorCannotDownload { get { return GetInCurrentLanguage("Cannot download upgrade.", "Nije moguæe preuzeti nadogradnju."); } }
             internal static string StatusChecking { get { return GetInCurrentLanguage("Checking for upgrade...", "Provjera nadogradnje u tijeku..."); } }
+            internal static string StatusCancelling { get { return GetInCurrentLanguage("Cancelling...", "Odustajanje u tijeku..."); } }
             internal static string StatusDownloading { get { return GetInCurrentLanguage("Download in progress...", "Preuzimanje u tijeku..."); } }
             internal static string StatusUpgradeIsAvailable { get { return GetInCurrentLanguage("Upgrade is available.", "Nadogradnja je dostupna."); } }
             internal static string StatusUpgradeIsNotAvailable { get { return GetInCurrentLanguage("Upgrade is not available.", "Nadogradnja nije dostupna."); } }
@@ -450,5 +457,4 @@ namespace Medo.Services {
         }
 
     }
-
 }

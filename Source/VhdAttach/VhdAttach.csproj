@@ -72,7 +72,7 @@
     <Compile Include="%28Medo%29\TaskbarProgress [002].cs" />
     <Compile Include="%28Medo%29\TinyMessage [005].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="%28Medo%29\Upgrade [001].cs" />
+    <Compile Include="%28Medo%29\Upgrade [002].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005a].cs" />
     <Compile Include="..\VhdAttach-Service\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
