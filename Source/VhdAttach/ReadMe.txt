@@ -23,9 +23,9 @@ SHORTCUT KEYS
 
 VERSION HISTORY
 
-    3.20 (2012-03-11)
+    3.20 (2012-03-15)
 
-        o Added read-only mounting.
+        o Added read-only mounting on startup.
         o Added experimental Windows 8 support (with ISO mounting).
 
     3.11 (2012-02-27)
