@@ -5,7 +5,7 @@ SET         FILE_SOLUTION="..\Source\VhdAttach.sln"
 SET      FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.exe"
 SET           FILES_OTHER="..\Binaries\ReadMe.txt"
 SET   CERTIFICATE_SUBJECT="Josip Medved"
-SET CERTIFICATE_TIMESTAMP=
+SET CERTIFICATE_TIMESTAMP="http://www.startssl.com/timestamp/"
 
 
 ECHO --- BUILD SOLUTION

@@ -1,14 +1,25 @@
+#define AppName        GetStringFileInfo('..\Binaries\VhdAttach.exe', 'ProductName')
+#define AppVersion     GetStringFileInfo('..\Binaries\VhdAttach.exe', 'ProductVersion')
+#define AppFileVersion GetStringFileInfo('..\Binaries\VhdAttach.exe', 'FileVersion')
+#define AppCompany     GetStringFileInfo('..\Binaries\VhdAttach.exe', 'CompanyName')
+#define AppCopyright   GetStringFileInfo('..\Binaries\VhdAttach.exe', 'LegalCopyright')
+
 [Setup]
-AppName=VHD Attach
-AppVerName=VHD Attach 0.00
-DefaultDirName={pf}\Josip Medved\VHD Attach
+AppName={#AppName}
+AppVersion={#AppVersion}
+AppVerName={#AppName} {#AppVersion}
+AppPublisher={#AppCompany}
+AppPublisherURL=http://www.jmedved.com/vhdattach/
+AppCopyright={#AppCopyright}
+VersionInfoProductVersion={#AppVersion}
+VersionInfoProductTextVersion={#AppVersion}
+VersionInfoVersion={#AppFileVersion}
+DefaultDirName={pf}\{#AppCompany}\{#AppName}
 OutputBaseFilename=vhdattach000
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
 AppMutex=Global\JosipMedved_VhdAttach
-AppPublisher=Josip Medved
-AppPublisherURL=http://www.jmedved.com/vhdattach/
 UninstallDisplayIcon={app}\VhdAttach.exe
 AlwaysShowComponentsList=no
 ArchitecturesInstallIn64BitMode=x64
