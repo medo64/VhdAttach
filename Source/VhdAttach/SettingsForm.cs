@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace VhdAttach {
@@ -34,6 +35,8 @@ namespace VhdAttach {
                 if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
+            } catch (IOException ex) {
+                Medo.MessageBox.ShowError(this, string.Format("Settings cannot be written.\nIs service running?\n\n{0}", ex.Message));
             } finally {
                 this.Cursor = Cursors.Default;
             }
