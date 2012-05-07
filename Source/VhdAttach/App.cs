@@ -39,58 +39,35 @@ namespace VhdAttach {
 
             if (doAnything) {
 
-                if (Settings.UseService) { //send to Service
+                string[] argfiles = Medo.Application.Args.Current.GetValues("");
+                var files = new List<FileInfo>();
+                foreach (var iFile in argfiles) {
+                    files.Add(new FileInfo(iFile.TrimEnd(new char[] { '\"' })));
+                }
 
-                    string[] argfiles = Medo.Application.Args.Current.GetValues("");
-                    var files = new List<FileInfo>();
-                    foreach (var iFile in argfiles) {
-                        files.Add(new FileInfo(iFile.TrimEnd(new char[] { '\"' })));
-                    }
-
-                    if (files.Count == 0) {
-                        System.Environment.Exit(1);
-                        return;
-                    }
+                if (files.Count == 0) {
+                    System.Environment.Exit(1);
+                    return;
+                }
 
 
-                    Form appForm = null;
-                    if (doAttach) {
-                        appForm = new AttachForm(files, Medo.Application.Args.Current.ContainsKey("readonly"), false);
-                    } else if (doDetach) {
-                        appForm = new DetachForm(files);
-                    } else if (doDetachDrive) {
-                        appForm = new DetachDriveForm(files);
-                    }
-                    if (appForm != null) {
-                        Application.Run(appForm);
-                        System.Environment.Exit(System.Environment.ExitCode);
-                    } else {
-                        System.Environment.Exit(1);
-                    }
-
-
-
-                } else { //send to Executor
-
-                    var args = new List<string>(Environment.GetCommandLineArgs());
-                    args.RemoveAt(0);
-                    var sbArgs = new StringAdder(" ");
-                    foreach (var iArg in args) {
-                        sbArgs.Append(iArg);
-                    }
-
-                    var exe = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName, "VhdAttachExecutor.exe");
-                    using (var process = new Process()) {
-                        process.StartInfo = Utility.GetProcessStartInfo(exe, sbArgs.ToString());
-                        process.Start();
-                        process.WaitForExit();
-                        System.Environment.Exit(process.ExitCode);
-                    }
+                Form appForm = null;
+                if (doAttach) {
+                    appForm = new AttachForm(files, Medo.Application.Args.Current.ContainsKey("readonly"), false);
+                } else if (doDetach) {
+                    appForm = new DetachForm(files);
+                } else if (doDetachDrive) {
+                    appForm = new DetachDriveForm(files);
+                }
+                if (appForm != null) {
+                    Application.Run(appForm);
+                    System.Environment.Exit(System.Environment.ExitCode);
+                } else {
+                    System.Environment.Exit(1);
                 }
 
             } else { //open localy
 
-                //string[] argfiles = Medo.Application.Args.Current.GetValues("");
                 Application.Run(new MainForm());
 
             }
