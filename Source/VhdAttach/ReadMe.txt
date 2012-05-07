@@ -21,6 +21,17 @@ SHORTCUT KEYS
     Ctrl+A                  Select all.
 
 
+COMMAND LINE PARAMETERS
+
+    [/attach|/detach] "disk.vhd"
+
+        Attaches (or detaches) virtual disk using file disk.vhd.
+
+    [/detachdrive] "X:"
+
+        Detaches virtual disk attached to drive letter.
+
+
 VERSION HISTORY
 
     3.20 (2012-03-15)
