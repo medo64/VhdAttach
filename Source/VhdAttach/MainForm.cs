@@ -317,11 +317,33 @@ namespace VhdAttach {
 
         private void UpdateRecent() {
             mnuOpen.DropDownItems.Clear();
+            var paths = new List<string>();
             foreach (var iRecentFile in this.Recent.AsReadOnly()) {
                 var item2 = new ToolStripMenuItem(iRecentFile.Title);
                 item2.Tag = iRecentFile;
                 item2.Click += new EventHandler(recentItem_Click);
                 mnuOpen.DropDownItems.Add(item2);
+                paths.Add(iRecentFile.FileName);
+            }
+            foreach (var file in ServiceSettings.AutoAttachVhdList) {
+                if (paths.Contains(file) == false) {
+                    Medo.Configuration.RecentFile iRecentFile;
+                    if (file.StartsWith("/")) {
+                        /*
+                         * Each file can have additional settings area that starts with / and ends with next /.
+                         * E.g. "/readonly,nodriveletter/D:\Test.vhd"
+                         */
+                        var iEndPipe = file.IndexOf("/", 1);
+                        iRecentFile = new Medo.Configuration.RecentFile(file.Substring(iEndPipe + 1));
+                    } else {
+                        iRecentFile = new Medo.Configuration.RecentFile(file);
+                    }
+                    var item2 = new ToolStripMenuItem(iRecentFile.Title);
+                    item2.Tag = iRecentFile;
+                    item2.Click += new EventHandler(recentItem_Click);
+                    mnuOpen.DropDownItems.Add(item2);
+                    paths.Add(iRecentFile.FileName);
+                }
             }
         }
 
