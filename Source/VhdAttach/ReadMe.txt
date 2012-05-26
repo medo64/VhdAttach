@@ -34,6 +34,13 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.30 (2012-05-30)
+
+        o Added header parsing for dynamic virtual disks.
+        o Auto-mounted VHD files are always added to Recent list.
+        o Adding taskbar progress for disk creation.
+        o Bug-fixing.
+
     3.20 (2012-03-15)
 
         o Added read-only mounting on startup.
