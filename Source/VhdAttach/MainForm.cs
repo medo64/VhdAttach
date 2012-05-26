@@ -7,12 +7,13 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Medo.Extensions;
 using Medo.Localization.Croatia;
-using System.ServiceProcess;
+using VirtualHardDiskImage;
 
 namespace VhdAttach {
 
@@ -26,6 +27,7 @@ namespace VhdAttach {
         private static readonly ListViewGroup GroupFileSystem = new ListViewGroup("File system");
         private static readonly ListViewGroup GroupDetails = new ListViewGroup("Details");
         private static readonly ListViewGroup GroupInternals = new ListViewGroup("Internals");
+        private static readonly ListViewGroup GroupInternalsDynamic = new ListViewGroup("Internals (dynamic disk)");
 
         public MainForm() {
             InitializeComponent();
@@ -233,12 +235,18 @@ namespace VhdAttach {
 
                     if (document.Format == Medo.IO.VirtualDiskFormat.Vhd) {
                         try {
+                            var footerCopyBytes = new byte[512];
+                            var headerBytes = new byte[1024];
                             var footerBytes = new byte[512];
                             using (var vhdFile = new FileStream(vhdFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                vhdFile.Read(footerCopyBytes, 0, 512);
+                                vhdFile.Read(headerBytes, 0, 1024);
                                 vhdFile.Position = vhdFile.Length - 512;
                                 vhdFile.Read(footerBytes, 0, 512);
                             }
-                            var footer = new VhdFooter(footerBytes);
+
+                            var footer = new HardDiskFooter(footerBytes);
+
                             if (footer.Cookie != "conectix") {
                                 items.Add(new ListViewItem(new string[] { "Cookie", footer.Cookie }) { Group = GroupInternals });
                             }
@@ -277,6 +285,24 @@ namespace VhdAttach {
                             }
                             items.Add(new ListViewItem(new string[] { "Disk type", diskTypeText }) { Group = GroupInternals });
 
+                            if ((footer.DiskType == VhdDiskType.DynamicHardDisk) || (footer.DiskType == VhdDiskType.DifferencingHardDisk)) {
+
+                                var header = new DynamicDiskHeader(headerBytes);
+
+                                if (header.Cookie != "cxsparse") {
+                                    items.Add(new ListViewItem(new string[] { "Cookie", header.Cookie }) { Group = GroupInternalsDynamic });
+                                }
+
+                                if (header.DataOffset != ulong.MaxValue) {
+                                    items.Add(new ListViewItem(new string[] { "Data offset", header.DataOffset.ToString("#,##0") }) { Group = GroupInternalsDynamic });
+                                }
+
+                                items.Add(new ListViewItem(new string[] { "Max table entries", header.MaxTableEntries.ToString("#,##0") }) { Group = GroupInternalsDynamic });
+
+                                items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(header.BlockSize, "B", "0"), header.BlockSize) }) { Group = GroupInternalsDynamic });
+
+                            }
+
                         } catch { }
                     }
 
@@ -300,6 +326,7 @@ namespace VhdAttach {
                     list.Groups.Add(GroupFileSystem);
                     list.Groups.Add(GroupDetails);
                     list.Groups.Add(GroupInternals);
+                    list.Groups.Add(GroupInternalsDynamic);
                     foreach (var iItem in items) {
                         list.Items.Add(iItem);
                     }

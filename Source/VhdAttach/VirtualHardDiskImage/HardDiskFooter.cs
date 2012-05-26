@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Text;
 
-namespace VhdAttach {
+namespace VirtualHardDiskImage {
 
     /// <summary>
     /// Handling VHD Footer structure.
     /// </summary>
-    internal class VhdFooter {
+    internal class HardDiskFooter {
 
         /// <summary>
         /// Create new instance.
         /// </summary>
-        public VhdFooter() {
+        public HardDiskFooter() {
             this.Bytes = new Byte[512];
             this.BeginUpdate();
             this.Cookie = "conectix";
@@ -37,7 +37,7 @@ namespace VhdAttach {
         /// Create new instance from existing footer bytes.
         /// </summary>
         /// <param name="Bytes">Footer bytes.</param>
-        public VhdFooter(byte[] bytes) {
+        public HardDiskFooter(byte[] bytes) {
             if (bytes == null) { throw new ArgumentNullException("bytes", "Argument bytes cannot be null."); }
             if (bytes.Length != 512) { throw new FormatException("Footer must be 512 bytes long."); }
 

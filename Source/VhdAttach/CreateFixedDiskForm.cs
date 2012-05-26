@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using VirtualHardDiskImage;
 
 namespace VhdAttach {
     internal partial class CreateFixedDiskForm : Form {
@@ -32,7 +33,7 @@ namespace VhdAttach {
 
         private void bgw_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             using (var stream = new FileStream(this.FileName, FileMode.CreateNew, FileAccess.Write, FileShare.None, 1, FileOptions.WriteThrough)) {
-                var footer = new VhdFooter();
+                var footer = new HardDiskFooter();
                 footer.BeginUpdate();
                 footer.CreatorApplication = VhdCreatorApplication.JosipMedvedVhdAttach;
                 footer.CreatorVersion = Medo.Reflection.EntryAssembly.Version;
