@@ -28,12 +28,10 @@ namespace VhdAttach {
         }
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e) {
-            if (this.DialogResult == DialogResult.OK) {
-                Settings.LastSize = Convert.ToInt32(nudSize.Value);
-                Settings.LastSizeUnitIndex = dudSizeUnit.SelectedIndex;
-                Settings.LastSizeThousandBased = chbThousandSize.Checked;
-                Settings.LastSizeFixed = radFixed.Checked;
-            }
+            Settings.LastSize = Convert.ToInt32(nudSize.Value);
+            Settings.LastSizeUnitIndex = dudSizeUnit.SelectedIndex;
+            Settings.LastSizeThousandBased = chbThousandSize.Checked;
+            Settings.LastSizeFixed = radFixed.Checked;
         }
 
 
@@ -93,7 +91,7 @@ namespace VhdAttach {
         private void control_Changed(object sender, EventArgs e) {
             var sizeInBytes = GetSizeInBytes();
             txtSizeInBytes.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,##0}", sizeInBytes);
-            
+
             var sizeInBytesOk = (sizeInBytes >= 8 * 1000 * 1000 / 4096 * 4096);
             if (sizeInBytesOk == false) {
                 erpError.SetError(btnOK, "Disk is too small.");
