@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using Medo.Localization.Croatia;
+using Medo.Extensions;
 
 namespace VhdAttach {
     internal partial class NewDiskForm : Form {
@@ -47,6 +48,18 @@ namespace VhdAttach {
                     }
                 }
 
+                DriveInfo drive = null;
+                try {
+                    drive = new DriveInfo(this.FileName);
+                    if (drive.DriveFormat.Equals("NTFS", StringComparison.OrdinalIgnoreCase) == false) {
+                        if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) < 6000002) { //Windows 8
+                            if (Medo.MessageBox.ShowWarning(this, "Due to operating system limitations, virtual disk created on this drive will not be attachable.\nIn order to attach virtual disk it will need to be on NTFS-formatted drive.\n\nDo you wish to continue?", MessageBoxButtons.YesNo) == DialogResult.No) {
+                                return;
+                            }
+                        }
+                    }
+                } catch (ArgumentException) { }
+
                 try {
                     File.Delete(this.FileName);
                 } catch (IOException ex) {
@@ -59,16 +72,30 @@ namespace VhdAttach {
                     return;
                 }
 
+                var diskSize = GetSizeInBytes();
+                if (drive != null) {
+                    if (drive.AvailableFreeSpace < diskSize) {
+                        if (Medo.MessageBox.ShowWarning(this, string.Format("There is not enough free space available!\nVirtual disk will require {0} while drive has only {1} free.\n\nDo you wish to continue?", BinaryPrefixExtensions.ToBinaryPrefixString(diskSize, "B", "0"), BinaryPrefixExtensions.ToBinaryPrefixString(drive.AvailableFreeSpace, "B", "0")), MessageBoxButtons.YesNo) == DialogResult.No) {
+                            return;
+                        }
+                    }
+                    if (drive.DriveFormat.Equals("FAT32", StringComparison.OrdinalIgnoreCase)) {
+                        if (Medo.MessageBox.ShowWarning(this, "Due to operating system limitations it will not be possible to create virtual disk larger than 2 GB.\n\nDo you wish to continue?", MessageBoxButtons.YesNo) == DialogResult.No) {
+                            return;
+                        }
+                    }
+                }
+
                 try {
                     if (radFixed.Checked) {
-                        using (var frm = new CreateFixedDiskForm(this.FileName, GetSizeInBytes())) {
+                        using (var frm = new CreateFixedDiskForm(this.FileName, diskSize)) {
                             if (frm.ShowDialog(this) == DialogResult.Cancel) {
                                 return;
                             }
                         }
                     } else { //Dynamic
                         using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
-                            vhd.Create(GetSizeInBytes(), Medo.IO.VirtualDiskCreateOptions.None);
+                            vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None);
                         }
                     }
                 } catch (IOException ex) {
