@@ -60,6 +60,7 @@ namespace VhdAttach {
                     appForm = new DetachDriveForm(files);
                 }
                 if (appForm != null) {
+                    Medo.Windows.Forms.TaskbarProgress.DefaultOwner = appForm;
                     Application.Run(appForm);
                     System.Environment.Exit(System.Environment.ExitCode);
                 } else {

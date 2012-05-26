@@ -16,9 +16,6 @@ namespace VhdAttach {
         private AttachForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-
-            Medo.Windows.Forms.TaskbarProgress.DefaultOwner = this;
-            Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
         }
 
         public AttachForm(IList<FileInfo> files, bool mountReadOnly, bool initializeDisk)
@@ -32,12 +29,16 @@ namespace VhdAttach {
             : this(new FileInfo[] { file }, mountReadOnly, initializeDisk) {
         }
 
-        private void AttachForm_Load(object sender, EventArgs e) {
+        private void Form_Load(object sender, EventArgs e) {
             bw.RunWorkerAsync();
         }
 
-        private void AttachForm_Shown(object sender, EventArgs e) {
+        private void Form_Shown(object sender, EventArgs e) {
             Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Indeterminate);
+        }
+
+        private void Form_FormClosed(object sender, FormClosedEventArgs e) {
+            Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.NoProgress);
         }
 
 

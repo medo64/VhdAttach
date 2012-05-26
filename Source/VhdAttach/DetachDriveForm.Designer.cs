@@ -31,9 +31,9 @@
             // 
             // StatusLabel
             // 
-            this.StatusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.StatusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.StatusLabel.Location = new System.Drawing.Point(12, 9);
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(290, 48);
@@ -42,8 +42,8 @@
             // 
             // progress
             // 
-            this.progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progress.Location = new System.Drawing.Point(12, 72);
             this.progress.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.progress.Name = "progress";
@@ -72,8 +72,9 @@
             this.Name = "DetachDriveForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "VHD Attach";
-            this.Load += new System.EventHandler(this.DetachForm_Load);
-            this.Shown += new System.EventHandler(this.DetachForm_Shown);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_FormClosed);
+            this.Load += new System.EventHandler(this.Form_Load);
+            this.Shown += new System.EventHandler(this.Form_Shown);
             this.ResumeLayout(false);
 
         }

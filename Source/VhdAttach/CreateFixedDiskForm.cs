@@ -27,7 +27,12 @@ namespace VhdAttach {
             if (e.CloseReason == CloseReason.UserClosing) {
                 btnCancel.PerformClick();
                 e.Cancel = true;
+                Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Error);
             }
+        }
+
+        private void Form_FormClosed(object sender, FormClosedEventArgs e) {
+            Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.NoProgress);
         }
 
 
@@ -70,6 +75,7 @@ namespace VhdAttach {
         }
 
         private void bgw_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+            Medo.Windows.Forms.TaskbarProgress.SetPercentage(e.ProgressPercentage);
             prg.Value = e.ProgressPercentage;
         }
 

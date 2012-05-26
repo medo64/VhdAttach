@@ -17,17 +17,18 @@ namespace VhdAttach {
             this.Font = SystemFonts.MessageBoxFont;
 
             this._files = file;
-
-            Medo.Windows.Forms.TaskbarProgress.DefaultOwner = this;
-            Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
         }
 
-        private void DetachForm_Load(object sender, EventArgs e) {
+        private void Form_Load(object sender, EventArgs e) {
             bw.RunWorkerAsync();
         }
 
-        private void DetachForm_Shown(object sender, EventArgs e) {
+        private void Form_Shown(object sender, EventArgs e) {
             Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.Indeterminate);
+        }
+
+        private void Form_FormClosed(object sender, FormClosedEventArgs e) {
+            Medo.Windows.Forms.TaskbarProgress.SetState(Medo.Windows.Forms.TaskbarProgressState.NoProgress);
         }
 
 
