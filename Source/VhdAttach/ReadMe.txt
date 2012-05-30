@@ -34,6 +34,10 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.31 (2012-05-31)
+
+        o Bug-fixing.
+
     3.30 (2012-05-30)
 
         o Added header parsing for dynamic virtual disks.

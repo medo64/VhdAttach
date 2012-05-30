@@ -346,11 +346,13 @@ namespace VhdAttach {
             mnuOpen.DropDownItems.Clear();
             var paths = new List<string>();
             foreach (var iRecentFile in this.Recent.AsReadOnly()) {
-                var item2 = new ToolStripMenuItem(iRecentFile.Title);
-                item2.Tag = iRecentFile;
-                item2.Click += new EventHandler(recentItem_Click);
-                mnuOpen.DropDownItems.Add(item2);
-                paths.Add(iRecentFile.FileName);
+                try {
+                    var item2 = new ToolStripMenuItem(iRecentFile.Title);
+                    item2.Tag = iRecentFile;
+                    item2.Click += new EventHandler(recentItem_Click);
+                    mnuOpen.DropDownItems.Add(item2);
+                    paths.Add(iRecentFile.FileName);
+                } catch (ArgumentException) { }
             }
             foreach (var file in ServiceSettings.AutoAttachVhdList) {
                 if (paths.Contains(file) == false) {
@@ -365,11 +367,12 @@ namespace VhdAttach {
                     } else {
                         iRecentFile = new Medo.Configuration.RecentFile(file);
                     }
-                    var item2 = new ToolStripMenuItem(iRecentFile.Title);
-                    item2.Tag = iRecentFile;
-                    item2.Click += new EventHandler(recentItem_Click);
-                    mnuOpen.DropDownItems.Add(item2);
-                    paths.Add(iRecentFile.FileName);
+                    try {
+                        var item2 = new ToolStripMenuItem(iRecentFile.Title);
+                        item2.Tag = iRecentFile;
+                        item2.Click += new EventHandler(recentItem_Click);
+                        mnuOpen.DropDownItems.Add(item2);
+                    } catch (ArgumentException) { }
                 }
             }
         }
