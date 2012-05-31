@@ -345,7 +345,7 @@ namespace VhdAttach {
         private void UpdateRecent() {
             mnuOpen.DropDownItems.Clear();
             var paths = new List<string>();
-            foreach (var iRecentFile in this.Recent.AsReadOnly()) {
+            foreach (var iRecentFile in this.Recent.Items) {
                 try {
                     var item2 = new ToolStripMenuItem(iRecentFile.Title);
                     item2.Tag = iRecentFile;
@@ -363,16 +363,18 @@ namespace VhdAttach {
                          * E.g. "/readonly,nodriveletter/D:\Test.vhd"
                          */
                         var iEndPipe = file.IndexOf("/", 1);
-                        iRecentFile = new Medo.Configuration.RecentFile(file.Substring(iEndPipe + 1));
+                        iRecentFile = Medo.Configuration.RecentFile.GetRecentFile(file.Substring(iEndPipe + 1));
                     } else {
-                        iRecentFile = new Medo.Configuration.RecentFile(file);
+                        iRecentFile = Medo.Configuration.RecentFile.GetRecentFile(file);
                     }
-                    try {
-                        var item2 = new ToolStripMenuItem(iRecentFile.Title);
-                        item2.Tag = iRecentFile;
-                        item2.Click += new EventHandler(recentItem_Click);
-                        mnuOpen.DropDownItems.Add(item2);
-                    } catch (ArgumentException) { }
+                    if (iRecentFile != null) {
+                        try {
+                            var item2 = new ToolStripMenuItem(iRecentFile.Title);
+                            item2.Tag = iRecentFile;
+                            item2.Click += new EventHandler(recentItem_Click);
+                            mnuOpen.DropDownItems.Add(item2);
+                        } catch (ArgumentException) { }
+                    }
                 }
             }
         }
