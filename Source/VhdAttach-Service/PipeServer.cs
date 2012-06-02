@@ -59,7 +59,7 @@ namespace VhdAttachService {
                                 try {
                                     var path = packet["Path"];
                                     using (var disk = new Medo.IO.VirtualDisk(path)) {
-                                        disk.Open();
+                                        disk.Open(Medo.IO.VirtualDiskAccessMask.Detach);
                                         disk.Detach();
                                         disk.Close();
                                     }
@@ -205,7 +205,7 @@ namespace VhdAttachService {
 
             if (vhdFile != null) {
                 using (var disk = new Medo.IO.VirtualDisk(vhdFile.FullName)) {
-                    disk.Open();
+                    disk.Open(Medo.IO.VirtualDiskAccessMask.Detach);
                     disk.Detach();
                     disk.Close();
                 }
