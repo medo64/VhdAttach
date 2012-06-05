@@ -25,8 +25,6 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.lblSize = new System.Windows.Forms.Label();
-            this.dudSizeUnit = new System.Windows.Forms.DomainUpDown();
-            this.nudSize = new System.Windows.Forms.NumericUpDown();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.chbThousandSize = new System.Windows.Forms.CheckBox();
@@ -36,7 +34,8 @@
             this.lblSizeInBytes = new System.Windows.Forms.Label();
             this.txtSizeInBytes = new System.Windows.Forms.TextBox();
             this.erpError = new System.Windows.Forms.ErrorProvider(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.nudSize)).BeginInit();
+            this.cmbSize = new System.Windows.Forms.ComboBox();
+            this.cmbSizeUnit = new System.Windows.Forms.ComboBox();
             this.grpType.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.erpError)).BeginInit();
             this.SuspendLayout();
@@ -50,48 +49,10 @@
             this.lblSize.TabIndex = 0;
             this.lblSize.Text = "Size:";
             // 
-            // dudSizeUnit
-            // 
-            this.dudSizeUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.dudSizeUnit.Items.Add("MB");
-            this.dudSizeUnit.Items.Add("GB");
-            this.dudSizeUnit.Location = new System.Drawing.Point(222, 12);
-            this.dudSizeUnit.Name = "dudSizeUnit";
-            this.dudSizeUnit.ReadOnly = true;
-            this.dudSizeUnit.Size = new System.Drawing.Size(60, 22);
-            this.dudSizeUnit.TabIndex = 2;
-            this.dudSizeUnit.Text = "MB";
-            this.dudSizeUnit.SelectedItemChanged += new System.EventHandler(this.control_Changed);
-            // 
-            // nudSize
-            // 
-            this.nudSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudSize.Location = new System.Drawing.Point(112, 12);
-            this.nudSize.Maximum = new decimal(new int[] {
-            1023,
-            0,
-            0,
-            0});
-            this.nudSize.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudSize.Name = "nudSize";
-            this.nudSize.Size = new System.Drawing.Size(104, 22);
-            this.nudSize.TabIndex = 1;
-            this.nudSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.nudSize.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudSize.ValueChanged += new System.EventHandler(this.control_Changed);
-            // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(76, 194);
+            this.btnOK.Location = new System.Drawing.Point(76, 196);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(100, 28);
@@ -104,7 +65,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(182, 194);
+            this.btnCancel.Location = new System.Drawing.Point(182, 196);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 28);
@@ -115,7 +76,7 @@
             // chbThousandSize
             // 
             this.chbThousandSize.AutoSize = true;
-            this.chbThousandSize.Location = new System.Drawing.Point(112, 40);
+            this.chbThousandSize.Location = new System.Drawing.Point(113, 42);
             this.chbThousandSize.Name = "chbThousandSize";
             this.chbThousandSize.Size = new System.Drawing.Size(106, 21);
             this.chbThousandSize.TabIndex = 3;
@@ -127,7 +88,7 @@
             // 
             this.grpType.Controls.Add(this.radFixed);
             this.grpType.Controls.Add(this.radDynamic);
-            this.grpType.Location = new System.Drawing.Point(12, 95);
+            this.grpType.Location = new System.Drawing.Point(12, 97);
             this.grpType.Name = "grpType";
             this.grpType.Size = new System.Drawing.Size(270, 81);
             this.grpType.TabIndex = 6;
@@ -162,7 +123,7 @@
             // lblSizeInBytes
             // 
             this.lblSizeInBytes.AutoSize = true;
-            this.lblSizeInBytes.Location = new System.Drawing.Point(12, 70);
+            this.lblSizeInBytes.Location = new System.Drawing.Point(12, 72);
             this.lblSizeInBytes.Name = "lblSizeInBytes";
             this.lblSizeInBytes.Size = new System.Drawing.Size(92, 17);
             this.lblSizeInBytes.TabIndex = 4;
@@ -170,7 +131,7 @@
             // 
             // txtSizeInBytes
             // 
-            this.txtSizeInBytes.Location = new System.Drawing.Point(112, 67);
+            this.txtSizeInBytes.Location = new System.Drawing.Point(113, 69);
             this.txtSizeInBytes.Name = "txtSizeInBytes";
             this.txtSizeInBytes.ReadOnly = true;
             this.txtSizeInBytes.Size = new System.Drawing.Size(170, 22);
@@ -182,21 +143,46 @@
             // 
             this.erpError.ContainerControl = this;
             // 
+            // cmbSize
+            // 
+            this.cmbSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSize.FormattingEnabled = true;
+            this.cmbSize.Location = new System.Drawing.Point(113, 11);
+            this.cmbSize.MaxLength = 8;
+            this.cmbSize.Name = "cmbSize";
+            this.cmbSize.Size = new System.Drawing.Size(108, 24);
+            this.cmbSize.TabIndex = 1;
+            this.cmbSize.TextChanged += new System.EventHandler(this.control_Changed);
+            // 
+            // cmbSizeUnit
+            // 
+            this.cmbSizeUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSizeUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSizeUnit.Items.AddRange(new object[] {
+            "MB",
+            "GB"});
+            this.cmbSizeUnit.Location = new System.Drawing.Point(227, 12);
+            this.cmbSizeUnit.Name = "cmbSizeUnit";
+            this.cmbSizeUnit.Size = new System.Drawing.Size(55, 24);
+            this.cmbSizeUnit.TabIndex = 2;
+            this.cmbSizeUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSizeUnit_SelectedIndexChanged);
+            // 
             // NewDiskForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(294, 234);
+            this.ClientSize = new System.Drawing.Size(294, 236);
+            this.Controls.Add(this.cmbSizeUnit);
+            this.Controls.Add(this.cmbSize);
             this.Controls.Add(this.txtSizeInBytes);
             this.Controls.Add(this.lblSizeInBytes);
             this.Controls.Add(this.grpType);
             this.Controls.Add(this.chbThousandSize);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.nudSize);
-            this.Controls.Add(this.dudSizeUnit);
             this.Controls.Add(this.lblSize);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
@@ -209,7 +195,6 @@
             this.Text = "New virtual disk";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_FormClosed);
             this.Load += new System.EventHandler(this.Form_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.nudSize)).EndInit();
             this.grpType.ResumeLayout(false);
             this.grpType.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.erpError)).EndInit();
@@ -221,8 +206,6 @@
         #endregion
 
         private System.Windows.Forms.Label lblSize;
-        private System.Windows.Forms.DomainUpDown dudSizeUnit;
-        private System.Windows.Forms.NumericUpDown nudSize;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox chbThousandSize;
@@ -232,5 +215,7 @@
         private System.Windows.Forms.Label lblSizeInBytes;
         private System.Windows.Forms.TextBox txtSizeInBytes;
         private System.Windows.Forms.ErrorProvider erpError;
+        private System.Windows.Forms.ComboBox cmbSizeUnit;
+        private System.Windows.Forms.ComboBox cmbSize;
     }
 }

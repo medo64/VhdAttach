@@ -13,9 +13,9 @@ namespace VhdAttach {
         }
 
 
-        public static int LastSize {
-            get { return Medo.Configuration.Settings.Read("LastSize", 100); }
-            set { Medo.Configuration.Settings.Write("LastSize", value); }
+        public static string LastSizes {
+            get { return Medo.Configuration.Settings.Read("LastSizes", "104857600"); }
+            set { Medo.Configuration.Settings.Write("LastSizes", value); }
         }
 
         public static int LastSizeUnitIndex {
