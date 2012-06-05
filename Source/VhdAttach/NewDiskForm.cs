@@ -206,7 +206,7 @@ namespace VhdAttach {
 
             public static long GetSizeInBytes(string text, int selectedUnitIndex, bool use1000 = false) {
                 double value;
-                if (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) {
+                if (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value) || double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) {
                     if (value > int.MaxValue) { return 0; }
                     var divider = use1000 ? 1000 : 1024;
                     switch (selectedUnitIndex) {
