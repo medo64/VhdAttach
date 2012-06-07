@@ -1,80 +1,80 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using Medo.Text;
 
 namespace VhdAttach {
     internal static class App {
 
-        private static readonly Mutex SetupMutex = new Mutex(false, @"Global\JosipMedved_VhdAttach");
-
-
         [STAThread]
         static void Main() {
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            bool createdNew;
+            var mutexSecurity = new MutexSecurity();
+            mutexSecurity.AddAccessRule(new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow));
+            using (var setupMutex = new Mutex(false, @"Global\JosipMedved_VhdAttach", out createdNew, mutexSecurity)) {
 
-            Medo.Application.UnhandledCatch.ThreadException += new EventHandler<ThreadExceptionEventArgs>(UnhandledCatch_ThreadException);
-            Medo.Application.UnhandledCatch.Attach();
+                System.Windows.Forms.Application.EnableVisualStyles();
+                System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
-            if (!((Environment.OSVersion.Version.Build < 7000) || (App.IsRunningOnMono))) {
-                var appId = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
-                if (appId.Length > 127) { appId = @"JosipMedved_VhdAttach\" + appId.Substring(appId.Length - 127 - 20); }
-                NativeMethods.SetCurrentProcessExplicitAppUserModelID(appId);
-            } else {
-                Medo.MessageBox.ShowError(null, "This program requires Windows 7 or later.");
-                System.Environment.Exit(1);
-            }
+                Medo.Application.UnhandledCatch.ThreadException += new EventHandler<ThreadExceptionEventArgs>(UnhandledCatch_ThreadException);
+                Medo.Application.UnhandledCatch.Attach();
 
-
-            bool doAttach = Medo.Application.Args.Current.ContainsKey("Attach");
-            bool doDetach = Medo.Application.Args.Current.ContainsKey("Detach") && (!doAttach);
-            bool doDetachDrive = Medo.Application.Args.Current.ContainsKey("DetachDrive") && (!doAttach) && (!doDetach);
-            bool doAnything = doAttach || doDetach || doDetachDrive;
-
-            if (doAnything) {
-
-                string[] argfiles = Medo.Application.Args.Current.GetValues("");
-                var files = new List<FileInfo>();
-                foreach (var iFile in argfiles) {
-                    files.Add(new FileInfo(iFile.TrimEnd(new char[] { '\"' })));
-                }
-
-                if (files.Count == 0) {
-                    System.Environment.Exit(1);
-                    return;
-                }
-
-
-                Form appForm = null;
-                if (doAttach) {
-                    appForm = new AttachForm(files, Medo.Application.Args.Current.ContainsKey("readonly"), false);
-                } else if (doDetach) {
-                    appForm = new DetachForm(files);
-                } else if (doDetachDrive) {
-                    appForm = new DetachDriveForm(files);
-                }
-                if (appForm != null) {
-                    Medo.Windows.Forms.TaskbarProgress.DefaultOwner = appForm;
-                    Application.Run(appForm);
-                    System.Environment.Exit(System.Environment.ExitCode);
+                if (!((Environment.OSVersion.Version.Build < 7000) || (App.IsRunningOnMono))) {
+                    var appId = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
+                    if (appId.Length > 127) { appId = @"JosipMedved_VhdAttach\" + appId.Substring(appId.Length - 127 - 20); }
+                    NativeMethods.SetCurrentProcessExplicitAppUserModelID(appId);
                 } else {
+                    Medo.MessageBox.ShowError(null, "This program requires Windows 7 or later.");
                     System.Environment.Exit(1);
                 }
 
-            } else { //open localy
 
-                Application.Run(new MainForm());
+                bool doAttach = Medo.Application.Args.Current.ContainsKey("Attach");
+                bool doDetach = Medo.Application.Args.Current.ContainsKey("Detach") && (!doAttach);
+                bool doDetachDrive = Medo.Application.Args.Current.ContainsKey("DetachDrive") && (!doAttach) && (!doDetach);
+                bool doAnything = doAttach || doDetach || doDetachDrive;
 
+                if (doAnything) {
+
+                    string[] argfiles = Medo.Application.Args.Current.GetValues("");
+                    var files = new List<FileInfo>();
+                    foreach (var iFile in argfiles) {
+                        files.Add(new FileInfo(iFile.TrimEnd(new char[] { '\"' })));
+                    }
+
+                    if (files.Count == 0) {
+                        System.Environment.Exit(1);
+                        return;
+                    }
+
+
+                    Form appForm = null;
+                    if (doAttach) {
+                        appForm = new AttachForm(files, Medo.Application.Args.Current.ContainsKey("readonly"), false);
+                    } else if (doDetach) {
+                        appForm = new DetachForm(files);
+                    } else if (doDetachDrive) {
+                        appForm = new DetachDriveForm(files);
+                    }
+                    if (appForm != null) {
+                        Medo.Windows.Forms.TaskbarProgress.DefaultOwner = appForm;
+                        Application.Run(appForm);
+                        System.Environment.Exit(System.Environment.ExitCode);
+                    } else {
+                        System.Environment.Exit(1);
+                    }
+
+                } else { //open localy
+
+                    Application.Run(new MainForm());
+
+                }
             }
-
-
-            SetupMutex.Close();
         }
 
 
