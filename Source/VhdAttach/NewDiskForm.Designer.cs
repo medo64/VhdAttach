@@ -34,8 +34,8 @@
             this.lblSizeInBytes = new System.Windows.Forms.Label();
             this.txtSizeInBytes = new System.Windows.Forms.TextBox();
             this.erpError = new System.Windows.Forms.ErrorProvider(this.components);
-            this.cmbSize = new System.Windows.Forms.ComboBox();
             this.cmbSizeUnit = new System.Windows.Forms.ComboBox();
+            this.txtSize = new System.Windows.Forms.TextBox();
             this.grpType.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.erpError)).BeginInit();
             this.SuspendLayout();
@@ -43,7 +43,7 @@
             // lblSize
             // 
             this.lblSize.AutoSize = true;
-            this.lblSize.Location = new System.Drawing.Point(12, 14);
+            this.lblSize.Location = new System.Drawing.Point(9, 15);
             this.lblSize.Name = "lblSize";
             this.lblSize.Size = new System.Drawing.Size(39, 17);
             this.lblSize.TabIndex = 0;
@@ -52,7 +52,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(76, 196);
+            this.btnOK.Location = new System.Drawing.Point(68, 196);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(100, 28);
@@ -65,7 +65,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(182, 196);
+            this.btnCancel.Location = new System.Drawing.Point(174, 196);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 28);
@@ -86,11 +86,13 @@
             // 
             // grpType
             // 
+            this.grpType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpType.Controls.Add(this.radFixed);
             this.grpType.Controls.Add(this.radDynamic);
             this.grpType.Location = new System.Drawing.Point(12, 97);
             this.grpType.Name = "grpType";
-            this.grpType.Size = new System.Drawing.Size(270, 81);
+            this.grpType.Size = new System.Drawing.Size(262, 81);
             this.grpType.TabIndex = 6;
             this.grpType.TabStop = false;
             this.grpType.Text = "Format";
@@ -131,10 +133,12 @@
             // 
             // txtSizeInBytes
             // 
+            this.txtSizeInBytes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSizeInBytes.Location = new System.Drawing.Point(113, 69);
             this.txtSizeInBytes.Name = "txtSizeInBytes";
             this.txtSizeInBytes.ReadOnly = true;
-            this.txtSizeInBytes.Size = new System.Drawing.Size(170, 22);
+            this.txtSizeInBytes.Size = new System.Drawing.Size(161, 22);
             this.txtSizeInBytes.TabIndex = 5;
             this.txtSizeInBytes.TabStop = false;
             this.txtSizeInBytes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -143,18 +147,6 @@
             // 
             this.erpError.ContainerControl = this;
             // 
-            // cmbSize
-            // 
-            this.cmbSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbSize.FormattingEnabled = true;
-            this.cmbSize.Location = new System.Drawing.Point(113, 11);
-            this.cmbSize.MaxLength = 8;
-            this.cmbSize.Name = "cmbSize";
-            this.cmbSize.Size = new System.Drawing.Size(108, 24);
-            this.cmbSize.TabIndex = 1;
-            this.cmbSize.TextChanged += new System.EventHandler(this.control_Changed);
-            // 
             // cmbSizeUnit
             // 
             this.cmbSizeUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -162,11 +154,23 @@
             this.cmbSizeUnit.Items.AddRange(new object[] {
             "MB",
             "GB"});
-            this.cmbSizeUnit.Location = new System.Drawing.Point(227, 12);
+            this.cmbSizeUnit.Location = new System.Drawing.Point(219, 12);
             this.cmbSizeUnit.Name = "cmbSizeUnit";
             this.cmbSizeUnit.Size = new System.Drawing.Size(55, 24);
             this.cmbSizeUnit.TabIndex = 2;
             this.cmbSizeUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSizeUnit_SelectedIndexChanged);
+            // 
+            // txtSize
+            // 
+            this.txtSize.Location = new System.Drawing.Point(113, 13);
+            this.txtSize.MaxLength = 8;
+            this.txtSize.Name = "txtSize";
+            this.txtSize.Size = new System.Drawing.Size(100, 22);
+            this.txtSize.TabIndex = 1;
+            this.txtSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtSize.TextChanged += new System.EventHandler(this.control_Changed);
+            this.txtSize.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSize_KeyDown);
+            this.txtSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSize_KeyPress);
             // 
             // NewDiskForm
             // 
@@ -174,9 +178,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(294, 236);
+            this.ClientSize = new System.Drawing.Size(286, 236);
+            this.Controls.Add(this.txtSize);
             this.Controls.Add(this.cmbSizeUnit);
-            this.Controls.Add(this.cmbSize);
             this.Controls.Add(this.txtSizeInBytes);
             this.Controls.Add(this.lblSizeInBytes);
             this.Controls.Add(this.grpType);
@@ -216,6 +220,6 @@
         private System.Windows.Forms.TextBox txtSizeInBytes;
         private System.Windows.Forms.ErrorProvider erpError;
         private System.Windows.Forms.ComboBox cmbSizeUnit;
-        private System.Windows.Forms.ComboBox cmbSize;
+        private System.Windows.Forms.TextBox txtSize;
     }
 }

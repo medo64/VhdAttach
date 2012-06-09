@@ -1,3 +1,4 @@
+using System.Globalization;
 namespace VhdAttach {
 
     internal static class Settings {
@@ -13,14 +14,21 @@ namespace VhdAttach {
         }
 
 
-        public static string LastSizes {
-            get { return Medo.Configuration.Settings.Read("LastSizes", "104857600"); }
-            set { Medo.Configuration.Settings.Write("LastSizes", value); }
+        public static long LastSize {
+            get {
+                long size;
+                if (long.TryParse(Medo.Configuration.Settings.Read("LastSize", "104857600"), NumberStyles.Integer, CultureInfo.InvariantCulture, out size)) {
+                    return size;
+                } else {
+                    return 0;
+                }
+            }
+            set { Medo.Configuration.Settings.Write("LastSize", value.ToString(CultureInfo.InvariantCulture)); }
         }
 
-        public static int LastSizeUnitIndex {
-            get { return Medo.Configuration.Settings.Read("LastSizeUnitIndex", 0); }
-            set { Medo.Configuration.Settings.Write("LastSizeUnitIndex", value); }
+        public static string LastSizeUnit {
+            get { return (Medo.Configuration.Settings.Read("LastSizeUnit", "GB").Equals("MB", System.StringComparison.OrdinalIgnoreCase)) ? "MB" : "GB"; }
+            set { Medo.Configuration.Settings.Write("LastSizeUnit", value); }
         }
 
         public static bool LastSizeThousandBased {

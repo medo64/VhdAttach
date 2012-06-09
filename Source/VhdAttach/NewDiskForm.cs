@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using Medo.Extensions;
 using Medo.Localization.Croatia;
@@ -22,26 +20,11 @@ namespace VhdAttach {
         private static readonly NumberDeclination BytesSuffix = new NumberDeclination("byte", "bytes", "bytes");
         public string FileName { get; private set; }
 
-        private SizeStorage Sizes = new SizeStorage();
-
-
         private void Form_Load(object sender, EventArgs e) {
-            try { cmbSizeUnit.SelectedIndex = Settings.LastSizeUnitIndex; } catch (ArgumentOutOfRangeException) { cmbSizeUnit.SelectedIndex = 1; }
-            FillSizes();
-            if (cmbSize.Items.Count > 0) {
-                cmbSize.Text = cmbSize.Items[0].ToString();
-            } else {
-                cmbSize.Text = SizeStorage.GetSizeText(104857600, cmbSizeUnit.SelectedIndex);
-            }
+            cmbSizeUnit.SelectedItem = Settings.LastSizeUnit;
+            txtSize.Text = GetSizeText(Settings.LastSize, cmbSizeUnit.SelectedIndex);
             chbThousandSize.Checked = Settings.LastSizeThousandBased;
             radFixed.Checked = Settings.LastSizeFixed;
-        }
-
-        private void FillSizes() {
-            cmbSize.Items.Clear();
-            foreach (var size in this.Sizes.GetSizes()) {
-                cmbSize.Items.Add(SizeStorage.GetSizeText(size, cmbSizeUnit.SelectedIndex));
-            }
         }
 
 
@@ -130,7 +113,7 @@ namespace VhdAttach {
 
             var sizeInBytesOk = (sizeInBytes >= 8 * 1000 * 1000 / 4096 * 4096);
             if (sizeInBytesOk == false) {
-                erpError.SetError(btnOK, "Disk is too small.");
+                erpError.SetError(btnOK, "Disk is too small (8 MB minimum).");
             } else {
                 erpError.SetError(btnOK, null);
             }
@@ -138,87 +121,95 @@ namespace VhdAttach {
             btnOK.Enabled = sizeInBytesOk;
         }
 
+        private void txtSize_KeyPress(object sender, KeyPressEventArgs e) {
+            if (char.IsControl(e.KeyChar)) { return; }
+            if (char.IsDigit(e.KeyChar)) { return; }
+
+            if (txtSize.Text.Contains(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator) || txtSize.Text.Contains(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)) {
+                e.Handled = true;
+                return;
+            }
+
+            if (Array.IndexOf(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator.ToCharArray(), e.KeyChar) >= 0) { return; }
+            if ((CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator.Length == 1) && (CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator.Length == 1) && (e.KeyChar.ToString().Equals(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator))) {
+                e.KeyChar = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+                return;
+            }
+            e.Handled = true;
+        }
+
+        private void txtSize_KeyDown(object sender, KeyEventArgs e) {
+            switch (e.KeyData) {
+                case Keys.Up: {
+                        var allSelected = (txtSize.SelectionLength == txtSize.TextLength);
+                        decimal number;
+                        if (decimal.TryParse(txtSize.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out number) || decimal.TryParse(txtSize.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out number)) {
+                            number = Math.Floor(number);
+                            if (number < 99999999) {
+                                number += 1;
+                                txtSize.Text = number.ToString(CultureInfo.CurrentCulture);
+                                if (allSelected) { txtSize.SelectAll(); } else { txtSize.SelectionStart = txtSize.TextLength; }
+                            }
+                        }
+                        e.Handled = true;
+                    } break;
+                case Keys.Down: {
+                        var allSelected = (txtSize.SelectionLength == txtSize.TextLength);
+                        decimal number;
+                        if (decimal.TryParse(txtSize.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out number) || decimal.TryParse(txtSize.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out number)) {
+                            number = Math.Floor(number);
+                            if (number > 0) {
+                                number -= 1;
+                                txtSize.Text = number.ToString(CultureInfo.CurrentCulture);
+                                if (allSelected) { txtSize.SelectAll(); } else { txtSize.SelectionStart = txtSize.TextLength; }
+                            }
+                        }
+                        e.Handled = true;
+                    } break;
+            }
+        }
+
         private void cmbSizeUnit_SelectedIndexChanged(object sender, EventArgs e) {
-            FillSizes();
             control_Changed(null, null);
         }
 
 
         private long GetSizeInBytes() {
-            long sizeInBytes = SizeStorage.GetSizeInBytes(cmbSize.Text, cmbSizeUnit.SelectedIndex, chbThousandSize.Checked);
+            long sizeInBytes = GetSizeInBytes(txtSize.Text, cmbSizeUnit.SelectedIndex, chbThousandSize.Checked);
             return (sizeInBytes / 4096) * 4096; //round to 4096 blocks
         }
 
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e) {
-            this.Sizes.AddSize(SizeStorage.GetSizeInBytes(cmbSize.Text, cmbSizeUnit.SelectedIndex));
-            Settings.LastSizeUnitIndex = cmbSizeUnit.SelectedIndex;
+            Settings.LastSize = GetSizeInBytes(txtSize.Text, cmbSizeUnit.SelectedIndex);
+            Settings.LastSizeUnit = cmbSizeUnit.Text;
             Settings.LastSizeThousandBased = chbThousandSize.Checked;
             Settings.LastSizeFixed = radFixed.Checked;
         }
 
 
-        private class SizeStorage {
 
-            public SizeStorage() {
-                foreach (var text in Settings.LastSizes.Split('|')) {
-                    long value;
-                    if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out value)) {
-                        if (this.Sizes.Contains(value) == false) {
-                            this.Sizes.Add(value);
-                        }
-                    }
-                }
+        public static string GetSizeText(long size, int selectedUnitIndex) {
+            switch (selectedUnitIndex) {
+                case 0: return (size / 1024.0 / 1024.0).ToString("0.#", CultureInfo.CurrentCulture);
+                case 1: return (size / 1024.0 / 1024.0 / 1024.0).ToString("0.##", CultureInfo.CurrentCulture);
+                default: return size.ToString(CultureInfo.CurrentUICulture);
             }
+        }
 
-            private IList<long> Sizes = new List<long>();
-
-
-            public IEnumerable<long> GetSizes() {
-                foreach (var size in this.Sizes)
-                    yield return size;
-            }
-
-            public void AddSize(long value) {
-                if (value == 0) { return; }
-                if (this.Sizes.Contains(value)) {
-                    this.Sizes.Remove(value);
-                }
-                this.Sizes.Insert(0, value);
-                while (this.Sizes.Count > 10) { this.Sizes.RemoveAt(10); }
-
-                var sb = new StringBuilder();
-                foreach (var size in GetSizes()) {
-                    if (sb.Length > 0) { sb.Append("|"); }
-                    sb.Append(size.ToString(CultureInfo.InvariantCulture));
-                }
-                Settings.LastSizes = sb.ToString();
-            }
-
-            private static readonly NumberDeclination BytesSuffix = new NumberDeclination("byte", "bytes", "bytes");
-            public static string GetSizeText(long size, int selectedUnitIndex) {
+        public static long GetSizeInBytes(string text, int selectedUnitIndex, bool use1000 = false) {
+            double value;
+            if (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value) || double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) {
+                if (value > int.MaxValue) { return 0; }
+                var divider = use1000 ? 1000 : 1024;
                 switch (selectedUnitIndex) {
-                    case 0: return (size / 1024.0 / 1024.0).ToString("0.#", CultureInfo.CurrentCulture);
-                    case 1: return (size / 1024.0 / 1024.0 / 1024.0).ToString("0.##", CultureInfo.CurrentCulture);
-                    default: return size.ToString(CultureInfo.CurrentUICulture);
+                    case 0: return Convert.ToInt64(value * divider * divider);
+                    case 1: return Convert.ToInt64(value * divider * divider * divider);
+                    default: return Convert.ToInt64(value);
                 }
+            } else {
+                return 0;
             }
-
-            public static long GetSizeInBytes(string text, int selectedUnitIndex, bool use1000 = false) {
-                double value;
-                if (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value) || double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) {
-                    if (value > int.MaxValue) { return 0; }
-                    var divider = use1000 ? 1000 : 1024;
-                    switch (selectedUnitIndex) {
-                        case 0: return Convert.ToInt64(value * divider * divider);
-                        case 1: return Convert.ToInt64(value * divider * divider * divider);
-                        default: return Convert.ToInt64(value);
-                    }
-                } else {
-                    return 0;
-                }
-            }
-
         }
 
     }
