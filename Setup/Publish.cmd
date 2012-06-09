@@ -12,7 +12,7 @@ ECHO --- BUILD SOLUTION
 ECHO.
 
 RMDIR /Q /S "..\Binaries" 2> NUL
-"%PROGRAMFILES(X86)%\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe" /Build "Release" %FILE_SOLUTION%
+"%PROGRAMFILES(X86)%\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe" /Build "Release" %FILE_SOLUTION%
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
 ECHO.
