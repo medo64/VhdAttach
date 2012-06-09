@@ -108,12 +108,17 @@ namespace VhdAttach {
         }
 
         private void control_Changed(object sender, EventArgs e) {
+            decimal dummyNumber;
+            if (TryParseNumber(txtSize.Text, out dummyNumber) == false) {
+                txtSize.Text = "";
+            }
+
             var sizeInBytes = GetSizeInBytes();
             txtSizeInBytes.Text = string.Format(CultureInfo.CurrentCulture, "{0:#,##0}", sizeInBytes);
 
             var sizeInBytesOk = (sizeInBytes >= 8 * 1000 * 1000 / 4096 * 4096);
             if (sizeInBytesOk == false) {
-                erpError.SetError(btnOK, "Disk is too small (8 MB minimum).");
+                erpError.SetError(btnOK, Messages.DiskTooSmall);
             } else {
                 erpError.SetError(btnOK, null);
             }
@@ -138,34 +143,42 @@ namespace VhdAttach {
             e.Handled = true;
         }
 
+
         private void txtSize_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Up: {
-                        var allSelected = (txtSize.SelectionLength == txtSize.TextLength);
+                        e.Handled = true;
                         decimal number;
-                        if (decimal.TryParse(txtSize.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out number) || decimal.TryParse(txtSize.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out number)) {
+                        if (TryParseNumber(txtSize.Text, out number)) {
                             number = Math.Floor(number);
                             if (number < 99999999) {
                                 number += 1;
+                                var allSelected = (txtSize.SelectionLength == txtSize.TextLength);
                                 txtSize.Text = number.ToString(CultureInfo.CurrentCulture);
                                 if (allSelected) { txtSize.SelectAll(); } else { txtSize.SelectionStart = txtSize.TextLength; }
                             }
                         }
-                        e.Handled = true;
                     } break;
+
                 case Keys.Down: {
-                        var allSelected = (txtSize.SelectionLength == txtSize.TextLength);
+                        e.Handled = true;
                         decimal number;
-                        if (decimal.TryParse(txtSize.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out number) || decimal.TryParse(txtSize.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out number)) {
+                        if (TryParseNumber(txtSize.Text, out number)) {
                             number = Math.Floor(number);
                             if (number > 0) {
                                 number -= 1;
+                                var allSelected = (txtSize.SelectionLength == txtSize.TextLength);
                                 txtSize.Text = number.ToString(CultureInfo.CurrentCulture);
                                 if (allSelected) { txtSize.SelectAll(); } else { txtSize.SelectionStart = txtSize.TextLength; }
                             }
                         }
-                        e.Handled = true;
                     } break;
+
+                case Keys.Control | Keys.A:
+                    e.Handled = true;
+                    txtSize.SelectAll();
+                    break;
+
             }
         }
 
@@ -189,7 +202,7 @@ namespace VhdAttach {
 
 
 
-        public static string GetSizeText(long size, int selectedUnitIndex) {
+        private static string GetSizeText(long size, int selectedUnitIndex) {
             switch (selectedUnitIndex) {
                 case 0: return (size / 1024.0 / 1024.0).ToString("0.#", CultureInfo.CurrentCulture);
                 case 1: return (size / 1024.0 / 1024.0 / 1024.0).ToString("0.##", CultureInfo.CurrentCulture);
@@ -197,9 +210,9 @@ namespace VhdAttach {
             }
         }
 
-        public static long GetSizeInBytes(string text, int selectedUnitIndex, bool use1000 = false) {
-            double value;
-            if (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value) || double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) {
+        private static long GetSizeInBytes(string text, int selectedUnitIndex, bool use1000 = false) {
+            decimal value;
+            if (TryParseNumber(text, out value)) {
                 if (value > int.MaxValue) { return 0; }
                 var divider = use1000 ? 1000 : 1024;
                 switch (selectedUnitIndex) {
@@ -209,6 +222,17 @@ namespace VhdAttach {
                 }
             } else {
                 return 0;
+            }
+        }
+
+        private static bool TryParseNumber(string text, out decimal value) {
+            decimal number;
+            if (decimal.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out number) || decimal.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out number)) {
+                value = number;
+                return true;
+            } else {
+                value = 0;
+                return false;
             }
         }
 
