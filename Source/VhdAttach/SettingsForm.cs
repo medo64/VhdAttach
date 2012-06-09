@@ -36,7 +36,7 @@ namespace VhdAttach {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
             } catch (IOException ex) {
-                Medo.MessageBox.ShowError(this, string.Format("Settings cannot be written.\nIs service running?\n\n{0}", ex.Message));
+                Messages.ShowServiceIOException(this, ex);
             } finally {
                 this.Cursor = Cursors.Default;
             }

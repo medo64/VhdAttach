@@ -537,6 +537,8 @@ namespace VhdAttach {
                 if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
+            } catch (IOException ex) {
+                Messages.ShowServiceIOException(this, ex);
             } finally {
                 this.Cursor = Cursors.Default;
             }

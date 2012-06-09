@@ -55,8 +55,8 @@ namespace VhdAttach {
                         this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(res.Message)));
                     }
                 }
-            } catch (TimeoutException) {
-                this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception("Cannot access VHD Attach service.")));
+            } catch (IOException) {
+                this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(Messages.ServiceIOException)));
             } catch (Exception ex) {
                 this._exceptions.Add(new InvalidOperationException(iFile.Name, ex));
             }
