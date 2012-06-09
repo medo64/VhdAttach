@@ -22,7 +22,7 @@ namespace VhdAttach {
 
         private void Form_Load(object sender, EventArgs e) {
             cmbSizeUnit.SelectedItem = Settings.LastSizeUnit;
-            txtSize.Text = GetSizeText(Settings.LastSize, cmbSizeUnit.SelectedIndex);
+            txtSize.Text = GetSizeText(Settings.LastSize, cmbSizeUnit.Text);
             chbThousandSize.Checked = Settings.LastSizeThousandBased;
             radFixed.Checked = Settings.LastSizeFixed;
         }
@@ -188,13 +188,13 @@ namespace VhdAttach {
 
 
         private long GetSizeInBytes() {
-            long sizeInBytes = GetSizeInBytes(txtSize.Text, cmbSizeUnit.SelectedIndex, chbThousandSize.Checked);
+            long sizeInBytes = GetSizeInBytes(txtSize.Text, cmbSizeUnit.Text, chbThousandSize.Checked);
             return (sizeInBytes / 4096) * 4096; //round to 4096 blocks
         }
 
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e) {
-            Settings.LastSize = GetSizeInBytes(txtSize.Text, cmbSizeUnit.SelectedIndex);
+            Settings.LastSize = GetSizeInBytes(txtSize.Text, cmbSizeUnit.Text);
             Settings.LastSizeUnit = cmbSizeUnit.Text;
             Settings.LastSizeThousandBased = chbThousandSize.Checked;
             Settings.LastSizeFixed = radFixed.Checked;
@@ -202,23 +202,27 @@ namespace VhdAttach {
 
 
 
-        private static string GetSizeText(long size, int selectedUnitIndex) {
-            switch (selectedUnitIndex) {
-                case 0: return (size / 1024.0 / 1024.0).ToString("0.#", CultureInfo.CurrentCulture);
-                case 1: return (size / 1024.0 / 1024.0 / 1024.0).ToString("0.##", CultureInfo.CurrentCulture);
-                default: return size.ToString(CultureInfo.CurrentUICulture);
+        private static string GetSizeText(long size, string unit) {
+            if (unit.Equals("MB", StringComparison.OrdinalIgnoreCase)) {
+                return (size / 1024.0 / 1024.0).ToString("0.#", CultureInfo.CurrentCulture);
+            } else if (unit.Equals("GB", StringComparison.OrdinalIgnoreCase)) {
+                return (size / 1024.0 / 1024.0 / 1024.0).ToString("0.##", CultureInfo.CurrentCulture);
+            } else {
+                return size.ToString(CultureInfo.CurrentUICulture);
             }
         }
 
-        private static long GetSizeInBytes(string text, int selectedUnitIndex, bool use1000 = false) {
+        private static long GetSizeInBytes(string text, string unit, bool use1000 = false) {
             decimal value;
             if (TryParseNumber(text, out value)) {
                 if (value > int.MaxValue) { return 0; }
                 var divider = use1000 ? 1000 : 1024;
-                switch (selectedUnitIndex) {
-                    case 0: return Convert.ToInt64(value * divider * divider);
-                    case 1: return Convert.ToInt64(value * divider * divider * divider);
-                    default: return Convert.ToInt64(value);
+                if (unit.Equals("MB", StringComparison.OrdinalIgnoreCase)) {
+                    return Convert.ToInt64(value * divider * divider);
+                } else if (unit.Equals("GB", StringComparison.OrdinalIgnoreCase)) {
+                    return Convert.ToInt64(value * divider * divider * divider);
+                } else {
+                    return Convert.ToInt64(value);
                 }
             } else {
                 return 0;

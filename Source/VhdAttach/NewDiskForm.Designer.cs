@@ -152,8 +152,8 @@
             this.cmbSizeUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbSizeUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSizeUnit.Items.AddRange(new object[] {
-            "MB",
-            "GB"});
+            "GB",
+            "MB"});
             this.cmbSizeUnit.Location = new System.Drawing.Point(219, 12);
             this.cmbSizeUnit.Name = "cmbSizeUnit";
             this.cmbSizeUnit.Size = new System.Drawing.Size(55, 24);
