@@ -13,21 +13,29 @@ internal static class ServiceSettings {
     private static readonly string pathToVhdAttach = Path.Combine((new FileInfo(Assembly.GetExecutingAssembly().Location)).DirectoryName, "VhdAttach.exe");
 
 
-    public static string[] AutoAttachVhdList {
+    public static FileWithOptions[] AutoAttachVhdList {
         get {
-            var files = new List<string>();
+            var lines = new List<string>();
             using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(RootSubkeyPath, false)) {
                 if (rk != null) {
                     var fileArray = rk.GetValue("AutoAttachVhdList", null) as string[];
-                    if (fileArray != null) { files.AddRange(fileArray); }
+                    if (fileArray != null) { lines.AddRange(fileArray); }
                 }
+            }
+            var files = new List<FileWithOptions>();
+            foreach (var line in lines) {
+                files.Add(new FileWithOptions(line));
             }
             return files.ToArray();
         }
         set {
+            var lines = new List<string>();
+            foreach (var file in value) {
+                lines.Add(file.ToString());
+            }
             using (RegistryKey rk = RootRegistryKey.CreateSubKey(RootSubkeyPath, RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (rk != null) {
-                    rk.SetValue("AutoAttachVhdList", value, RegistryValueKind.MultiString);
+                    rk.SetValue("AutoAttachVhdList", lines, RegistryValueKind.MultiString);
                 }
             }
         }

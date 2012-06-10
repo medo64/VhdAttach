@@ -17,8 +17,8 @@ namespace VhdAttach {
             checkAttachReadOnly.Checked = ServiceSettings.ContextMenuAttachReadOnly;
             checkDetach.Checked = ServiceSettings.ContextMenuDetach;
             checkDetachDrive.Checked = ServiceSettings.ContextMenuDetachDrive;
-            foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                listAutoAttach.Items.Add(new ListViewVhdItem(fileName));
+            foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                listAutoAttach.Items.Add(new ListViewVhdItem(fwo));
             }
             btnRegisterExtension.Visible = !ServiceSettings.ContextMenu;
         }
@@ -135,7 +135,7 @@ namespace VhdAttach {
                             }
                         }
                         if (duplicate == null) {
-                            item = new ListViewVhdItem(file);
+                            item = new ListViewVhdItem(new FileWithOptions(file));
                             listAutoAttach.Items.Add(item);
                         } else {
                             item = duplicate;

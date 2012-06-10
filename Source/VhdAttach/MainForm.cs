@@ -310,6 +310,15 @@ namespace VhdAttach {
                     mnuDetach.Enabled = !mnuAttach.Enabled;
                     mnuTools.Enabled = true;
 
+                    bool isAutoMount = false;
+                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                        if (string.Compare(document.FileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                            isAutoMount = true;
+                            break;
+                        }
+                    }
+                    mnuAutoMount.Checked = isAutoMount;
+
                     list.BeginUpdate();
                     list.Items.Clear();
                     list.Groups.Clear();
@@ -340,18 +349,9 @@ namespace VhdAttach {
                 mnuOpen.DropDownItems.Add(item2);
                 paths.Add(iRecentFile.FileName.ToUpperInvariant());
             }
-            foreach (var file in ServiceSettings.AutoAttachVhdList) {
+            foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                 Medo.Configuration.RecentFile iRecentFile;
-                if (file.StartsWith("/")) {
-                    /*
-                     * Each file can have additional settings area that starts with / and ends with next /.
-                     * E.g. "/readonly,nodriveletter/D:\Test.vhd"
-                     */
-                    var iEndPipe = file.IndexOf("/", 1);
-                    iRecentFile = Medo.Configuration.RecentFile.GetRecentFile(file.Substring(iEndPipe + 1));
-                } else {
-                    iRecentFile = Medo.Configuration.RecentFile.GetRecentFile(file);
-                }
+                iRecentFile = Medo.Configuration.RecentFile.GetRecentFile(fwo.FileName);
                 if (iRecentFile != null) {
                     if (paths.Contains(iRecentFile.FileName.ToUpperInvariant()) == false) {
                         var item2 = new ToolStripMenuItem(iRecentFile.Title);
@@ -500,8 +500,8 @@ namespace VhdAttach {
 
         private void mnuTools_DropDownOpening(object sender, EventArgs e) {
             bool isAutoMount = false;
-            foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
+            foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
                     isAutoMount = true;
                     break;
                 }
@@ -537,9 +537,9 @@ namespace VhdAttach {
                 var vhds = new List<string>();
                 if (mnuAutoMount.Checked) { //add if possible
                     bool isIn = false;
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        vhds.Add(fileName);
-                        if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                        vhds.Add(fwo.FileName);
+                        if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
                             isIn = true;
                         }
                     }
@@ -547,9 +547,9 @@ namespace VhdAttach {
                         vhds.Add(this.VhdFileName);
                     }
                 } else { //remove if exists
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) != 0) {
-                            vhds.Add(fileName);
+                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                        if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) != 0) {
+                            vhds.Add(fwo.FileName);
                         }
                     }
                 }

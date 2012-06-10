@@ -7,24 +7,10 @@ using System.Windows.Forms;
 namespace VhdAttach {
     internal class ListViewVhdItem : ListViewItem {
 
-        public ListViewVhdItem(string fileName) {
-            if (fileName.StartsWith("/")) {
-                /*
-                 * Each file can have additional settings area that starts with / and ends with next /.
-                 * E.g. "/readonly,nodriveletter/D:\Test.vhd"
-                 */
-                var iEndPipe = fileName.IndexOf("/", 1);
-                var additionalSettings = fileName.Substring(1, iEndPipe - 1);
-                this.FileName = fileName.Substring(iEndPipe + 1);
-                foreach (var setting in additionalSettings.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) {
-                    switch (additionalSettings.ToUpperInvariant()) {
-                        case "READONLY": this.IsReadOnly = true; break;
-                        case "NODRIVELETTER": this.HasNoDriveLetter = true; break;
-                    }
-                }
-            } else {
-                this.FileName = fileName;
-            }
+        public ListViewVhdItem(FileWithOptions fwo) {
+            this.FileName = fwo.FileName;
+            this.IsReadOnly = fwo.ReadOnly;
+            this.HasNoDriveLetter = fwo.NoDriveLetter;
 
             try {
                 var file = new FileInfo(this.FileName);
@@ -33,28 +19,28 @@ namespace VhdAttach {
                 try {
                     if (file.Exists) {
                         if (file.IsReadOnly) {
-                            this.ToolTipText = "File is read-only." + Environment.NewLine + fileName;
+                            this.ToolTipText = "File is read-only." + Environment.NewLine + this.FileName;
                             this.ImageIndex = 1;
                         } else {
-                            this.ToolTipText = fileName;
+                            this.ToolTipText = this.FileName;
                             this.ImageIndex = (this.IsReadOnly) ? 4 : 0;
                         }
                     } else {
-                        this.ToolTipText = "File not found." + Environment.NewLine + fileName;
+                        this.ToolTipText = "File not found." + Environment.NewLine + this.FileName;
                         this.ImageIndex = 2;
                     }
                 } catch (Exception ex) {
-                    this.ToolTipText = ex.Message + Environment.NewLine + fileName;
+                    this.ToolTipText = ex.Message + Environment.NewLine + this.FileName;
                     this.ImageIndex = 3;
                 }
             } catch (ArgumentException) {
-                var segments = fileName.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+                var segments = this.FileName.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
                 if (segments.Length > 0) {
                     base.Text = segments[segments.Length - 1];
                 } else {
-                    base.Text = fileName;
+                    base.Text = this.FileName;
                 }
-                this.ToolTipText = "Cannot parse file name \"" + fileName + "\"";
+                this.ToolTipText = "Cannot parse file name \"" + this.FileName + "\"";
                 this.ImageIndex = 3;
             }
 
@@ -78,18 +64,10 @@ namespace VhdAttach {
 
 
         public string GetSettingFileName() {
-            var additionalSettings = new List<string>();
-            if (this.IsReadOnly) { additionalSettings.Add("readonly"); }
-            if (this.HasNoDriveLetter) { additionalSettings.Add("nodriveletter"); }
-
-            var sb = new StringBuilder();
-            if (additionalSettings.Count > 0) {
-                sb.Append("/");
-                sb.Append(string.Join(",", additionalSettings.ToArray()));
-                sb.Append("/");
-            }
-            sb.Append(this.FileName);
-            return sb.ToString();
+            var fwo = new FileWithOptions(this.FileName);
+            fwo.ReadOnly = this.IsReadOnly;
+            fwo.NoDriveLetter = this.HasNoDriveLetter;
+            return fwo.ToString();
         }
 
 

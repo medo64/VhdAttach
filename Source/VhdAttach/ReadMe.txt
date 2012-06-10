@@ -34,6 +34,12 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.40 (2012-06-16)
+
+        o New icon.
+        o Improving new disk dialog.
+        o Bug-fixing.
+
     3.31 (2012-05-31)
 
         o Bug-fixing.
