@@ -42,11 +42,10 @@ namespace VhdAttachService {
         private static void Run() {
             try {
 
-                foreach (var file in ServiceSettings.AutoAttachVhdList) {
+                foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                     try {
                         var access = Medo.IO.VirtualDiskAccessMask.All;
                         var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
-                        var fwo = new FileWithOptions(file);
                         if (fwo.ReadOnly) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
                         if (fwo.NoDriveLetter) { options |= Medo.IO.VirtualDiskAttachOptions.NoDriveLetter; }
                         var fileName = fwo.FileName;
@@ -57,7 +56,7 @@ namespace VhdAttachService {
                         }
                         Thread.Sleep(1000);
                     } catch (Exception ex) {
-                        Trace.TraceError("E: Cannot attach file \"" + file + "\". " + ex.Message);
+                        Trace.TraceError("E: Cannot attach file \"" + fwo.FileName + "\". " + ex.Message);
                     }
                 }
 

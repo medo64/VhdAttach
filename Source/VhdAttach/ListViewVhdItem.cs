@@ -7,8 +7,7 @@ using System.Windows.Forms;
 namespace VhdAttach {
     internal class ListViewVhdItem : ListViewItem {
 
-        public ListViewVhdItem(string fileName) {
-            var fwo = new FileWithOptions(fileName);
+        public ListViewVhdItem(FileWithOptions fwo) {
             this.FileName = fwo.FileName;
             this.IsReadOnly = fwo.ReadOnly;
             this.HasNoDriveLetter = fwo.NoDriveLetter;
@@ -20,28 +19,28 @@ namespace VhdAttach {
                 try {
                     if (file.Exists) {
                         if (file.IsReadOnly) {
-                            this.ToolTipText = "File is read-only." + Environment.NewLine + fileName;
+                            this.ToolTipText = "File is read-only." + Environment.NewLine + this.FileName;
                             this.ImageIndex = 1;
                         } else {
-                            this.ToolTipText = fileName;
+                            this.ToolTipText = this.FileName;
                             this.ImageIndex = (this.IsReadOnly) ? 4 : 0;
                         }
                     } else {
-                        this.ToolTipText = "File not found." + Environment.NewLine + fileName;
+                        this.ToolTipText = "File not found." + Environment.NewLine + this.FileName;
                         this.ImageIndex = 2;
                     }
                 } catch (Exception ex) {
-                    this.ToolTipText = ex.Message + Environment.NewLine + fileName;
+                    this.ToolTipText = ex.Message + Environment.NewLine + this.FileName;
                     this.ImageIndex = 3;
                 }
             } catch (ArgumentException) {
-                var segments = fileName.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+                var segments = this.FileName.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
                 if (segments.Length > 0) {
                     base.Text = segments[segments.Length - 1];
                 } else {
-                    base.Text = fileName;
+                    base.Text = this.FileName;
                 }
-                this.ToolTipText = "Cannot parse file name \"" + fileName + "\"";
+                this.ToolTipText = "Cannot parse file name \"" + this.FileName + "\"";
                 this.ImageIndex = 3;
             }
 
@@ -65,7 +64,7 @@ namespace VhdAttach {
 
 
         public string GetSettingFileName() {
-            var fwo = new FileWithOptions (this.FileName);
+            var fwo = new FileWithOptions(this.FileName);
             fwo.ReadOnly = this.IsReadOnly;
             fwo.NoDriveLetter = this.HasNoDriveLetter;
             return fwo.ToString();

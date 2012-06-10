@@ -312,8 +312,8 @@ namespace VhdAttach {
                     mnuAutoMount.Enabled = true;
 
                     bool isAutoMount = false;
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(document.FileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                        if (string.Compare(document.FileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
                             isAutoMount = true;
                             break;
                         }
@@ -352,8 +352,7 @@ namespace VhdAttach {
                 mnuOpen.DropDownItems.Add(item2);
                 paths.Add(iRecentFile.FileName.ToUpperInvariant());
             }
-            foreach (var file in ServiceSettings.AutoAttachVhdList) {
-                var fwo = new FileWithOptions(file);
+            foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                 Medo.Configuration.RecentFile iRecentFile;
                 iRecentFile = Medo.Configuration.RecentFile.GetRecentFile(fwo.FileName);
                 if (iRecentFile != null) {
@@ -509,9 +508,9 @@ namespace VhdAttach {
                 var vhds = new List<string>();
                 if (mnuAutoMount.Checked) { //add if possible
                     bool isIn = false;
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        vhds.Add(fileName);
-                        if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                        vhds.Add(fwo.FileName);
+                        if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
                             isIn = true;
                         }
                     }
@@ -519,9 +518,9 @@ namespace VhdAttach {
                         vhds.Add(this.VhdFileName);
                     }
                 } else { //remove if exists
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) != 0) {
-                            vhds.Add(fileName);
+                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                        if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) != 0) {
+                            vhds.Add(fwo.FileName);
                         }
                     }
                 }

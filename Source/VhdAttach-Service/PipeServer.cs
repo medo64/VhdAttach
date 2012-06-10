@@ -83,7 +83,7 @@ namespace VhdAttachService {
                                     ServiceSettings.ContextMenuAttachReadOnly = bool.Parse(packet["ContextMenuAttachReadOnly"]);
                                     ServiceSettings.ContextMenuDetach = bool.Parse(packet["ContextMenuDetach"]);
                                     ServiceSettings.ContextMenuDetachDrive = bool.Parse(packet["ContextMenuDetachDrive"]);
-                                    ServiceSettings.AutoAttachVhdList = packet["AutoAttachList"].Split('|');
+                                    ServiceSettings.AutoAttachVhdList = GetFwoArray(packet["AutoAttachList"]);
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);
@@ -107,6 +107,14 @@ namespace VhdAttachService {
             } else {
                 return null;
             }
+        }
+
+        private static FileWithOptions[] GetFwoArray(string lines) {
+            var files = new List<FileWithOptions>();
+            foreach (var line in lines.Split('|')) {
+                files.Add(new FileWithOptions(line));
+            }
+            return files.ToArray();
         }
 
         public static void Reply(TinyPacket response) {
