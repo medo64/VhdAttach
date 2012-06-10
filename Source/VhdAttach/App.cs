@@ -17,7 +17,6 @@ namespace VhdAttach {
             var mutexSecurity = new MutexSecurity();
             mutexSecurity.AddAccessRule(new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow));
             using (var setupMutex = new Mutex(false, @"Global\JosipMedved_VhdAttach", out createdNew, mutexSecurity)) {
-
                 System.Windows.Forms.Application.EnableVisualStyles();
                 System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 

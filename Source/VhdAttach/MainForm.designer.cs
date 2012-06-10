@@ -48,10 +48,11 @@ namespace VhdAttach {
             this.mnuOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuAutoMount = new System.Windows.Forms.ToolStripButton();
             this.mnuRefresh = new System.Windows.Forms.ToolStripButton();
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuTools = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mnuAutoMount = new System.Windows.Forms.ToolStripMenuItem();
             this.staErrorStolenExtension = new System.Windows.Forms.StatusStrip();
             this.staErrorStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
             this.staErrorServiceMissing = new System.Windows.Forms.StatusStrip();
@@ -259,18 +260,6 @@ namespace VhdAttach {
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
-            // mnuAutoMount
-            // 
-            this.mnuAutoMount.CheckOnClick = true;
-            this.mnuAutoMount.Enabled = false;
-            this.mnuAutoMount.Image = ((System.Drawing.Image)(resources.GetObject("mnuAutoMount.Image")));
-            this.mnuAutoMount.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnuAutoMount.Name = "mnuAutoMount";
-            this.mnuAutoMount.Size = new System.Drawing.Size(110, 24);
-            this.mnuAutoMount.Text = "Auto-mount";
-            this.mnuAutoMount.ToolTipText = "Selects whether VHD is mounted upon next system restart";
-            this.mnuAutoMount.Click += new System.EventHandler(this.mnuAutoMount_Click);
-            // 
             // mnuRefresh
             // 
             this.mnuRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -297,7 +286,7 @@ namespace VhdAttach {
             this.mnuOptions,
             this.toolStripSeparator4,
             this.toolStripSeparator2,
-            this.mnuAutoMount});
+            this.mnuTools});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
@@ -309,6 +298,26 @@ namespace VhdAttach {
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // mnuTools
+            // 
+            this.mnuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuAutoMount});
+            this.mnuTools.Enabled = false;
+            this.mnuTools.Image = ((System.Drawing.Image)(resources.GetObject("mnuTools.Image")));
+            this.mnuTools.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuTools.Name = "mnuTools";
+            this.mnuTools.Size = new System.Drawing.Size(74, 24);
+            this.mnuTools.Text = "Tools";
+            this.mnuTools.DropDownOpening += new System.EventHandler(this.mnuTools_DropDownOpening);
+            // 
+            // mnuAutoMount
+            // 
+            this.mnuAutoMount.CheckOnClick = true;
+            this.mnuAutoMount.Name = "mnuAutoMount";
+            this.mnuAutoMount.Size = new System.Drawing.Size(226, 24);
+            this.mnuAutoMount.Text = "Mounted upon startup";
+            this.mnuAutoMount.Click += new System.EventHandler(this.mnuAutoMount_Click);
             // 
             // staErrorStolenExtension
             // 
@@ -427,7 +436,6 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripButton mnuOptions;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripButton mnuAutoMount;
         private System.Windows.Forms.ToolStripButton mnuRefresh;
         private System.Windows.Forms.ToolStrip mnu;
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
@@ -440,6 +448,8 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripStatusLabel staErrorServiceMissingText;
         private System.Windows.Forms.StatusStrip staErrorServiceNotRunning;
         private System.Windows.Forms.ToolStripStatusLabel staErrorServiceNotRunningText;
+        private System.Windows.Forms.ToolStripDropDownButton mnuTools;
+        private System.Windows.Forms.ToolStripMenuItem mnuAutoMount;
     }
 }
 

@@ -87,6 +87,7 @@
     <Compile Include="ServiceStatusThread.cs" />
     <Compile Include="Tray.cs" />
     <Compile Include="VirtualDiskServiceHelper.cs" />
+    <Compile Include="Volume.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />

@@ -79,8 +79,8 @@ namespace VhdAttach {
                     mnuDetach.PerformClick();
                     return true;
 
-                case Keys.Alt | Keys.M:
-                    mnuAutoMount.PerformClick();
+                case Keys.Alt | Keys.T:
+                    mnuTools.PerformClick();
                     return true;
 
                 case Keys.F1:
@@ -160,8 +160,7 @@ namespace VhdAttach {
                 list.Groups.Clear();
                 mnuAttach.Enabled = false;
                 mnuDetach.Enabled = false;
-                mnuAutoMount.Text = "Auto-mount";
-                mnuAutoMount.Enabled = false;
+                mnuTools.Enabled = false;
                 return;
             }
 
@@ -309,16 +308,7 @@ namespace VhdAttach {
 
                     mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
                     mnuDetach.Enabled = !mnuAttach.Enabled;
-                    mnuAutoMount.Enabled = true;
-
-                    bool isAutoMount = false;
-                    foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(document.FileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
-                            isAutoMount = true;
-                            break;
-                        }
-                    }
-                    mnuAutoMount.Checked = isAutoMount;
+                    mnuTools.Enabled = true;
 
                     list.BeginUpdate();
                     list.Items.Clear();
@@ -332,8 +322,6 @@ namespace VhdAttach {
                     }
                     list.EndUpdate();
                 }
-
-                mnuAutoMount.Text = mnuAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
             } finally {
                 this.Cursor = Cursors.Default;
             }
@@ -510,8 +498,40 @@ namespace VhdAttach {
         }
 
 
+        private void mnuTools_DropDownOpening(object sender, EventArgs e) {
+            bool isAutoMount = false;
+            foreach (var fileName in ServiceSettings.AutoAttachVhdList) {
+                if (string.Compare(this.VhdFileName, fileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                    isAutoMount = true;
+                    break;
+                }
+            }
+            mnuAutoMount.Checked = isAutoMount;
+
+            for (int i = mnuTools.DropDownItems.Count - 1; i >= 1; i--) { //remove old drive letters
+                mnuTools.DropDownItems.RemoveAt(i);
+            }
+
+            string[] attachedPaths = null;
+            try {
+                using (var document = new Medo.IO.VirtualDisk(this.VhdFileName)) {
+                    document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo);
+                    var attachedDevice = document.GetAttachedPath();
+                    attachedPaths = PathFromDevice.GetPath(attachedDevice);
+                }
+            } catch { }
+            if ((attachedPaths != null) && (attachedPaths.Length >= 1)) {
+                mnuTools.DropDownItems.Add(new ToolStripSeparator());
+                foreach (var path in attachedPaths) {
+                    var volume = Volume.GetFromLetter(path);
+                    if (volume != null) {
+                        mnuTools.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter, null, mnuChangeDriveLetter_Click) { Tag = volume });
+                    }
+                }
+            }
+        }
+
         private void mnuAutoMount_Click(object sender, EventArgs e) {
-            mnuAutoMount.Text = mnuAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
             try {
                 this.Cursor = Cursors.WaitCursor;
                 var vhds = new List<string>();
@@ -544,6 +564,8 @@ namespace VhdAttach {
             }
         }
 
+        private void mnuChangeDriveLetter_Click(object sender, EventArgs e) {
+        }
 
         private void mnuOptions_Click(object sender, EventArgs e) {
             using (var form = new SettingsForm()) {

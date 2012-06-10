@@ -77,6 +77,9 @@
     <Compile Include="..\VhdAttach-Service\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
     </Compile>
+    <Compile Include="..\VhdAttach-Service\Volume.cs">
+      <Link>Volume.cs</Link>
+    </Compile>
     <Compile Include="App.cs" />
     <Compile Include="AttachForm.cs">
       <SubType>Form</SubType>
