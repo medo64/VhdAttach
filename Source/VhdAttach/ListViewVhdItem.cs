@@ -8,23 +8,10 @@ namespace VhdAttach {
     internal class ListViewVhdItem : ListViewItem {
 
         public ListViewVhdItem(string fileName) {
-            if (fileName.StartsWith("/")) {
-                /*
-                 * Each file can have additional settings area that starts with / and ends with next /.
-                 * E.g. "/readonly,nodriveletter/D:\Test.vhd"
-                 */
-                var iEndPipe = fileName.IndexOf("/", 1);
-                var additionalSettings = fileName.Substring(1, iEndPipe - 1);
-                this.FileName = fileName.Substring(iEndPipe + 1);
-                foreach (var setting in additionalSettings.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) {
-                    switch (additionalSettings.ToUpperInvariant()) {
-                        case "READONLY": this.IsReadOnly = true; break;
-                        case "NODRIVELETTER": this.HasNoDriveLetter = true; break;
-                    }
-                }
-            } else {
-                this.FileName = fileName;
-            }
+            var fwo = new FileWithOptions(fileName);
+            this.FileName = fwo.FileName;
+            this.IsReadOnly = fwo.ReadOnly;
+            this.HasNoDriveLetter = fwo.NoDriveLetter;
 
             try {
                 var file = new FileInfo(this.FileName);
@@ -78,18 +65,10 @@ namespace VhdAttach {
 
 
         public string GetSettingFileName() {
-            var additionalSettings = new List<string>();
-            if (this.IsReadOnly) { additionalSettings.Add("readonly"); }
-            if (this.HasNoDriveLetter) { additionalSettings.Add("nodriveletter"); }
-
-            var sb = new StringBuilder();
-            if (additionalSettings.Count > 0) {
-                sb.Append("/");
-                sb.Append(string.Join(",", additionalSettings.ToArray()));
-                sb.Append("/");
-            }
-            sb.Append(this.FileName);
-            return sb.ToString();
+            var fwo = new FileWithOptions (this.FileName);
+            fwo.ReadOnly = this.IsReadOnly;
+            fwo.NoDriveLetter = this.HasNoDriveLetter;
+            return fwo.ToString();
         }
 
 

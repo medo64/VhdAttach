@@ -74,6 +74,9 @@
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\Upgrade [002].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [005a].cs" />
+    <Compile Include="..\VhdAttach-Service\FileWithOptions.cs">
+      <Link>FileWithOptions.cs</Link>
+    </Compile>
     <Compile Include="..\VhdAttach-Service\ServiceSettings.cs">
       <Link>ServiceSettings.cs</Link>
     </Compile>
