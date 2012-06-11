@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using VhdAttachCommon;
 
 namespace VhdAttach {
     internal partial class SettingsForm : Form {

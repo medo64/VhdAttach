@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using VhdAttachCommon;
 
 namespace VhdAttachService {
 
