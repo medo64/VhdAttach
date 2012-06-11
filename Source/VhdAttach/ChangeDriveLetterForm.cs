@@ -8,13 +8,18 @@ using VhdAttachCommon;
 namespace VhdAttach {
     internal partial class ChangeDriveLetterForm : Form {
 
-        public ChangeDriveLetterForm(VhdAttachCommon.Volume volume) {
+        public ChangeDriveLetterForm(Volume volume) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
             this.Volume = volume;
 
             string currDrive = volume.DriveLetter2;
+            if (currDrive == null) {
+                btnOK.Text = "Add";
+            } else {
+                cmbDriveLetter.Items.Add("");
+            }
 
             var drives = new List<string>();
             for (char letter = 'A'; letter <= 'Z'; letter++) {
@@ -38,12 +43,15 @@ namespace VhdAttach {
 
 
         private void cmbDriveLetter_SelectedIndexChanged(object sender, EventArgs e) {
+            if (this.Volume.DriveLetter2 != null) {
+                btnOK.Text = string.IsNullOrEmpty(cmbDriveLetter.Text) ? "Remove" : "Change";
+            }
             btnOK.Enabled = !(cmbDriveLetter.Text.Equals(this.Volume.DriveLetter2, StringComparison.InvariantCultureIgnoreCase));
         }
 
 
         private void btnOK_Click(object sender, EventArgs e) {
-            var driveLetter = cmbDriveLetter.Text + "\\";
+            var driveLetter = string.IsNullOrEmpty(cmbDriveLetter.Text) ? "" : cmbDriveLetter.Text + "\\";
             using (var frm = new ServiceWaitForm("Changing drive letter",
                 delegate() {
                     var res = PipeClient.ChangeDriveLetter(this.Volume.VolumeName, driveLetter);

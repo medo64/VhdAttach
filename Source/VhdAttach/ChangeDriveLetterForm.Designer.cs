@@ -60,9 +60,9 @@
             this.lblDriveLetter.AutoSize = true;
             this.lblDriveLetter.Location = new System.Drawing.Point(12, 15);
             this.lblDriveLetter.Name = "lblDriveLetter";
-            this.lblDriveLetter.Size = new System.Drawing.Size(110, 17);
+            this.lblDriveLetter.Size = new System.Drawing.Size(81, 17);
             this.lblDriveLetter.TabIndex = 0;
-            this.lblDriveLetter.Text = "New drive letter:";
+            this.lblDriveLetter.Text = "Drive letter:";
             // 
             // cmbDriveLetter
             // 

@@ -103,7 +103,12 @@ namespace VhdAttachService {
                         case "ChangeDriveLetter": {
                                 try {
                                     var volume = new Volume(packet["VolumeName"]);
-                                    volume.ChangeLetter(packet["NewDriveLetter"]);
+                                    var newDriveLetter = packet["NewDriveLetter"];
+                                    if (string.IsNullOrEmpty(newDriveLetter)) {
+                                        volume.RemoveLetter();
+                                    } else {
+                                        volume.ChangeLetter(newDriveLetter);
+                                    }
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Cannot change drive letter.", ex);
