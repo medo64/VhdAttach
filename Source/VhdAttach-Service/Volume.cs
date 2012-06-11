@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VhdAttach {
+namespace VhdAttachCommon {
+
     [DebuggerDisplay("{VolumeName} at {DriveLetter}")]
     internal class Volume {
 
-        private Volume(string volumeName) {
+        internal Volume(string volumeName) {
             this.VolumeName = volumeName;
         }
 
@@ -28,9 +28,17 @@ namespace VhdAttach {
             }
         }
 
+        public string DriveLetter2 {
+            get {
+                var letter = this.DriveLetter;
+                return (letter != null) ? letter.Substring(0, 2) : null;
+            }
+        }
 
         public void ChangeLetter(string newLetter) {
             newLetter = ParseDriveLetter(newLetter);
+            if (newLetter == this.DriveLetter) { return; } //nothing to do
+
             this.RemoveLetter();
             if (NativeMethods.SetVolumeMountPoint(newLetter, this.VolumeName) == false) {
                 throw new Win32Exception();

@@ -36,6 +36,13 @@ namespace VhdAttach {
             return Send("WriteSettings", data);
         }
 
+        public static PipeResponse ChangeDriveLetter(string volumeName, string newDriveLetter) {
+            var data = new Dictionary<string, string>();
+            data.Add("VolumeName", volumeName);
+            data.Add("NewDriveLetter", newDriveLetter);
+            return Send("ChangeDriveLetter", data);
+        }
+
         public static PipeResponse RegisterExtension() {
             var data = new Dictionary<string, string>();
             return Send("RegisterExtension", data);

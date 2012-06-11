@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Medo.Net;
+using VhdAttachCommon;
 
 namespace VhdAttachService {
     internal static class PipeServer {
@@ -96,6 +97,16 @@ namespace VhdAttachService {
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);
+                                }
+                            } return GetResponse(packet);
+
+                        case "ChangeDriveLetter": {
+                                try {
+                                    var volume = new Volume(packet["VolumeName"]);
+                                    volume.ChangeLetter(packet["NewDriveLetter"]);
+                                } catch (Exception ex) {
+                                    Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
+                                    throw new InvalidOperationException("Cannot change drive letter.", ex);
                                 }
                             } return GetResponse(packet);
 

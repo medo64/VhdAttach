@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Medo.Extensions;
 using Medo.Localization.Croatia;
+using VhdAttachCommon;
 using VirtualHardDiskImage;
 
 namespace VhdAttach {
@@ -525,7 +526,7 @@ namespace VhdAttach {
                 foreach (var path in attachedPaths) {
                     var volume = Volume.GetFromLetter(path);
                     if (volume != null) {
-                        mnuTools.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter, null, mnuChangeDriveLetter_Click) { Tag = volume });
+                        mnuTools.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter2, null, mnuChangeDriveLetter_Click) { Tag = volume });
                     }
                 }
             }
@@ -565,6 +566,12 @@ namespace VhdAttach {
         }
 
         private void mnuChangeDriveLetter_Click(object sender, EventArgs e) {
+            var volume = (Volume)(((ToolStripMenuItem)sender).Tag);
+            using (var frm = new ChangeDriveLetterForm(volume)) {
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    UpdateData(this.VhdFileName);
+                }
+            }
         }
 
         private void mnuOptions_Click(object sender, EventArgs e) {

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
@@ -90,8 +91,20 @@
     <Compile Include="AttachForm.Designer.cs">
       <DependentUpon>AttachForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChangeDriveLetterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeDriveLetterForm.Designer.cs">
+      <DependentUpon>ChangeDriveLetterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Messages.cs" />
     <Compile Include="PathFromDevice.cs" />
+    <Compile Include="ServiceWaitForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceWaitForm.Designer.cs">
+      <DependentUpon>ServiceWaitForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolStripBorderlessProfessionalRenderer.cs" />
     <Compile Include="CreateFixedDiskForm.cs">
       <SubType>Form</SubType>
@@ -154,6 +167,9 @@
     <EmbeddedResource Include="AttachForm.resx">
       <DependentUpon>AttachForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ChangeDriveLetterForm.resx">
+      <DependentUpon>ChangeDriveLetterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CreateFixedDiskForm.resx">
       <DependentUpon>CreateFixedDiskForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -168,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewDiskForm.resx">
       <DependentUpon>NewDiskForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceWaitForm.resx">
+      <DependentUpon>ServiceWaitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
