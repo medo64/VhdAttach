@@ -10,7 +10,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace VhdAttachCommon {
 
-    [DebuggerDisplay("{VolumeName} at {DriveLetter}")]
+    [DebuggerDisplay("{VolumeName} at {DriveLetter3}")]
     internal class Volume {
 
         internal Volume(string volumeName) {
@@ -152,14 +152,14 @@ namespace VhdAttachCommon {
             int driveNumber;
             if (physicalDrive.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
                 return GetVolumesOnPhysicalDrive(driveNumber);
-                //} else if (physicalDrive.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
-                //    return GetVolumesOnPhysicalDrive(driveNumber);
+            } else if (physicalDrive.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+                return GetVolumesOnCdDrive(driveNumber);
             } else {
                 return null;
             }
         }
 
-        public static IList<Volume> GetVolumesOnPhysicalDrive(int physicalDriveNumber) {
+        public static IList<Volume> GetVolumesOnPhysicalDrive(int driveNumber) {
             var volumes = new List<Volume>();
 
             var sb = new StringBuilder(50);
@@ -167,7 +167,7 @@ namespace VhdAttachCommon {
             if (volumeSearchHandle.IsInvalid == false) {
                 do {
                     var volume = new Volume(sb.ToString());
-                    if (volume.PhysicalDriveNumber == physicalDriveNumber) {
+                    if (volume.PhysicalDriveNumber == driveNumber) {
                         volumes.Add(volume);
                     }
                 } while (NativeMethods.FindNextVolume(volumeSearchHandle, sb, sb.Capacity));
@@ -186,7 +186,30 @@ namespace VhdAttachCommon {
                 }
             );
 
-            return volumes;
+            return volumes.AsReadOnly();
+        }
+
+        public static IList<Volume> GetVolumesOnCdDrive(int driveNumber) {
+            var volumes = new List<Volume>();
+
+            for (char letter = 'A'; letter <= 'Z'; letter++) {
+                var dosDevice = letter + ":";
+                var sb = new StringBuilder(64);
+                if (NativeMethods.QueryDosDevice(dosDevice, sb, sb.Capacity) > 0) {
+                    var dosPath = sb.ToString();
+                    Debug.WriteLine(sb.ToString() + " is at " + dosDevice);
+                    if (dosPath.StartsWith(@"\Device\CdRom", StringComparison.OrdinalIgnoreCase)) {
+                        int cdromNumber = 0;
+                        if (int.TryParse(dosPath.Substring(13), NumberStyles.Integer, CultureInfo.InvariantCulture, out cdromNumber)) {
+                            if (cdromNumber == driveNumber) {
+                                volumes.Add(Volume.GetFromLetter(dosDevice));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return volumes.AsReadOnly();
         }
 
 
@@ -260,6 +283,10 @@ namespace VhdAttachCommon {
             [DllImportAttribute("kernel32.dll", EntryPoint = "FindNextVolumeW", SetLastError = true)]
             [return: MarshalAsAttribute(UnmanagedType.Bool)]
             public static extern Boolean FindNextVolume(SearchSafeHandle hFindVolume, [OutAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] StringBuilder lpszVolumeName, Int32 cchBufferLength);
+
+
+            [DllImportAttribute("kernel32.dll", EntryPoint = "QueryDosDeviceW", SetLastError = true)]
+            public static extern Int32 QueryDosDevice([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] String lpDeviceName, [OutAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] StringBuilder lpTargetPath, Int32 ucchMax);
 
 
             #region SafeHandles
