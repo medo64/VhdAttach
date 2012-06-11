@@ -513,20 +513,23 @@ namespace VhdAttach {
                 mnuTools.DropDownItems.RemoveAt(i);
             }
 
-            string[] attachedPaths = null;
+            string attachedDevice = null;
             try {
                 using (var document = new Medo.IO.VirtualDisk(this.VhdFileName)) {
                     document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo);
-                    var attachedDevice = document.GetAttachedPath();
-                    attachedPaths = PathFromDevice.GetPath(attachedDevice);
+                    attachedDevice = document.GetAttachedPath();
                 }
             } catch { }
-            if ((attachedPaths != null) && (attachedPaths.Length >= 1)) {
-                mnuTools.DropDownItems.Add(new ToolStripSeparator());
-                foreach (var path in attachedPaths) {
-                    var volume = Volume.GetFromLetter(path);
-                    if (volume != null) {
-                        mnuTools.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter2, null, mnuChangeDriveLetter_Click) { Tag = volume });
+            if (attachedDevice != null) {
+                var volumes = Volume.GetVolumesOnPhysicalDrive(attachedDevice);
+                if (volumes.Count > 0) {
+                    mnuTools.DropDownItems.Add(new ToolStripSeparator());
+                    foreach (var volume in volumes) {
+                        if (volume.DriveLetter2 != null) {
+                            mnuTools.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter2, null, mnuChangeDriveLetter_Click) { Tag = volume });
+                        } else {
+                            mnuTools.DropDownItems.Add(new ToolStripMenuItem("Add drive letter", null, mnuChangeDriveLetter_Click) { Tag = volume });
+                        }
                     }
                 }
             }

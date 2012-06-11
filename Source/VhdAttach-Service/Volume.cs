@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace VhdAttachCommon {
 
@@ -15,7 +19,20 @@ namespace VhdAttachCommon {
 
         public string VolumeName { get; private set; }
 
-        public string DriveLetter {
+        private string VolumeNameWithoutSlash {
+            get {
+                if (this.VolumeName.EndsWith("\\", StringComparison.Ordinal)) {
+                    return this.VolumeName.Remove(this.VolumeName.Length - 1);
+                } else {
+                    return this.VolumeName;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns drive letter with colon (:) and trailing backslash (\).
+        /// </summary>
+        public string DriveLetter3 {
             get {
                 var volumePaths = new StringBuilder(4096);
                 int volumePathsLength = 0;
@@ -28,16 +45,19 @@ namespace VhdAttachCommon {
             }
         }
 
+        /// <summary>
+        /// Returns drive letter with colon (:) but without trailing backslash (\).
+        /// </summary>
         public string DriveLetter2 {
             get {
-                var letter = this.DriveLetter;
+                var letter = this.DriveLetter3;
                 return (letter != null) ? letter.Substring(0, 2) : null;
             }
         }
 
         public void ChangeLetter(string newLetter) {
             newLetter = ParseDriveLetter(newLetter);
-            if (newLetter == this.DriveLetter) { return; } //nothing to do
+            if (newLetter == this.DriveLetter3) { return; } //nothing to do
 
             this.RemoveLetter();
             if (NativeMethods.SetVolumeMountPoint(newLetter, this.VolumeName) == false) {
@@ -46,10 +66,26 @@ namespace VhdAttachCommon {
         }
 
         public void RemoveLetter() {
-            if (this.DriveLetter != null) {
-                if (NativeMethods.DeleteVolumeMountPoint(this.DriveLetter) == false) {
+            if (this.DriveLetter3 != null) {
+                if (NativeMethods.DeleteVolumeMountPoint(this.DriveLetter3) == false) {
                     throw new Win32Exception();
                 }
+            }
+        }
+
+
+        public int? PhysicalDriveNumber {
+            get {
+                var volumeHandle = NativeMethods.CreateFile(this.VolumeNameWithoutSlash, 0, NativeMethods.FILE_SHARE_READ | NativeMethods.FILE_SHARE_WRITE, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0, IntPtr.Zero);
+                if (volumeHandle.IsInvalid) { return null; }
+
+                var de = new NativeMethods.VOLUME_DISK_EXTENTS();
+                de.NumberOfDiskExtents = 1;
+                int bytesReturned = 0;
+                if (NativeMethods.DeviceIoControl(volumeHandle, NativeMethods.IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, IntPtr.Zero, 0, ref de, Marshal.SizeOf(de), ref bytesReturned, IntPtr.Zero)) {
+                    if (bytesReturned > 0) { return de.Extents.DiskNumber; }
+                }
+                return null;
             }
         }
 
@@ -67,6 +103,36 @@ namespace VhdAttachCommon {
             }
         }
 
+
+        public static IList<Volume> GetVolumesOnPhysicalDrive(string physicalDrive) {
+            int driveNumber;
+            if (physicalDrive.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+                return GetVolumesOnPhysicalDrive(driveNumber);
+                //} else if (physicalDrive.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+                //    return GetVolumesOnPhysicalDrive(driveNumber);
+            } else {
+                return null;
+            }
+        }
+        public static IList<Volume> GetVolumesOnPhysicalDrive(int physicalDriveNumber) {
+            var volumes = new List<Volume>();
+
+            var sb = new StringBuilder(50);
+            var volumeSearchHandle = NativeMethods.FindFirstVolume(sb, sb.Capacity);
+            if (volumeSearchHandle.IsInvalid == false) {
+                do {
+                    var volume = new Volume(sb.ToString());
+                    if (volume.PhysicalDriveNumber == physicalDriveNumber) {
+                        volumes.Add(volume);
+                    }
+                } while (NativeMethods.FindNextVolume(volumeSearchHandle, sb, sb.Capacity));
+            }
+            volumeSearchHandle.Close();
+
+            return volumes;
+        }
+
+
         private static string ParseDriveLetter(string driveLetter) {
             if (driveLetter == null) { return null; }
             driveLetter = driveLetter.Trim().ToUpperInvariant();
@@ -77,6 +143,26 @@ namespace VhdAttachCommon {
 
 
         private class NativeMethods {
+
+            public const UInt32 FILE_SHARE_READ = 0x1;
+            public const UInt32 FILE_SHARE_WRITE = 0x2;
+            public const UInt32 OPEN_EXISTING = 0x3;
+            public const UInt32 IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS = 0x560000;
+
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct DISK_EXTENT {
+                public Int32 DiskNumber;
+                public Int64 StartingOffset;
+                public Int64 ExtentLength;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct VOLUME_DISK_EXTENTS {
+                public Int32 NumberOfDiskExtents;
+                public DISK_EXTENT Extents;
+            }
+
 
             [DllImportAttribute("kernel32.dll", EntryPoint = "DeleteVolumeMountPointW", SetLastError = true)]
             [return: MarshalAsAttribute(UnmanagedType.Bool)]
@@ -93,6 +179,69 @@ namespace VhdAttachCommon {
             [DllImportAttribute("kernel32.dll", EntryPoint = "SetVolumeMountPointW", SetLastError = true)]
             [return: MarshalAsAttribute(UnmanagedType.Bool)]
             public static extern Boolean SetVolumeMountPoint([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] String lpszVolumeMountPoint, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] String lpszVolumeName);
+
+
+            [DllImportAttribute("kernel32.dll", EntryPoint = "CreateFileW", SetLastError = true)]
+            public static extern VolumeSafeHandle CreateFile([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, [InAttribute()] IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, [InAttribute()] IntPtr hTemplateFile);
+
+            [DllImportAttribute("kernel32.dll", EntryPoint = "DeviceIoControl", SetLastError = true)]
+            [return: MarshalAsAttribute(UnmanagedType.Bool)]
+            public static extern bool DeviceIoControl([InAttribute()] VolumeSafeHandle hDevice, UInt32 dwIoControlCode, [InAttribute()] IntPtr lpInBuffer, Int32 nInBufferSize, ref VOLUME_DISK_EXTENTS lpOutBuffer, Int32 nOutBufferSize, ref Int32 lpBytesReturned, IntPtr lpOverlapped);
+
+
+            [DllImportAttribute("kernel32.dll", EntryPoint = "FindFirstVolumeW", SetLastError = true)]
+            public static extern SearchSafeHandle FindFirstVolume([OutAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] StringBuilder lpszVolumeName, Int32 cchBufferLength);
+
+            [DllImportAttribute("kernel32.dll", EntryPoint = "FindNextVolumeW", SetLastError = true)]
+            [return: MarshalAsAttribute(UnmanagedType.Bool)]
+            public static extern Boolean FindNextVolume(SearchSafeHandle hFindVolume, [OutAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] StringBuilder lpszVolumeName, Int32 cchBufferLength);
+
+
+            #region SafeHandles
+
+            [SecurityPermission(SecurityAction.Demand)]
+            public class VolumeSafeHandle : SafeHandleMinusOneIsInvalid {
+
+                public VolumeSafeHandle()
+                    : base(true) { }
+
+
+                protected override bool ReleaseHandle() {
+                    return CloseHandle(this.handle);
+                }
+
+                public override string ToString() {
+                    return this.handle.ToString();
+                }
+
+                [DllImportAttribute("kernel32.dll", SetLastError = true)]
+                [return: MarshalAsAttribute(UnmanagedType.Bool)]
+                public static extern Boolean CloseHandle(IntPtr hObject);
+
+            }
+
+            [SecurityPermission(SecurityAction.Demand)]
+            public class SearchSafeHandle : SafeHandleMinusOneIsInvalid {
+
+                public SearchSafeHandle()
+                    : base(true) { }
+
+
+                protected override bool ReleaseHandle() {
+                    return FindVolumeClose(this.handle);
+                }
+
+                public override string ToString() {
+                    return this.handle.ToString();
+                }
+
+                [DllImportAttribute("kernel32.dll", EntryPoint = "FindVolumeClose")]
+                [return: MarshalAsAttribute(UnmanagedType.Bool)]
+                public static extern bool FindVolumeClose([InAttribute()] IntPtr hFindVolume);
+
+            }
+
+            #endregion
 
         }
 
