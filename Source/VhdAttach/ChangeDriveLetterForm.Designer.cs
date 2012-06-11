@@ -45,6 +45,7 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOK.Enabled = false;
             this.btnOK.Location = new System.Drawing.Point(12, 54);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
@@ -72,6 +73,7 @@
             this.cmbDriveLetter.Name = "cmbDriveLetter";
             this.cmbDriveLetter.Size = new System.Drawing.Size(75, 24);
             this.cmbDriveLetter.TabIndex = 1;
+            this.cmbDriveLetter.SelectedIndexChanged += new System.EventHandler(this.cmbDriveLetter_SelectedIndexChanged);
             // 
             // ChangeDriveLetterForm
             // 

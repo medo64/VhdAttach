@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using VhdAttachCommon;
 
 namespace VhdAttach {
     internal partial class ChangeDriveLetterForm : Form {
@@ -11,7 +12,7 @@ namespace VhdAttach {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
-            this.VolumeName = volume.VolumeName;
+            this.Volume = volume;
 
             string currDrive = volume.DriveLetter2;
 
@@ -33,14 +34,19 @@ namespace VhdAttach {
             if (currDrive != null) { cmbDriveLetter.SelectedItem = currDrive; }
         }
 
-        private readonly string VolumeName;
+        private readonly Volume Volume;
+
+
+        private void cmbDriveLetter_SelectedIndexChanged(object sender, EventArgs e) {
+            btnOK.Enabled = !(cmbDriveLetter.Text.Equals(this.Volume.DriveLetter2, StringComparison.InvariantCultureIgnoreCase));
+        }
 
 
         private void btnOK_Click(object sender, EventArgs e) {
             var driveLetter = cmbDriveLetter.Text + "\\";
             using (var frm = new ServiceWaitForm("Changing drive letter",
                 delegate() {
-                    var res = PipeClient.ChangeDriveLetter(this.VolumeName, driveLetter);
+                    var res = PipeClient.ChangeDriveLetter(this.Volume.VolumeName, driveLetter);
                     if (res.IsError) {
                         throw new InvalidOperationException(res.Message);
                     }
