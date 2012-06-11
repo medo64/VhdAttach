@@ -21,11 +21,7 @@ namespace VhdAttachCommon {
 
         private string VolumeNameWithoutSlash {
             get {
-                if (this.VolumeName.EndsWith("\\", StringComparison.Ordinal)) {
-                    return this.VolumeName.Remove(this.VolumeName.Length - 1);
-                } else {
-                    return this.VolumeName;
-                }
+                return RemoveLastBackslash(this.VolumeName);
             }
         }
 
@@ -74,19 +70,67 @@ namespace VhdAttachCommon {
         }
 
 
+        private int? _physicalDriveNumber;
         public int? PhysicalDriveNumber {
             get {
-                var volumeHandle = NativeMethods.CreateFile(this.VolumeNameWithoutSlash, 0, NativeMethods.FILE_SHARE_READ | NativeMethods.FILE_SHARE_WRITE, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0, IntPtr.Zero);
-                if (volumeHandle.IsInvalid) { return null; }
+                FillExtentInfo();
+                return this._physicalDriveNumber;
+            }
+        }
 
+        private long? _physicalDriveExtentOffset;
+        public long? PhysicalDriveExtentOffset {
+            get {
+                FillExtentInfo();
+                return this._physicalDriveExtentOffset;
+            }
+        }
+
+        private long? _physicalDriveExtentLength;
+        public long? PhysicalDriveExtentLength {
+            get {
+                FillExtentInfo();
+                return this._physicalDriveExtentLength;
+            }
+        }
+
+
+        private bool _hasExtentInfo = false;
+        private void FillExtentInfo() {
+            if (_hasExtentInfo) { return; }
+
+            int diskNumber;
+            long startingOffset;
+            long extentLength;
+            if (GetExtentInfo(this.VolumeNameWithoutSlash, out diskNumber, out startingOffset, out extentLength)) {
+                this._physicalDriveNumber = diskNumber;
+                this._physicalDriveExtentOffset = startingOffset;
+                this._physicalDriveExtentLength = extentLength;
+            }
+
+            _hasExtentInfo = true;
+        }
+
+        private static bool GetExtentInfo(string volumeNameWithoutSlash, out int diskNumber, out long startingOffset, out long extentLength) {
+            var volumeHandle = NativeMethods.CreateFile(volumeNameWithoutSlash, 0, NativeMethods.FILE_SHARE_READ | NativeMethods.FILE_SHARE_WRITE, IntPtr.Zero, NativeMethods.OPEN_EXISTING, 0, IntPtr.Zero);
+            if (volumeHandle.IsInvalid == false) {
                 var de = new NativeMethods.VOLUME_DISK_EXTENTS();
                 de.NumberOfDiskExtents = 1;
                 int bytesReturned = 0;
                 if (NativeMethods.DeviceIoControl(volumeHandle, NativeMethods.IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, IntPtr.Zero, 0, ref de, Marshal.SizeOf(de), ref bytesReturned, IntPtr.Zero)) {
-                    if (bytesReturned > 0) { return de.Extents.DiskNumber; }
+                    if (bytesReturned > 0) {
+                        diskNumber = de.Extents.DiskNumber;
+                        startingOffset = de.Extents.StartingOffset;
+                        extentLength = de.Extents.ExtentLength;
+                        return true;
+                    }
                 }
-                return null;
             }
+
+            diskNumber = 0;
+            startingOffset = 0;
+            extentLength = 0;
+            return false;
         }
 
 
@@ -114,6 +158,7 @@ namespace VhdAttachCommon {
                 return null;
             }
         }
+
         public static IList<Volume> GetVolumesOnPhysicalDrive(int physicalDriveNumber) {
             var volumes = new List<Volume>();
 
@@ -129,6 +174,18 @@ namespace VhdAttachCommon {
             }
             volumeSearchHandle.Close();
 
+            volumes.Sort(
+                delegate(Volume volume1, Volume volume2) {
+                    if ((volume1.PhysicalDriveExtentOffset ?? -1) < (volume2.PhysicalDriveExtentOffset ?? -1)) {
+                        return -1;
+                    } else if ((volume1.PhysicalDriveExtentOffset ?? -1) > (volume2.PhysicalDriveExtentOffset ?? -1)) {
+                        return +1;
+                    } else {
+                        return 0;
+                    }
+                }
+            );
+
             return volumes;
         }
 
@@ -139,6 +196,14 @@ namespace VhdAttachCommon {
             if (!(driveLetter.EndsWith("\\", StringComparison.Ordinal))) { driveLetter += "\\"; }
             if ((driveLetter.Length != 3) || (driveLetter[0] < 'A') || (driveLetter[0] > 'Z') || (driveLetter[1] != ':') || (driveLetter[2] != '\\')) { return null; }
             return driveLetter;
+        }
+
+        private static string RemoveLastBackslash(string text) {
+            if (text.EndsWith("\\", StringComparison.Ordinal)) {
+                return text.Remove(text.Length - 1);
+            } else {
+                return text;
+            }
         }
 
 
