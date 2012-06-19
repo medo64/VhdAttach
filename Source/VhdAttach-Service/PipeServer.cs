@@ -127,7 +127,7 @@ namespace VhdAttachService {
 
         private static FileWithOptions[] GetFwoArray(string lines) {
             var files = new List<FileWithOptions>();
-            foreach (var line in lines.Split('|')) {
+            foreach (var line in lines.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)) {
                 files.Add(new FileWithOptions(line));
             }
             return files.ToArray();
