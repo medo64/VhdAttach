@@ -34,6 +34,10 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.41 (2012-06-19)
+
+        o Bug-fixing.
+
     3.40 (2012-06-16)
 
         o New icon.
