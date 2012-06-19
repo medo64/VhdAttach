@@ -24,7 +24,9 @@ internal static class ServiceSettings {
             }
             var files = new List<FileWithOptions>();
             foreach (var line in lines) {
-                files.Add(new FileWithOptions(line));
+                if (!string.IsNullOrEmpty(line.Trim())) {
+                    files.Add(new FileWithOptions(line));
+                }
             }
             return files.ToArray();
         }
@@ -35,7 +37,7 @@ internal static class ServiceSettings {
             }
             using (RegistryKey rk = RootRegistryKey.CreateSubKey(RootSubkeyPath, RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (rk != null) {
-                    rk.SetValue("AutoAttachVhdList", lines, RegistryValueKind.MultiString);
+                    rk.SetValue("AutoAttachVhdList", lines.ToArray(), RegistryValueKind.MultiString);
                 }
             }
         }
