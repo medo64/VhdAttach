@@ -502,11 +502,12 @@ namespace VhdAttach {
 
 
         private void mnuAutoMount_Click(object sender, EventArgs e) {
-            mnuAutoMount.Text = mnuAutoMount.Checked ? "Auto-mounted" : "Not auto-mounted";
+            var newState = !mnuAutoMount.Checked;
+
             try {
                 this.Cursor = Cursors.WaitCursor;
                 var vhds = new List<string>();
-                if (mnuAutoMount.Checked) { //add if possible
+                if (newState) { //add if possible
                     bool isIn = false;
                     foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                         vhds.Add(fwo.FileName);
@@ -532,6 +533,17 @@ namespace VhdAttach {
                 Messages.ShowServiceIOException(this, ex);
             } finally {
                 this.Cursor = Cursors.Default;
+
+                bool isAutoMount = false;
+                foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
+                    if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
+                        isAutoMount = true;
+                        break;
+                    }
+                }
+
+                mnuAutoMount.Checked = isAutoMount;
+                mnuAutoMount.Text = isAutoMount ? "Auto-mounted" : "Not auto-mounted";
             }
         }
 

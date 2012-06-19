@@ -261,7 +261,6 @@ namespace VhdAttach {
             // 
             // mnuAutoMount
             // 
-            this.mnuAutoMount.CheckOnClick = true;
             this.mnuAutoMount.Enabled = false;
             this.mnuAutoMount.Image = ((System.Drawing.Image)(resources.GetObject("mnuAutoMount.Image")));
             this.mnuAutoMount.ImageTransparentColor = System.Drawing.Color.Magenta;
