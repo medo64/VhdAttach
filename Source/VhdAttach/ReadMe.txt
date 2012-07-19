@@ -34,6 +34,10 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.50 (2012-07-20)
+
+        o Added drive-letter change from within application.
+
     3.41 (2012-06-19)
 
         o Bug-fixing.
