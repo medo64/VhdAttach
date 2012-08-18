@@ -26,12 +26,14 @@ namespace VhdAttach {
             return Send("DetachDrive", data);
         }
 
-        public static PipeResponse WriteSettings(bool contextMenuAttach, bool contextMenuAttachReadOnly, bool contextMenuDetach, bool contextMenuDetachDrive, string[] autoAttachList) {
+        public static PipeResponse WriteSettings(bool contextMenuVhdAttach, bool contextMenuVhdAttachReadOnly, bool contextMenuVhdDetach, bool contextMenuVhdDetachDrive, bool contextMenuIsoAttachReadOnly, bool contextMenuIsoDetach, string[] autoAttachList) {
             var data = new Dictionary<string, string>();
-            data.Add("ContextMenuAttach", contextMenuAttach.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuAttachReadOnly", contextMenuAttachReadOnly.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuDetach", contextMenuDetach.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuDetachDrive", contextMenuDetachDrive.ToString(CultureInfo.InvariantCulture));
+            data.Add("ContextMenuVhdAttach", contextMenuVhdAttach.ToString(CultureInfo.InvariantCulture));
+            data.Add("ContextMenuVhdAttachReadOnly", contextMenuVhdAttachReadOnly.ToString(CultureInfo.InvariantCulture));
+            data.Add("ContextMenuVhdDetach", contextMenuVhdDetach.ToString(CultureInfo.InvariantCulture));
+            data.Add("ContextMenuVhdDetachDrive", contextMenuVhdDetachDrive.ToString(CultureInfo.InvariantCulture));
+            data.Add("ContextMenuIsoAttachReadOnly", contextMenuIsoAttachReadOnly.ToString(CultureInfo.InvariantCulture));
+            data.Add("ContextMenuIsoDetach", contextMenuIsoDetach.ToString(CultureInfo.InvariantCulture));
             data.Add("AutoAttachList", string.Join("|", autoAttachList));
             return Send("WriteSettings", data);
         }

@@ -45,7 +45,30 @@ namespace VhdAttachCommon {
         }
 
 
-        public static bool ContextMenuAttach {
+        /// <summary>
+        /// Returns true if VHD Attach is handling extension.
+        /// </summary>
+        public static bool ContextMenuVhd {
+            get {
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey)) {
+                    if (rk != null) {
+                        var text = rk.GetValue("", null) as string;
+                        if ((text != null) && (text.Equals("VhdAttachFile"))) { return true; }
+                    }
+                    return false;
+                }
+            }
+            set {
+                if (value == true) {
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue)) {
+                        rk.SetValue("", "VhdAttachFile", RegistryValueKind.String);
+                    }
+                }
+            }
+        }
+
+
+        public static bool ContextMenuVhdAttach {
             get {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell\Attach", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
                     return (rk != null);
@@ -56,7 +79,7 @@ namespace VhdAttachCommon {
                     using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                         using (var keyMain = rk.CreateSubKey("Attach")) {
                             keyMain.SetValue("Icon", @"""" + pathToVhdAttach + @"""", RegistryValueKind.String);
-                            keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
+                            keyMain.SetValue("MultiSelectModel", "Document", RegistryValueKind.String);
                             using (var keyCommand = keyMain.CreateSubKey("command")) {
                                 keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/attach"), RegistryValueKind.String);
                             }
@@ -72,7 +95,7 @@ namespace VhdAttachCommon {
             }
         }
 
-        public static bool ContextMenuAttachReadOnly {
+        public static bool ContextMenuVhdAttachReadOnly {
             get {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell\Attach read-only", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
                     return (rk != null);
@@ -83,7 +106,7 @@ namespace VhdAttachCommon {
                     using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                         using (var keyMain = rk.CreateSubKey("Attach read-only")) {
                             keyMain.SetValue("Icon", @"""" + pathToVhdAttach + @"""", RegistryValueKind.String);
-                            keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
+                            keyMain.SetValue("MultiSelectModel", "Document", RegistryValueKind.String);
                             using (var keyCommand = keyMain.CreateSubKey("command")) {
                                 keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/readonly /attach"), RegistryValueKind.String);
                             }
@@ -99,7 +122,7 @@ namespace VhdAttachCommon {
             }
         }
 
-        public static bool ContextMenuDetach {
+        public static bool ContextMenuVhdDetach {
             get {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell\Detach", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
                     return (rk != null);
@@ -110,7 +133,7 @@ namespace VhdAttachCommon {
                     using (var rk = Registry.ClassesRoot.OpenSubKey(@"VhdAttachFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                         using (var keyMain = rk.CreateSubKey("Detach")) {
                             keyMain.SetValue("Icon", @"""" + pathToVhdAttach + @"""", RegistryValueKind.String);
-                            keyMain.SetValue("MultiSelectModel", "Player", RegistryValueKind.String);
+                            keyMain.SetValue("MultiSelectModel", "Document", RegistryValueKind.String);
                             using (var keyCommand = keyMain.CreateSubKey("command")) {
                                 keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/detach"), RegistryValueKind.String);
                             }
@@ -126,7 +149,7 @@ namespace VhdAttachCommon {
             }
         }
 
-        public static bool ContextMenuDetachDrive {
+        public static bool ContextMenuVhdDetachDrive {
             get {
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"Drive\shell\Detach drive", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
                     return (rk != null);
@@ -153,23 +176,60 @@ namespace VhdAttachCommon {
             }
         }
 
-        /// <summary>
-        /// Returns true if VHD Attach is handling extension.
-        /// </summary>
-        public static bool ContextMenu {
+
+        public static bool ContextMenuIsoAttachReadOnly {
             get {
-                using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey)) {
-                    if (rk != null) {
-                        var text = rk.GetValue("", null) as string;
-                        if ((text != null) && (text.Equals("VhdAttachFile"))) { return true; }
-                    }
-                    return false;
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) < 6000002) { return false; } //if lower than Windows 8, ignore
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@"Windows.IsoFile\shell\Attach", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
+                    return (rk != null);
                 }
             }
             set {
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) < 6000002) { return; } //if lower than Windows 8, ignore
                 if (value == true) {
-                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue)) {
-                        rk.SetValue("", "VhdAttachFile", RegistryValueKind.String);
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@"Windows.IsoFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
+                        using (var keyMain = rk.CreateSubKey("Attach")) {
+                            keyMain.SetValue("Icon", @"""" + pathToVhdAttach + @"""", RegistryValueKind.String);
+                            keyMain.SetValue("MultiSelectModel", "Document", RegistryValueKind.String);
+                            using (var keyCommand = keyMain.CreateSubKey("command")) {
+                                keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/readonly /attach"), RegistryValueKind.String);
+                            }
+                        }
+                    }
+                } else {
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@"Windows.IsoFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
+                        try {
+                            rk.DeleteSubKeyTree("Attach");
+                        } catch (ArgumentException) { } //for cases when there is no such subkey.
+                    }
+                }
+            }
+        }
+
+        public static bool ContextMenuIsoDetach {
+            get {
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) < 6000002) { return false; } //if lower than Windows 8, ignore
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@"Windows.IsoFile\shell\Detach", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
+                    return (rk != null);
+                }
+            }
+            set {
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) < 6000002) { return; } //if lower than Windows 8, ignore
+                if (value == true) {
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@"Windows.IsoFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
+                        using (var keyMain = rk.CreateSubKey("Detach")) {
+                            keyMain.SetValue("Icon", @"""" + pathToVhdAttach + @"""", RegistryValueKind.String);
+                            keyMain.SetValue("MultiSelectModel", "Document", RegistryValueKind.String);
+                            using (var keyCommand = keyMain.CreateSubKey("command")) {
+                                keyCommand.SetValue(null, string.Format(CultureInfo.InvariantCulture, @"""{0}"" {1} ""%1""", pathToVhdAttach, "/detach"), RegistryValueKind.String);
+                            }
+                        }
+                    }
+                } else {
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@"Windows.IsoFile\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
+                        try {
+                            rk.DeleteSubKeyTree("Detach");
+                        } catch (ArgumentException) { } //for cases when there is no such subkey.
                     }
                 }
             }

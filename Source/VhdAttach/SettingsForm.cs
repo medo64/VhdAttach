@@ -14,14 +14,21 @@ namespace VhdAttach {
         }
 
         private void SettingsForm_Load(object sender, EventArgs e) {
-            checkAttach.Checked = ServiceSettings.ContextMenuAttach;
-            checkAttachReadOnly.Checked = ServiceSettings.ContextMenuAttachReadOnly;
-            checkDetach.Checked = ServiceSettings.ContextMenuDetach;
-            checkDetachDrive.Checked = ServiceSettings.ContextMenuDetachDrive;
+            if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) { //show if equal to or higher than Windows 8
+                checkIsoAttachReadOnly.Visible = true;
+                checkIsoDetach.Visible = true;
+            }
+
+            checkVhdAttach.Checked = ServiceSettings.ContextMenuVhdAttach;
+            checkVhdAttachReadOnly.Checked = ServiceSettings.ContextMenuVhdAttachReadOnly;
+            checkVhdDetach.Checked = ServiceSettings.ContextMenuVhdDetach;
+            checkVhdDetachDrive.Checked = ServiceSettings.ContextMenuVhdDetachDrive;
+            checkIsoAttachReadOnly.Checked = ServiceSettings.ContextMenuIsoAttachReadOnly;
+            checkIsoDetach.Checked = ServiceSettings.ContextMenuIsoDetach;
             foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                 listAutoAttach.Items.Add(new ListViewVhdItem(fwo));
             }
-            btnRegisterExtension.Visible = !ServiceSettings.ContextMenu;
+            btnRegisterExtension.Visible = !ServiceSettings.ContextMenuVhd;
         }
 
         private void buttonOk_Click(object sender, EventArgs e) {
@@ -32,7 +39,7 @@ namespace VhdAttach {
                 foreach (ListViewVhdItem item in listAutoAttach.Items) {
                     vhds.Add(item.GetSettingFileName());
                 }
-                var res = PipeClient.WriteSettings(checkAttach.Checked, checkAttachReadOnly.Checked, checkDetach.Checked, checkDetachDrive.Checked, vhds.ToArray());
+                var res = PipeClient.WriteSettings(checkVhdAttach.Checked, checkVhdAttachReadOnly.Checked, checkVhdDetach.Checked, checkVhdDetachDrive.Checked, checkIsoAttachReadOnly.Checked, checkIsoDetach.Checked, vhds.ToArray());
                 if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }

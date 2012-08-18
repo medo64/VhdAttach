@@ -80,10 +80,12 @@ namespace VhdAttachService {
 
                         case "WriteSettings": {
                                 try {
-                                    ServiceSettings.ContextMenuAttach = bool.Parse(packet["ContextMenuAttach"]);
-                                    ServiceSettings.ContextMenuAttachReadOnly = bool.Parse(packet["ContextMenuAttachReadOnly"]);
-                                    ServiceSettings.ContextMenuDetach = bool.Parse(packet["ContextMenuDetach"]);
-                                    ServiceSettings.ContextMenuDetachDrive = bool.Parse(packet["ContextMenuDetachDrive"]);
+                                    ServiceSettings.ContextMenuVhdAttach = bool.Parse(packet["ContextMenuVhdAttach"]);
+                                    ServiceSettings.ContextMenuVhdAttachReadOnly = bool.Parse(packet["ContextMenuVhdAttachReadOnly"]);
+                                    ServiceSettings.ContextMenuVhdDetach = bool.Parse(packet["ContextMenuVhdDetach"]);
+                                    ServiceSettings.ContextMenuVhdDetachDrive = bool.Parse(packet["ContextMenuVhdDetachDrive"]);
+                                    ServiceSettings.ContextMenuIsoAttachReadOnly = bool.Parse(packet["ContextMenuIsoAttachReadOnly"]);
+                                    ServiceSettings.ContextMenuIsoDetach = bool.Parse(packet["ContextMenuIsoDetach"]);
                                     ServiceSettings.AutoAttachVhdList = GetFwoArray(packet["AutoAttachList"]);
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
@@ -93,7 +95,7 @@ namespace VhdAttachService {
 
                         case "RegisterExtension": {
                                 try {
-                                    ServiceSettings.ContextMenu = true;
+                                    ServiceSettings.ContextMenuVhd = true;
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);

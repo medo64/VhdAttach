@@ -409,7 +409,7 @@ namespace VhdAttach {
                 dialog.CheckFileExists = true;
                 dialog.CheckPathExists = true;
                 dialog.DefaultExt = "vhd";
-                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) {
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) { //show if equal to or higher than Windows 8
                     dialog.Filter = "Supported files (*.vhd;*.iso)|*.vhd;*.iso|Virtual disk files (*.vhd)|*.vhd|ISO image files (*.iso)|*.iso|All files (*.*)|*.*";
                 } else {
                     dialog.Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*";
@@ -563,7 +563,7 @@ namespace VhdAttach {
                         }
                     }
                 }
-                var res = PipeClient.WriteSettings(ServiceSettings.ContextMenuAttach, ServiceSettings.ContextMenuAttachReadOnly, ServiceSettings.ContextMenuDetach, ServiceSettings.ContextMenuDetachDrive, vhds.ToArray());
+                var res = PipeClient.WriteSettings(ServiceSettings.ContextMenuVhdAttach, ServiceSettings.ContextMenuVhdAttachReadOnly, ServiceSettings.ContextMenuVhdDetach, ServiceSettings.ContextMenuVhdDetachDrive, ServiceSettings.ContextMenuIsoAttachReadOnly, ServiceSettings.ContextMenuIsoDetach, vhds.ToArray());
                 if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
@@ -598,7 +598,7 @@ namespace VhdAttach {
         private void mnuOptions_Click(object sender, EventArgs e) {
             using (var form = new SettingsForm()) {
                 if (form.ShowDialog(this) == DialogResult.OK) {
-                    staErrorStolenExtension.Visible = !ServiceSettings.ContextMenu;
+                    staErrorStolenExtension.Visible = !ServiceSettings.ContextMenuVhd;
                     UpdateData(this.VhdFileName);
                 }
             }
@@ -835,7 +835,7 @@ namespace VhdAttach {
                 }
             }
 
-            if (ServiceSettings.ContextMenu == false) {
+            if (ServiceSettings.ContextMenuVhd == false) {
                 staErrorStolenExtension.Visible = true;
             }
         }

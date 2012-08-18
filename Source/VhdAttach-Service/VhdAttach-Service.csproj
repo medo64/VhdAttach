@@ -99,7 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\App.snk" />
-    <None Include="Properties\App.manifest" />
+    <None Include="Properties\App.manifest">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
