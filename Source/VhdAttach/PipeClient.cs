@@ -26,7 +26,7 @@ namespace VhdAttach {
             return Send("DetachDrive", data);
         }
 
-        public static PipeResponse WriteSettings(bool contextMenuVhdAttach, bool contextMenuVhdAttachReadOnly, bool contextMenuVhdDetach, bool contextMenuVhdDetachDrive, bool contextMenuIsoAttachReadOnly, bool contextMenuIsoDetach, string[] autoAttachList) {
+        public static PipeResponse WriteSettings(bool contextMenuVhdAttach, bool contextMenuVhdAttachReadOnly, bool contextMenuVhdDetach, bool contextMenuVhdDetachDrive, bool contextMenuIsoAttachReadOnly, bool contextMenuIsoDetach) {
             var data = new Dictionary<string, string>();
             data.Add("ContextMenuVhdAttach", contextMenuVhdAttach.ToString(CultureInfo.InvariantCulture));
             data.Add("ContextMenuVhdAttachReadOnly", contextMenuVhdAttachReadOnly.ToString(CultureInfo.InvariantCulture));
@@ -34,8 +34,13 @@ namespace VhdAttach {
             data.Add("ContextMenuVhdDetachDrive", contextMenuVhdDetachDrive.ToString(CultureInfo.InvariantCulture));
             data.Add("ContextMenuIsoAttachReadOnly", contextMenuIsoAttachReadOnly.ToString(CultureInfo.InvariantCulture));
             data.Add("ContextMenuIsoDetach", contextMenuIsoDetach.ToString(CultureInfo.InvariantCulture));
-            data.Add("AutoAttachList", string.Join("|", autoAttachList));
             return Send("WriteSettings", data);
+        }
+
+        public static PipeResponse WriteAutoAttachSettings(string[] autoAttachList) {
+            var data = new Dictionary<string, string>();
+            data.Add("AutoAttachList", string.Join("|", autoAttachList));
+            return Send("WriteAutoAttachSettings", data);
         }
 
         public static PipeResponse ChangeDriveLetter(string volumeName, string newDriveLetter) {

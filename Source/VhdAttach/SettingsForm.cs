@@ -39,9 +39,13 @@ namespace VhdAttach {
                 foreach (ListViewVhdItem item in listAutoAttach.Items) {
                     vhds.Add(item.GetSettingFileName());
                 }
-                var res = PipeClient.WriteSettings(checkVhdAttach.Checked, checkVhdAttachReadOnly.Checked, checkVhdDetach.Checked, checkVhdDetachDrive.Checked, checkIsoAttachReadOnly.Checked, checkIsoDetach.Checked, vhds.ToArray());
+                var res = PipeClient.WriteSettings(checkVhdAttach.Checked, checkVhdAttachReadOnly.Checked, checkVhdDetach.Checked, checkVhdDetachDrive.Checked, checkIsoAttachReadOnly.Checked, checkIsoDetach.Checked);
                 if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
+                }
+                var res2 = PipeClient.WriteAutoAttachSettings(vhds.ToArray());
+                if (res2.IsError) {
+                    Medo.MessageBox.ShowError(this, res2.Message);
                 }
             } catch (IOException ex) {
                 Messages.ShowServiceIOException(this, ex);

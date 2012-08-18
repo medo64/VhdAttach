@@ -563,7 +563,7 @@ namespace VhdAttach {
                         }
                     }
                 }
-                var res = PipeClient.WriteSettings(ServiceSettings.ContextMenuVhdAttach, ServiceSettings.ContextMenuVhdAttachReadOnly, ServiceSettings.ContextMenuVhdDetach, ServiceSettings.ContextMenuVhdDetachDrive, ServiceSettings.ContextMenuIsoAttachReadOnly, ServiceSettings.ContextMenuIsoDetach, vhds.ToArray());
+                var res = PipeClient.WriteAutoAttachSettings(vhds.ToArray());
                 if (res.IsError) {
                     Medo.MessageBox.ShowError(this, res.Message);
                 }
