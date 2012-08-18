@@ -29,6 +29,8 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupContextMenu = new System.Windows.Forms.GroupBox();
+            this.checkIsoDetach = new System.Windows.Forms.CheckBox();
+            this.checkIsoAttachReadOnly = new System.Windows.Forms.CheckBox();
             this.checkVhdAttachReadOnly = new System.Windows.Forms.CheckBox();
             this.checkVhdDetachDrive = new System.Windows.Forms.CheckBox();
             this.checkVhdDetach = new System.Windows.Forms.CheckBox();
@@ -44,8 +46,6 @@
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imagesAutoAttach = new System.Windows.Forms.ImageList(this.components);
             this.btnRegisterExtension = new System.Windows.Forms.Button();
-            this.checkIsoAttachReadOnly = new System.Windows.Forms.CheckBox();
-            this.checkIsoDetach = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.groupContextMenu.SuspendLayout();
             this.groupAutoAttach.SuspendLayout();
@@ -97,6 +97,30 @@
             this.groupContextMenu.TabIndex = 1;
             this.groupContextMenu.TabStop = false;
             this.groupContextMenu.Text = "Explorer context menu";
+            // 
+            // checkIsoDetach
+            // 
+            this.checkIsoDetach.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkIsoDetach.AutoSize = true;
+            this.checkIsoDetach.Location = new System.Drawing.Point(290, 53);
+            this.checkIsoDetach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkIsoDetach.Name = "checkIsoDetach";
+            this.checkIsoDetach.Size = new System.Drawing.Size(112, 21);
+            this.checkIsoDetach.TabIndex = 5;
+            this.checkIsoDetach.Text = "Detach (ISO)";
+            this.checkIsoDetach.UseVisualStyleBackColor = true;
+            // 
+            // checkIsoAttachReadOnly
+            // 
+            this.checkIsoAttachReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkIsoAttachReadOnly.AutoSize = true;
+            this.checkIsoAttachReadOnly.Location = new System.Drawing.Point(290, 27);
+            this.checkIsoAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkIsoAttachReadOnly.Name = "checkIsoAttachReadOnly";
+            this.checkIsoAttachReadOnly.Size = new System.Drawing.Size(107, 21);
+            this.checkIsoAttachReadOnly.TabIndex = 4;
+            this.checkIsoAttachReadOnly.Text = "Attach (ISO)";
+            this.checkIsoAttachReadOnly.UseVisualStyleBackColor = true;
             // 
             // checkVhdAttachReadOnly
             // 
@@ -291,32 +315,6 @@
             this.btnRegisterExtension.UseVisualStyleBackColor = true;
             this.btnRegisterExtension.Visible = false;
             this.btnRegisterExtension.Click += new System.EventHandler(this.btnRegisterExtension_Click);
-            // 
-            // checkIsoAttach
-            // 
-            this.checkIsoAttachReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkIsoAttachReadOnly.AutoSize = true;
-            this.checkIsoAttachReadOnly.Location = new System.Drawing.Point(290, 27);
-            this.checkIsoAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
-            this.checkIsoAttachReadOnly.Name = "checkIsoAttach";
-            this.checkIsoAttachReadOnly.Size = new System.Drawing.Size(107, 21);
-            this.checkIsoAttachReadOnly.TabIndex = 4;
-            this.checkIsoAttachReadOnly.Text = "Attach (ISO)";
-            this.checkIsoAttachReadOnly.UseVisualStyleBackColor = true;
-            this.checkIsoAttachReadOnly.Visible = false;
-            // 
-            // checkIsoDetach
-            // 
-            this.checkIsoDetach.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkIsoDetach.AutoSize = true;
-            this.checkIsoDetach.Location = new System.Drawing.Point(290, 53);
-            this.checkIsoDetach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkIsoDetach.Name = "checkIsoDetach";
-            this.checkIsoDetach.Size = new System.Drawing.Size(112, 21);
-            this.checkIsoDetach.TabIndex = 5;
-            this.checkIsoDetach.Text = "Detach (ISO)";
-            this.checkIsoDetach.UseVisualStyleBackColor = true;
-            this.checkIsoDetach.Visible = false;
             // 
             // SettingsForm
             // 

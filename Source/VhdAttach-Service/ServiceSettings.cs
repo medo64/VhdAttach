@@ -151,11 +151,13 @@ namespace VhdAttachCommon {
 
         public static bool ContextMenuVhdDetachDrive {
             get {
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) { return false; } //if Windows 8 or higher, ignore
                 using (var rk = Registry.ClassesRoot.OpenSubKey(@"Drive\shell\Detach drive", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey)) {
                     return (rk != null);
                 }
             }
             set {
+                if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) { return; } //if Windows 8 or higher, ignore
                 if (value == true) {
                     using (var rk = Registry.ClassesRoot.OpenSubKey(@"Drive\shell", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl)) {
                         using (var keyMain = rk.CreateSubKey("Detach drive")) {

@@ -14,10 +14,10 @@ namespace VhdAttach {
         }
 
         private void SettingsForm_Load(object sender, EventArgs e) {
-            if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) { //show if equal to or higher than Windows 8
-                checkIsoAttachReadOnly.Visible = true;
-                checkIsoDetach.Visible = true;
-            }
+            var isWindows8 = ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002); //show if equal to or higher than Windows 8
+            checkVhdDetachDrive.Visible = !(isWindows8);
+            checkIsoAttachReadOnly.Visible = isWindows8;
+            checkIsoDetach.Visible = isWindows8;
 
             checkVhdAttach.Checked = ServiceSettings.ContextMenuVhdAttach;
             checkVhdAttachReadOnly.Checked = ServiceSettings.ContextMenuVhdAttachReadOnly;
