@@ -521,7 +521,21 @@ namespace VhdAttach {
                 }
             } catch { }
             if (attachedDevice != null) {
-                var volumes = Volume.GetVolumesOnPhysicalDrive(attachedDevice);
+                var volumes = new List<Volume>(Volume.GetVolumesOnPhysicalDrive(attachedDevice));
+                var availableVolumes = new List<Volume>();
+                foreach (var volume in volumes) {
+                    if (volume.DriveLetter2 != null) {
+                        availableVolumes.Add(volume);
+                    }
+                }
+
+                if (availableVolumes.Count > 0) {
+                    mnuTools.DropDownItems.Add(new ToolStripSeparator());
+                    foreach (var volume in availableVolumes) {
+                        mnuTools.DropDownItems.Add(new ToolStripMenuItem("Open " + volume.DriveLetter3, null, mnuOpenDriveLetter_Click) { Tag = volume });
+                    }
+                }
+
                 if (volumes.Count > 0) {
                     mnuTools.DropDownItems.Add(new ToolStripSeparator());
                     foreach (var volume in volumes) {
@@ -583,6 +597,16 @@ namespace VhdAttach {
                 doNotUpdateAutoMountChecked = true;
                 mnuAutoMount.Checked = isAutoMount;
                 doNotUpdateAutoMountChecked = false;
+            }
+        }
+
+        private void mnuOpenDriveLetter_Click(object sender, EventArgs e) {
+            var volume = (Volume)(((ToolStripMenuItem)sender).Tag);
+            var drive = new DriveInfo(volume.DriveLetter3);
+            if (drive.IsReady) {
+                Process.Start(volume.DriveLetter3);
+            } else {
+                Process.Start("explorer.exe", "/select," + volume.DriveLetter3);
             }
         }
 
