@@ -78,14 +78,24 @@ namespace VhdAttachService {
                                 }
                             } return GetResponse(packet);
 
-                        case "WriteSettings": {
+                        case "WriteContextMenuVhdSettings": {
                                 try {
-                                    ServiceSettings.ContextMenuVhdAttach = bool.Parse(packet["ContextMenuVhdAttach"]);
-                                    ServiceSettings.ContextMenuVhdAttachReadOnly = bool.Parse(packet["ContextMenuVhdAttachReadOnly"]);
-                                    ServiceSettings.ContextMenuVhdDetach = bool.Parse(packet["ContextMenuVhdDetach"]);
-                                    ServiceSettings.ContextMenuVhdDetachDrive = bool.Parse(packet["ContextMenuVhdDetachDrive"]);
-                                    ServiceSettings.ContextMenuIsoAttachReadOnly = bool.Parse(packet["ContextMenuIsoAttachReadOnly"]);
-                                    ServiceSettings.ContextMenuIsoDetach = bool.Parse(packet["ContextMenuIsoDetach"]);
+                                    ServiceSettings.ContextMenuVhdOpen = bool.Parse(packet["Open"]);
+                                    ServiceSettings.ContextMenuVhdAttach = bool.Parse(packet["Attach"]);
+                                    ServiceSettings.ContextMenuVhdAttachReadOnly = bool.Parse(packet["AttachReadOnly"]);
+                                    ServiceSettings.ContextMenuVhdDetach = bool.Parse(packet["Detach"]);
+                                    ServiceSettings.ContextMenuVhdDetachDrive = bool.Parse(packet["DetachDrive"]);
+                                } catch (Exception ex) {
+                                    Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
+                                    throw new InvalidOperationException("Settings cannot be written.", ex);
+                                }
+                            } return GetResponse(packet);
+
+                        case "WriteContextMenuIsoSettings": {
+                                try {
+                                    ServiceSettings.ContextMenuIsoOpen = bool.Parse(packet["Open"]);
+                                    ServiceSettings.ContextMenuIsoAttachReadOnly = bool.Parse(packet["AttachReadOnly"]);
+                                    ServiceSettings.ContextMenuIsoDetach = bool.Parse(packet["Detach"]);
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);
@@ -101,9 +111,18 @@ namespace VhdAttachService {
                                 }
                             } return GetResponse(packet);
 
-                        case "RegisterExtension": {
+                        case "RegisterExtensionVhd": {
                                 try {
                                     ServiceSettings.ContextMenuVhd = true;
+                                } catch (Exception ex) {
+                                    Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
+                                    throw new InvalidOperationException("Settings cannot be written.", ex);
+                                }
+                            } return GetResponse(packet);
+
+                        case "RegisterExtensionIso": {
+                                try {
+                                    ServiceSettings.ContextMenuIso = true;
                                 } catch (Exception ex) {
                                     Medo.Diagnostics.ErrorReport.SaveToTemp(ex);
                                     throw new InvalidOperationException("Settings cannot be written.", ex);

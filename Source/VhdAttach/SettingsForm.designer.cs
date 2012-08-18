@@ -29,6 +29,8 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupContextMenu = new System.Windows.Forms.GroupBox();
+            this.checkIsoOpen = new System.Windows.Forms.CheckBox();
+            this.checkVhdOpen = new System.Windows.Forms.CheckBox();
             this.checkIsoDetach = new System.Windows.Forms.CheckBox();
             this.checkIsoAttachReadOnly = new System.Windows.Forms.CheckBox();
             this.checkVhdAttachReadOnly = new System.Windows.Forms.CheckBox();
@@ -45,7 +47,7 @@
             this.listAutoAttach = new System.Windows.Forms.ListView();
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imagesAutoAttach = new System.Windows.Forms.ImageList(this.components);
-            this.btnRegisterExtension = new System.Windows.Forms.Button();
+            this.btnRegisterExtensionVhd = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.groupContextMenu.SuspendLayout();
             this.groupAutoAttach.SuspendLayout();
@@ -85,6 +87,8 @@
             // 
             // groupContextMenu
             // 
+            this.groupContextMenu.Controls.Add(this.checkIsoOpen);
+            this.groupContextMenu.Controls.Add(this.checkVhdOpen);
             this.groupContextMenu.Controls.Add(this.checkIsoDetach);
             this.groupContextMenu.Controls.Add(this.checkIsoAttachReadOnly);
             this.groupContextMenu.Controls.Add(this.checkVhdAttachReadOnly);
@@ -93,20 +97,43 @@
             this.groupContextMenu.Controls.Add(this.checkVhdAttach);
             this.groupContextMenu.Location = new System.Drawing.Point(12, 12);
             this.groupContextMenu.Name = "groupContextMenu";
-            this.groupContextMenu.Size = new System.Drawing.Size(408, 81);
+            this.groupContextMenu.Size = new System.Drawing.Size(408, 108);
             this.groupContextMenu.TabIndex = 1;
             this.groupContextMenu.TabStop = false;
             this.groupContextMenu.Text = "Explorer context menu";
+            // 
+            // checkIsoOpen
+            // 
+            this.checkIsoOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkIsoOpen.AutoSize = true;
+            this.checkIsoOpen.Location = new System.Drawing.Point(290, 27);
+            this.checkIsoOpen.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkIsoOpen.Name = "checkIsoOpen";
+            this.checkIsoOpen.Size = new System.Drawing.Size(102, 21);
+            this.checkIsoOpen.TabIndex = 5;
+            this.checkIsoOpen.Text = "Open (ISO)";
+            this.checkIsoOpen.UseVisualStyleBackColor = true;
+            // 
+            // checkVhdOpen
+            // 
+            this.checkVhdOpen.AutoSize = true;
+            this.checkVhdOpen.Location = new System.Drawing.Point(6, 27);
+            this.checkVhdOpen.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkVhdOpen.Name = "checkVhdOpen";
+            this.checkVhdOpen.Size = new System.Drawing.Size(65, 21);
+            this.checkVhdOpen.TabIndex = 0;
+            this.checkVhdOpen.Text = "Open";
+            this.checkVhdOpen.UseVisualStyleBackColor = true;
             // 
             // checkIsoDetach
             // 
             this.checkIsoDetach.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkIsoDetach.AutoSize = true;
-            this.checkIsoDetach.Location = new System.Drawing.Point(290, 53);
+            this.checkIsoDetach.Location = new System.Drawing.Point(290, 80);
             this.checkIsoDetach.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.checkIsoDetach.Name = "checkIsoDetach";
             this.checkIsoDetach.Size = new System.Drawing.Size(112, 21);
-            this.checkIsoDetach.TabIndex = 5;
+            this.checkIsoDetach.TabIndex = 7;
             this.checkIsoDetach.Text = "Detach (ISO)";
             this.checkIsoDetach.UseVisualStyleBackColor = true;
             // 
@@ -114,53 +141,51 @@
             // 
             this.checkIsoAttachReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkIsoAttachReadOnly.AutoSize = true;
-            this.checkIsoAttachReadOnly.Location = new System.Drawing.Point(290, 27);
-            this.checkIsoAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkIsoAttachReadOnly.Location = new System.Drawing.Point(290, 54);
             this.checkIsoAttachReadOnly.Name = "checkIsoAttachReadOnly";
             this.checkIsoAttachReadOnly.Size = new System.Drawing.Size(107, 21);
-            this.checkIsoAttachReadOnly.TabIndex = 4;
+            this.checkIsoAttachReadOnly.TabIndex = 6;
             this.checkIsoAttachReadOnly.Text = "Attach (ISO)";
             this.checkIsoAttachReadOnly.UseVisualStyleBackColor = true;
             // 
             // checkVhdAttachReadOnly
             // 
             this.checkVhdAttachReadOnly.AutoSize = true;
-            this.checkVhdAttachReadOnly.Location = new System.Drawing.Point(127, 27);
+            this.checkVhdAttachReadOnly.Location = new System.Drawing.Point(112, 54);
             this.checkVhdAttachReadOnly.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
             this.checkVhdAttachReadOnly.Name = "checkVhdAttachReadOnly";
-            this.checkVhdAttachReadOnly.Size = new System.Drawing.Size(134, 21);
-            this.checkVhdAttachReadOnly.TabIndex = 1;
-            this.checkVhdAttachReadOnly.Text = "Attach read-only";
+            this.checkVhdAttachReadOnly.Size = new System.Drawing.Size(144, 21);
+            this.checkVhdAttachReadOnly.TabIndex = 2;
+            this.checkVhdAttachReadOnly.Text = "Attach (read-only)";
             this.checkVhdAttachReadOnly.UseVisualStyleBackColor = true;
             // 
             // checkVhdDetachDrive
             // 
             this.checkVhdDetachDrive.AutoSize = true;
-            this.checkVhdDetachDrive.Location = new System.Drawing.Point(127, 54);
+            this.checkVhdDetachDrive.Location = new System.Drawing.Point(112, 81);
             this.checkVhdDetachDrive.Name = "checkVhdDetachDrive";
             this.checkVhdDetachDrive.Size = new System.Drawing.Size(110, 21);
-            this.checkVhdDetachDrive.TabIndex = 3;
+            this.checkVhdDetachDrive.TabIndex = 4;
             this.checkVhdDetachDrive.Text = "Detach drive";
             this.checkVhdDetachDrive.UseVisualStyleBackColor = true;
             // 
             // checkVhdDetach
             // 
             this.checkVhdDetach.AutoSize = true;
-            this.checkVhdDetach.Location = new System.Drawing.Point(6, 54);
+            this.checkVhdDetach.Location = new System.Drawing.Point(6, 81);
             this.checkVhdDetach.Name = "checkVhdDetach";
             this.checkVhdDetach.Size = new System.Drawing.Size(75, 21);
-            this.checkVhdDetach.TabIndex = 2;
+            this.checkVhdDetach.TabIndex = 3;
             this.checkVhdDetach.Text = "Detach";
             this.checkVhdDetach.UseVisualStyleBackColor = true;
             // 
             // checkVhdAttach
             // 
             this.checkVhdAttach.AutoSize = true;
-            this.checkVhdAttach.Location = new System.Drawing.Point(6, 27);
-            this.checkVhdAttach.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
+            this.checkVhdAttach.Location = new System.Drawing.Point(6, 54);
             this.checkVhdAttach.Name = "checkVhdAttach";
             this.checkVhdAttach.Size = new System.Drawing.Size(70, 21);
-            this.checkVhdAttach.TabIndex = 0;
+            this.checkVhdAttach.TabIndex = 1;
             this.checkVhdAttach.Text = "Attach";
             this.checkVhdAttach.UseVisualStyleBackColor = true;
             // 
@@ -173,10 +198,10 @@
             this.groupAutoAttach.Controls.Add(this.buttonVhdRemove);
             this.groupAutoAttach.Controls.Add(this.buttonVhdAdd);
             this.groupAutoAttach.Controls.Add(this.listAutoAttach);
-            this.groupAutoAttach.Location = new System.Drawing.Point(12, 105);
+            this.groupAutoAttach.Location = new System.Drawing.Point(12, 132);
             this.groupAutoAttach.Margin = new System.Windows.Forms.Padding(3, 9, 3, 3);
             this.groupAutoAttach.Name = "groupAutoAttach";
-            this.groupAutoAttach.Size = new System.Drawing.Size(408, 242);
+            this.groupAutoAttach.Size = new System.Drawing.Size(408, 215);
             this.groupAutoAttach.TabIndex = 2;
             this.groupAutoAttach.TabStop = false;
             this.groupAutoAttach.Text = "Auto-attach VHDs";
@@ -198,7 +223,7 @@
             this.toolVhdOrder.Location = new System.Drawing.Point(374, 27);
             this.toolVhdOrder.Name = "toolVhdOrder";
             this.toolVhdOrder.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolVhdOrder.Size = new System.Drawing.Size(31, 175);
+            this.toolVhdOrder.Size = new System.Drawing.Size(31, 148);
             this.toolVhdOrder.TabIndex = 1;
             // 
             // buttonMoveVhdUp
@@ -245,7 +270,7 @@
             // 
             this.buttonVhdRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonVhdRemove.Enabled = false;
-            this.buttonVhdRemove.Location = new System.Drawing.Point(112, 208);
+            this.buttonVhdRemove.Location = new System.Drawing.Point(112, 181);
             this.buttonVhdRemove.Name = "buttonVhdRemove";
             this.buttonVhdRemove.Size = new System.Drawing.Size(100, 28);
             this.buttonVhdRemove.TabIndex = 3;
@@ -256,7 +281,7 @@
             // buttonVhdAdd
             // 
             this.buttonVhdAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonVhdAdd.Location = new System.Drawing.Point(6, 208);
+            this.buttonVhdAdd.Location = new System.Drawing.Point(6, 181);
             this.buttonVhdAdd.Name = "buttonVhdAdd";
             this.buttonVhdAdd.Size = new System.Drawing.Size(100, 28);
             this.buttonVhdAdd.TabIndex = 2;
@@ -280,7 +305,7 @@
             this.listAutoAttach.MultiSelect = false;
             this.listAutoAttach.Name = "listAutoAttach";
             this.listAutoAttach.ShowItemToolTips = true;
-            this.listAutoAttach.Size = new System.Drawing.Size(365, 175);
+            this.listAutoAttach.Size = new System.Drawing.Size(365, 148);
             this.listAutoAttach.SmallImageList = this.imagesAutoAttach;
             this.listAutoAttach.TabIndex = 0;
             this.listAutoAttach.UseCompatibleStateImageBehavior = false;
@@ -303,18 +328,18 @@
             this.imagesAutoAttach.Images.SetKeyName(3, "StatusError [16x16].png");
             this.imagesAutoAttach.Images.SetKeyName(4, "Lock (16x16).png");
             // 
-            // btnRegisterExtension
+            // btnRegisterExtensionVhd
             // 
-            this.btnRegisterExtension.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRegisterExtension.Location = new System.Drawing.Point(12, 365);
-            this.btnRegisterExtension.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
-            this.btnRegisterExtension.Name = "btnRegisterExtension";
-            this.btnRegisterExtension.Size = new System.Drawing.Size(149, 28);
-            this.btnRegisterExtension.TabIndex = 3;
-            this.btnRegisterExtension.Text = "&Register extension";
-            this.btnRegisterExtension.UseVisualStyleBackColor = true;
-            this.btnRegisterExtension.Visible = false;
-            this.btnRegisterExtension.Click += new System.EventHandler(this.btnRegisterExtension_Click);
+            this.btnRegisterExtensionVhd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRegisterExtensionVhd.Location = new System.Drawing.Point(12, 365);
+            this.btnRegisterExtensionVhd.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
+            this.btnRegisterExtensionVhd.Name = "btnRegisterExtensionVhd";
+            this.btnRegisterExtensionVhd.Size = new System.Drawing.Size(149, 28);
+            this.btnRegisterExtensionVhd.TabIndex = 3;
+            this.btnRegisterExtensionVhd.Text = "&Register extension";
+            this.btnRegisterExtensionVhd.UseVisualStyleBackColor = true;
+            this.btnRegisterExtensionVhd.Visible = false;
+            this.btnRegisterExtensionVhd.Click += new System.EventHandler(this.btnRegisterExtensionVhd_Click);
             // 
             // SettingsForm
             // 
@@ -323,7 +348,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(432, 405);
-            this.Controls.Add(this.btnRegisterExtension);
+            this.Controls.Add(this.btnRegisterExtensionVhd);
             this.Controls.Add(this.groupAutoAttach);
             this.Controls.Add(this.groupContextMenu);
             this.Controls.Add(this.buttonCancel);
@@ -368,9 +393,11 @@
         private System.Windows.Forms.ToolStripButton buttonMoveVhdDown;
         private System.Windows.Forms.ImageList imagesAutoAttach;
         private System.Windows.Forms.CheckBox checkVhdAttachReadOnly;
-        private System.Windows.Forms.Button btnRegisterExtension;
+        private System.Windows.Forms.Button btnRegisterExtensionVhd;
         private System.Windows.Forms.ToolStripButton buttonVhdReadOnly;
         private System.Windows.Forms.CheckBox checkIsoDetach;
         private System.Windows.Forms.CheckBox checkIsoAttachReadOnly;
+        private System.Windows.Forms.CheckBox checkVhdOpen;
+        private System.Windows.Forms.CheckBox checkIsoOpen;
     }
 }

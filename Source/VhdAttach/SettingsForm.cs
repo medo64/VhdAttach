@@ -16,19 +16,22 @@ namespace VhdAttach {
         private void SettingsForm_Load(object sender, EventArgs e) {
             var isWindows8 = ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002); //show if equal to or higher than Windows 8
             checkVhdDetachDrive.Visible = !(isWindows8);
+            checkIsoOpen.Visible = isWindows8;
             checkIsoAttachReadOnly.Visible = isWindows8;
             checkIsoDetach.Visible = isWindows8;
 
+            checkVhdOpen.Checked = ServiceSettings.ContextMenuVhdOpen;
             checkVhdAttach.Checked = ServiceSettings.ContextMenuVhdAttach;
             checkVhdAttachReadOnly.Checked = ServiceSettings.ContextMenuVhdAttachReadOnly;
             checkVhdDetach.Checked = ServiceSettings.ContextMenuVhdDetach;
             checkVhdDetachDrive.Checked = ServiceSettings.ContextMenuVhdDetachDrive;
+            checkIsoOpen.Checked = ServiceSettings.ContextMenuIsoOpen;
             checkIsoAttachReadOnly.Checked = ServiceSettings.ContextMenuIsoAttachReadOnly;
             checkIsoDetach.Checked = ServiceSettings.ContextMenuIsoDetach;
             foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                 listAutoAttach.Items.Add(new ListViewVhdItem(fwo));
             }
-            btnRegisterExtension.Visible = !ServiceSettings.ContextMenuVhd;
+            btnRegisterExtensionVhd.Visible = !ServiceSettings.ContextMenuVhd;
         }
 
         private void buttonOk_Click(object sender, EventArgs e) {
@@ -39,13 +42,21 @@ namespace VhdAttach {
                 foreach (ListViewVhdItem item in listAutoAttach.Items) {
                     vhds.Add(item.GetSettingFileName());
                 }
-                var res = PipeClient.WriteSettings(checkVhdAttach.Checked, checkVhdAttachReadOnly.Checked, checkVhdDetach.Checked, checkVhdDetachDrive.Checked, checkIsoAttachReadOnly.Checked, checkIsoDetach.Checked);
-                if (res.IsError) {
-                    Medo.MessageBox.ShowError(this, res.Message);
+                var resVhd = PipeClient.WriteContextMenuVhdSettings(checkVhdOpen.Checked, checkVhdAttach.Checked, checkVhdAttachReadOnly.Checked, checkVhdDetach.Checked, checkVhdDetachDrive.Checked);
+                if (resVhd.IsError) {
+                    Medo.MessageBox.ShowError(this, resVhd.Message);
                 }
-                var res2 = PipeClient.WriteAutoAttachSettings(vhds.ToArray());
-                if (res2.IsError) {
-                    Medo.MessageBox.ShowError(this, res2.Message);
+
+                var isWindows8 = ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002); //show if equal to or higher than Windows 8
+                if (isWindows8) {
+                    var resIso = PipeClient.WriteContextMenuIsoSettings(checkIsoOpen.Checked, checkIsoAttachReadOnly.Checked, checkIsoDetach.Checked);
+                    if (resIso.IsError) {
+                        Medo.MessageBox.ShowError(this, resIso.Message);
+                    }
+                }
+                var resAA = PipeClient.WriteAutoAttachSettings(vhds.ToArray());
+                if (resAA.IsError) {
+                    Medo.MessageBox.ShowError(this, resAA.Message);
                 }
             } catch (IOException ex) {
                 Messages.ShowServiceIOException(this, ex);
@@ -184,8 +195,8 @@ namespace VhdAttach {
             }
         }
 
-        private void btnRegisterExtension_Click(object sender, EventArgs e) {
-            var res = PipeClient.RegisterExtension();
+        private void btnRegisterExtensionVhd_Click(object sender, EventArgs e) {
+            var res = PipeClient.RegisterExtensionVhd();
             if (res.IsError) {
                 Medo.MessageBox.ShowError(this, res.Message);
             }

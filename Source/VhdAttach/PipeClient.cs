@@ -26,15 +26,22 @@ namespace VhdAttach {
             return Send("DetachDrive", data);
         }
 
-        public static PipeResponse WriteSettings(bool contextMenuVhdAttach, bool contextMenuVhdAttachReadOnly, bool contextMenuVhdDetach, bool contextMenuVhdDetachDrive, bool contextMenuIsoAttachReadOnly, bool contextMenuIsoDetach) {
+        public static PipeResponse WriteContextMenuVhdSettings(bool open, bool attach, bool attachReadOnly, bool detach, bool detachDrive) {
             var data = new Dictionary<string, string>();
-            data.Add("ContextMenuVhdAttach", contextMenuVhdAttach.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuVhdAttachReadOnly", contextMenuVhdAttachReadOnly.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuVhdDetach", contextMenuVhdDetach.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuVhdDetachDrive", contextMenuVhdDetachDrive.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuIsoAttachReadOnly", contextMenuIsoAttachReadOnly.ToString(CultureInfo.InvariantCulture));
-            data.Add("ContextMenuIsoDetach", contextMenuIsoDetach.ToString(CultureInfo.InvariantCulture));
-            return Send("WriteSettings", data);
+            data.Add("Open", open.ToString(CultureInfo.InvariantCulture));
+            data.Add("Attach", attach.ToString(CultureInfo.InvariantCulture));
+            data.Add("AttachReadOnly", attachReadOnly.ToString(CultureInfo.InvariantCulture));
+            data.Add("Detach", detach.ToString(CultureInfo.InvariantCulture));
+            data.Add("DetachDrive", detachDrive.ToString(CultureInfo.InvariantCulture));
+            return Send("WriteContextMenuVhdSettings", data);
+        }
+
+        public static PipeResponse WriteContextMenuIsoSettings(bool open, bool attachReadOnly, bool detach) {
+            var data = new Dictionary<string, string>();
+            data.Add("Open", open.ToString(CultureInfo.InvariantCulture));
+            data.Add("AttachReadOnly", attachReadOnly.ToString(CultureInfo.InvariantCulture));
+            data.Add("Detach", detach.ToString(CultureInfo.InvariantCulture));
+            return Send("WriteContextMenuIsoSettings", data);
         }
 
         public static PipeResponse WriteAutoAttachSettings(string[] autoAttachList) {
@@ -50,9 +57,9 @@ namespace VhdAttach {
             return Send("ChangeDriveLetter", data);
         }
 
-        public static PipeResponse RegisterExtension() {
+        public static PipeResponse RegisterExtensionVhd() {
             var data = new Dictionary<string, string>();
-            return Send("RegisterExtension", data);
+            return Send("RegisterExtensionVhd", data);
         }
 
         private static Medo.IO.NamedPipe Pipe = new Medo.IO.NamedPipe("JosipMedved-VhdAttach-Commands");
