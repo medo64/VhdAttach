@@ -313,7 +313,6 @@ namespace VhdAttach {
             // 
             // mnuAutoMount
             // 
-            this.mnuAutoMount.CheckOnClick = true;
             this.mnuAutoMount.Name = "mnuAutoMount";
             this.mnuAutoMount.Size = new System.Drawing.Size(226, 24);
             this.mnuAutoMount.Text = "Mounted upon startup";

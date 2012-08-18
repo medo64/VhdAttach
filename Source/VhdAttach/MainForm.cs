@@ -535,7 +535,11 @@ namespace VhdAttach {
             }
         }
 
+
+        private bool doNotUpdateAutoMountChecked = false;
+
         private void mnuAutoMount_Click(object sender, EventArgs e) {
+            if (doNotUpdateAutoMountChecked) { return; }
             var newState = !mnuAutoMount.Checked;
 
             try {
@@ -576,8 +580,9 @@ namespace VhdAttach {
                     }
                 }
 
+                doNotUpdateAutoMountChecked = true;
                 mnuAutoMount.Checked = isAutoMount;
-                mnuAutoMount.Text = isAutoMount ? "Auto-mounted" : "Not auto-mounted";
+                doNotUpdateAutoMountChecked = false;
             }
         }
 
