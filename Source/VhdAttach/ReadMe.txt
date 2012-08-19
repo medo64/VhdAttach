@@ -34,6 +34,11 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.60 (2012-08-20)
+
+        o Improved Windows 8 compatibility.
+        o Bug-fixing.
+
     3.50 (2012-07-20)
 
         o Added drive-letter change from within application.
