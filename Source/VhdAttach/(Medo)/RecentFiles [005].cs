@@ -4,6 +4,7 @@
 //2009-07-04: Compatibility with Mono 2.4.
 //2010-10-31: Added option to skip registry writes (NoRegistryWrites).
 //2012-05-31: Refactoring.
+//2012-08-20: Fixed crash when HideFileExt cannot be found in registry.
 
 
 using System;
@@ -323,7 +324,9 @@ namespace Medo.Configuration {
                             }
                         }
                     }
-                } catch (SecurityException) { }
+                } catch (SecurityException) {
+                } catch (IOException) { //key does not exist
+                }
                 return false;
             }
         }
