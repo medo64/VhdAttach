@@ -69,6 +69,7 @@ namespace VhdAttach {
             // list
             // 
             this.list.AllowDrop = true;
+            this.list.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.list_Property,
             this.list_Value});
