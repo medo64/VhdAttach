@@ -1,4 +1,4 @@
-﻿//Josip Medved <jmedved@jmedved.com>  http://www.jmedved.com  http://medo64.blogspot.com
+//Josip Medved <jmedved@jmedved.com>  http://www.jmedved.com/
 
 //2009-04-07: First version.
 //2009-04-30: Updated for Windows 7 release candidate.
@@ -11,6 +11,7 @@
 //2009-08-23: Added GetSize, GetIdentifier, GetVirtualStorageType and GetProviderSubtype.
 //2010-02-12: Changed generation of Win32 API exceptions.
 //2012-03-01: Added ISO image operations (experimental).
+//2012-08-27: Added ERROR_FILE_SYSTEM_LIMITATION error.
 
 
 using System;
@@ -46,9 +47,9 @@ namespace Medo.IO {
         public string FileName { get; private set; }
 
         /// <summary>
-        /// Gets format of open virtual device. If device is not open, format will be AutoDetect. Once device is opened, format will change to either Iso or Vhd.
+        /// Gets type of open virtual device. If device is not open, type will be AutoDetect. Once device is opened, type will change to either Iso or Vhd.
         /// </summary>
-        public VirtualDiskFormat Format { get; private set; }
+        public VirtualDiskType DiskType { get; private set; }
 
         /// <summary>
         /// Gets whether connection to file is currently open.
@@ -63,7 +64,7 @@ namespace Medo.IO {
         /// </summary>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
-        /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Open() {
             Open(VirtualDiskAccessMask.All);
@@ -75,47 +76,48 @@ namespace Medo.IO {
         /// <param name="fileAccess">Defines required access.</param>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
-        /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Open(VirtualDiskAccessMask fileAccess) {
-            this.Open(fileAccess, VirtualDiskFormat.AutoDetect);
+            this.Open(fileAccess, VirtualDiskType.AutoDetect);
         }
 
         /// <summary>
         /// Opens connection to file.
         /// </summary>
         /// <param name="fileAccess">Defines required access.</param>
+        /// <param name="type">Disk type.</param>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
-        /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
-        private void Open(VirtualDiskAccessMask fileAccess, VirtualDiskFormat format) {
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        private void Open(VirtualDiskAccessMask fileAccess, VirtualDiskType type) {
             var parameters = new NativeMethods.OPEN_VIRTUAL_DISK_PARAMETERS();
             parameters.Version = NativeMethods.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_1;
             parameters.Version1.RWDepth = NativeMethods.OPEN_VIRTUAL_DISK_RW_DEPTH_DEFAULT;
 
             var storageType = new NativeMethods.VIRTUAL_STORAGE_TYPE();
-            switch (format) {
-                case VirtualDiskFormat.AutoDetect:
+            switch (type) {
+                case VirtualDiskType.AutoDetect:
                     if (this.FileName.EndsWith(".iso", StringComparison.OrdinalIgnoreCase)) {
                         storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
                         fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
                         fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
-                        this.Format = VirtualDiskFormat.Iso;
+                        this.DiskType = VirtualDiskType.Iso;
                     } else {
                         storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
-                        this.Format = VirtualDiskFormat.Vhd;
+                        this.DiskType = VirtualDiskType.Vhd;
                     }
                     break;
 
-                case VirtualDiskFormat.Vhd:
+                case VirtualDiskType.Vhd:
                     storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
-                    this.Format = VirtualDiskFormat.Vhd;
+                    this.DiskType = VirtualDiskType.Vhd;
                     break;
 
-                case VirtualDiskFormat.Iso: storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
+                case VirtualDiskType.Iso: storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
                     fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
                     fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
-                    this.Format = VirtualDiskFormat.Iso;
+                    this.DiskType = VirtualDiskType.Iso;
                     break;
             }
             storageType.VendorId = NativeMethods.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
@@ -129,7 +131,7 @@ namespace Medo.IO {
                 } else if (res == NativeMethods.ERROR_ACCESS_DENIED) {
                     throw new IOException("Access is denied.");
                 } else if (res == NativeMethods.ERROR_FILE_CORRUPT) {
-                    throw new InvalidDataException("File format not recognized.");
+                    throw new InvalidDataException("File type not recognized.");
                 } else {
                     throw new Win32Exception(res);
                 }
@@ -140,6 +142,11 @@ namespace Medo.IO {
         /// Creates new virtual disk
         /// </summary>
         /// <param name="size">Size in bytes.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Create(long size) {
             Create(size, VirtualDiskCreateOptions.None, 0, 0, false);
@@ -149,8 +156,12 @@ namespace Medo.IO {
         /// Creates new virtual disk
         /// </summary>
         /// <param name="size">Size in bytes.</param>
-        /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
-        /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
+        /// <param name="options">Options.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Create(long size, VirtualDiskCreateOptions options) {
             this.Create(size, options, 0, 0, false);
@@ -163,6 +174,11 @@ namespace Medo.IO {
         /// <param name="options">Additional options.</param>
         /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
         /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Create(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize) {
             this.Create(size, options, blockSize, sectorSize, false);
@@ -172,6 +188,11 @@ namespace Medo.IO {
         /// Creates new virtual disk
         /// </summary>
         /// <param name="size">Size in bytes.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void CreateAsync(long size) {
             Create(size, VirtualDiskCreateOptions.None, 0, 0, true);
@@ -182,6 +203,11 @@ namespace Medo.IO {
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <param name="options">Additional options.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void CreateAsync(long size, VirtualDiskCreateOptions options) {
             this.Create(size, options, 0, 0, true);
@@ -194,6 +220,11 @@ namespace Medo.IO {
         /// <param name="options">Additional options.</param>
         /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
         /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void CreateAsync(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize) {
             this.Create(size, options, blockSize, sectorSize, true);
@@ -210,8 +241,8 @@ namespace Medo.IO {
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
-        /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
-        /// <exception cref="System.IO.IOException">File already exists.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         private void Create(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize, bool createAsync) {
             var parameters = new NativeMethods.CREATE_VIRTUAL_DISK_PARAMETERS();
@@ -256,9 +287,11 @@ namespace Medo.IO {
                 if ((res == NativeMethods.ERROR_FILE_NOT_FOUND) || (res == NativeMethods.ERROR_PATH_NOT_FOUND)) {
                     throw new FileNotFoundException("File not found.");
                 } else if (res == NativeMethods.ERROR_FILE_CORRUPT) {
-                    throw new InvalidDataException("File format not recognized.");
+                    throw new InvalidDataException("File type not recognized.");
                 } else if (res == NativeMethods.ERROR_FILE_EXISTS) {
                     throw new IOException("File already exists.");
+                } else if (res == NativeMethods.ERROR_FILE_SYSTEM_LIMITATION) {
+                    throw new IOException("Virtual disk creation could not be completed due to a file system limitation.");
                 } else if (res == NativeMethods.ERROR_INVALID_PARAMETER) {
                     throw new ArgumentException("Invalid parameter.", "size");
                 } else {
@@ -272,7 +305,7 @@ namespace Medo.IO {
         /// </summary>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
-        /// <exception cref="System.IO.InvalidDataException">File format not recognized.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Method may throw exceptions.")]
         public VirtualDiskOperationProgress GetCreateProgress() {
@@ -292,7 +325,7 @@ namespace Medo.IO {
                     if ((res == NativeMethods.ERROR_FILE_NOT_FOUND) || (res == NativeMethods.ERROR_PATH_NOT_FOUND)) {
                         throw new FileNotFoundException("File not found.");
                     } else if (res == NativeMethods.ERROR_FILE_CORRUPT) {
-                        throw new InvalidDataException("File format not recognized.");
+                        throw new InvalidDataException("File type not recognized.");
                     } else if (res == NativeMethods.ERROR_FILE_EXISTS) {
                         throw new IOException("File already exists.");
                     } else {
@@ -314,7 +347,7 @@ namespace Medo.IO {
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.IOException">Access is denied.</exception>
         public void Attach(VirtualDiskAttachOptions options) {
-            if (this.Format == VirtualDiskFormat.Iso) { options |= VirtualDiskAttachOptions.ReadOnly; }
+            if (this.DiskType == VirtualDiskType.Iso) { options |= VirtualDiskAttachOptions.ReadOnly; }
 
             var parameters = new NativeMethods.ATTACH_VIRTUAL_DISK_PARAMETERS();
             parameters.Version = NativeMethods.ATTACH_VIRTUAL_DISK_VERSION.ATTACH_VIRTUAL_DISK_VERSION_1;
@@ -1662,6 +1695,11 @@ namespace Medo.IO {
             public const Int32 ERROR_INSUFFICIENT_BUFFER = 122;
 
             /// <summary>
+            /// The requested operation could not be completed due to a file system limitation.
+            /// </summary>
+            public const Int32 ERROR_FILE_SYSTEM_LIMITATION = 665;
+
+            /// <summary>
             /// Overlapped I/O operation is in progress.
             /// </summary>
             public const Int32 ERROR_IO_PENDING = 997;
@@ -1754,19 +1792,19 @@ namespace Medo.IO {
 
 
     /// <summary>
-    /// Determines format of a file.
+    /// Determines type of a file.
     /// </summary>
-    public enum VirtualDiskFormat {
+    public enum VirtualDiskType {
         /// <summary>
         /// Tries to open file as virtual disk unless file name ends in .iso.
         /// </summary>
         AutoDetect = 0,
         /// <summary>
-        /// Forces format to be VHD.
+        /// Forces type to be VHD.
         /// </summary>
         Vhd = 1,
         /// <summary>
-        /// Forces format to be ISO.
+        /// Forces type to be ISO.
         /// </summary>
         Iso = 2,
     }

@@ -233,7 +233,7 @@ namespace VhdAttach {
                     } catch { }
 
 
-                    if (document.Format == Medo.IO.VirtualDiskFormat.Vhd) {
+                    if (document.DiskType == Medo.IO.VirtualDiskType.Vhd) {
                         try {
                             var footerCopyBytes = new byte[512];
                             var headerBytes = new byte[1024];
