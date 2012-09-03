@@ -34,6 +34,10 @@ COMMAND LINE PARAMETERS
 
 VERSION HISTORY
 
+    3.61 (2012-09-03)
+
+        o Bug-fixing.
+
     3.60 (2012-08-20)
 
         o Improved Windows 8 compatibility.
