@@ -179,6 +179,11 @@ namespace VhdAttach {
                         items.Add(new ListViewItem(new string[] { "File size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(fi.Length, "B", "0"), fi.Length) }) { Group = GroupFileSystem });
                     } catch { }
 
+                    try {
+                        var di = new DriveInfo(new FileInfo(document.FileName).Directory.Root.FullName);
+                        items.Add(new ListViewItem(new string[] { "Free space on " + di.Name, string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(di.AvailableFreeSpace, "B", "0"), di.AvailableFreeSpace) }) { Group = GroupFileSystem });
+                    } catch { }
+
                     document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo);
                     string attachedDevice = null;
                     string[] attachedPaths = null;
