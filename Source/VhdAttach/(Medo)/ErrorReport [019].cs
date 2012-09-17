@@ -1,4 +1,4 @@
-//Josip Medved <jmedved@jmedved.com> http://www.jmedved.com
+//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
 
 //2008-01-07: First version.
 //2008-01-15: Added overloads for SaveToTemp and ShowDialog.
@@ -26,6 +26,7 @@
 //2010-03-07: Changed Math.* to System.Math.*.
 //2010-10-30: Fixed bug with sending error report.
 //2010-11-06: Graphical update.
+//2012-09-16: Added retry upon send failure.
 
 
 using System;
@@ -142,8 +143,11 @@ namespace Medo.Diagnostics {
                                 string message, email, displayName;
                                 if (ShowDialogCollect(owner, exception, out message, out email, out displayName) == DialogResult.OK) {
                                     string fullMessage = LogBufferGetStringWithUserInformation(message, displayName, email);
-                                    if (ShowDialogSend(owner, address, fullMessage, email, displayName) == DialogResult.OK) {
-                                        return DialogResult.OK;
+                                    while (true) {
+                                        var result = ShowDialogSend(owner, address, fullMessage, email, displayName);
+                                        if (result != DialogResult.Retry) {
+                                            return result;
+                                        }
                                     }
                                 }
                             }
@@ -151,8 +155,11 @@ namespace Medo.Diagnostics {
                             string message, email, displayName;
                             if (ShowDialogCollect(owner, exception, out message, out email, out displayName) == DialogResult.OK) {
                                 string fullMessage = LogBufferGetStringWithUserInformation(message, displayName, email);
-                                if (ShowDialogSend(owner, address, fullMessage, email, displayName) == DialogResult.OK) {
-                                    return DialogResult.OK;
+                                while (true) {
+                                    var result = ShowDialogSend(owner, address, fullMessage, email, displayName);
+                                    if (result != DialogResult.Retry) {
+                                        return result;
+                                    }
                                 }
                             }
                         }
@@ -509,13 +516,11 @@ namespace Medo.Diagnostics {
                     message = textMessage.Text.Trim();
                     email = textEmail.Text.Trim();
                     displayName = textName.Text.Trim();
-                    form.Dispose();
                     return DialogResult.OK;
                 } else {
                     message = null;
                     email = null;
                     displayName = null;
-                    form.Dispose();
                     return DialogResult.Cancel;
                 }
             }
@@ -620,8 +625,11 @@ namespace Medo.Diagnostics {
                         } catch (System.Security.SecurityException) {
                         } catch (System.IO.IOException) { }
                     }
-                    System.Windows.Forms.MessageBox.Show(owner, Resources.GetInCurrentLanguage("Error report cannot be sent.", "Izvještaj o grešci ne može biti poslan."), _infoProductTitle, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, mbOptions);
-                    return DialogResult.Cancel;
+                    if (System.Windows.Forms.MessageBox.Show(owner, Resources.GetInCurrentLanguage("Error report cannot be sent.\nDo you wish to retry?", "Izvještaj o grešci ne može biti poslan.\nŽelite li ponovno pokušati?"), _infoProductTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, mbOptions) == DialogResult.Yes) {
+                        return DialogResult.Retry;
+                    } else {
+                        return DialogResult.Cancel;
+                    }
                 }
             }
         }

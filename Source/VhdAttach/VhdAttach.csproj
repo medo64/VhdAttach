@@ -62,7 +62,7 @@
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\BinaryPrefixExtensions [002x].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
-    <Compile Include="%28Medo%29\ErrorReport [018].cs" />
+    <Compile Include="%28Medo%29\ErrorReport [019].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
     <Compile Include="%28Medo%29\NamedPipe [002].cs" />
     <Compile Include="%28Medo%29\NumberDeclination [001].cs" />
