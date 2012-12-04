@@ -38,6 +38,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\Binaries\</OutputPath>
@@ -47,6 +48,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -59,15 +61,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="%28Medo%29\AboutBox [011].cs" />
-    <Compile Include="%28Medo%29\Args [001].cs" />
+    <Compile Include="%28Medo%29\AboutBox [013].cs" />
+    <Compile Include="%28Medo%29\Args [002].cs" />
     <Compile Include="%28Medo%29\CallingAssembly [002].cs" />
-    <Compile Include="%28Medo%29\ErrorReport [018].cs" />
-    <Compile Include="%28Medo%29\NamedPipe [002].cs" />
+    <Compile Include="%28Medo%29\ErrorReport [019].cs" />
+    <Compile Include="%28Medo%29\NamedPipe [003].cs" />
     <Compile Include="%28Medo%29\Settings [012].cs" />
-    <Compile Include="%28Medo%29\TinyMessage [005].cs" />
+    <Compile Include="%28Medo%29\TinyMessage [009].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="%28Medo%29\VirtualDisk [007].cs" />
+    <Compile Include="%28Medo%29\VirtualDisk [008].cs" />
     <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>

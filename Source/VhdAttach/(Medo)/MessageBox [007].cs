@@ -1,4 +1,4 @@
-//Josip Medved <jmedved@jmedved.com> http://www.jmedved.com
+//Copyright (c) 2007 Josip Medved <jmedved@jmedved.com>
 
 //2007-12-31: New version.
 //2008-01-03: Added Resources.
@@ -7,6 +7,7 @@
 //            Fixed ToInt32 call on x64 bit windows.
 //2008-12-01: Deleted methods without owner parameter.
 //2009-07-04: Compatibility with Mono 2.4.
+//2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
 
 
 using System;
@@ -141,7 +142,7 @@ namespace Medo {
                     }
                 } //lock
             } else { //MONO
-                return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton);
+                return System.Windows.Forms.MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, 0);
             }
         }
 
@@ -700,32 +701,40 @@ namespace Medo {
             }
 
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]
             public static extern System.IntPtr CallNextHookEx(WindowsHookSafeHandle idHook, int nCode, System.IntPtr wParam, System.IntPtr lParam);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]
             public static extern int GetCurrentThreadId();
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
             [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
             public static extern bool GetWindowRect(System.IntPtr hWnd, ref RECT lpRect);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api", Justification = "Managed equivalent does not support all needed features.")]
             [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             public static extern int MessageBox(System.IntPtr hWnd, string lpText, string lpCaption, uint uType);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
             public static extern bool SetDlgItemText(System.IntPtr hWnd, int nIDDlgItem, string lpString);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
             [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
             public static extern bool SetWindowPos(System.IntPtr hWnd, System.IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
             [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]
             public static extern WindowsHookSafeHandle SetWindowsHookEx(int idHook, CbtHookProcDelegate lpfn, System.IntPtr hInstance, int threadId);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [ReliabilityContract(Consistency.MayCorruptProcess, Cer.Success)]
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
             [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]

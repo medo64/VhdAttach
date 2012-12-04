@@ -1,4 +1,4 @@
-//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
+﻿//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
 
 //2008-01-02: New version.
 //2008-01-05: Top line now contains product name.
@@ -11,6 +11,8 @@
 //2010-11-03: Informational version is used for program name.
 //            Content background is now in Window system color.
 //2011-09-01: Added DEBUG sufix for DEBUG builds.
+//2012-03-05: Added padding to buttons.
+//2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
 
 
 using System;
@@ -18,6 +20,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -167,7 +170,7 @@ namespace Medo.Windows.Forms {
                     int buttonMinRight = 7;
 
                     //Close button
-                    buttonClose = new Button();
+                    buttonClose = new Button() { Padding = new Padding(3, 1, 3, 1) };
                     buttonClose.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
                     buttonClose.AutoSize = true;
                     buttonClose.DialogResult = DialogResult.OK;
@@ -178,7 +181,7 @@ namespace Medo.Windows.Forms {
                     //Readme button
                     string readMePath = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "readme.txt");
                     if (System.IO.File.Exists(readMePath)) {
-                        buttonReadme = new Button();
+                        buttonReadme = new Button() { Padding = new Padding(3, 1, 3, 1) };
                         buttonReadme.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
                         buttonReadme.AutoSize = true;
                         buttonReadme.Text = Resources.ReadMe;
@@ -190,7 +193,7 @@ namespace Medo.Windows.Forms {
 
                     //WebPage button
                     if (webpage != null) {
-                        buttonWebPage = new Button();
+                        buttonWebPage = new Button() { Padding = new Padding(3, 1, 3, 1) };
                         buttonWebPage.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
                         buttonWebPage.AutoSize = true;
                         buttonWebPage.Text = Resources.WebPage;
@@ -491,9 +494,11 @@ namespace Medo.Windows.Forms {
 
         private static class NativeMethods {
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("user32.dll", CharSet = CharSet.Unicode)]
             static extern internal IntPtr LoadIcon(IntPtr hInstance, string lpIconName);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
             static extern internal IntPtr LoadLibrary(string lpFileName);
 

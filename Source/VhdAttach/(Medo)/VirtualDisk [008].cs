@@ -12,6 +12,7 @@
 //2010-02-12: Changed generation of Win32 API exceptions.
 //2012-03-01: Added ISO image operations (experimental).
 //2012-08-27: Added ERROR_FILE_SYSTEM_LIMITATION error.
+//2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
 
 
 using System;
@@ -1487,6 +1488,7 @@ namespace Medo.IO {
             /// <param name="Parameters">A pointer to a valid SURFACE_VIRTUAL_DISK_PARAMETERS structure that contains surfacing (attachment) parameter data.</param>
             /// <param name="Overlapped">An optional pointer to a valid OVERLAPPED structure if asynchronous operation is desired.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 AttachVirtualDisk(VirtualDiskSafeHandle VirtualDiskHandle, IntPtr SecurityDescriptor, ATTACH_VIRTUAL_DISK_FLAG Flags, Int32 ProviderSpecificFlags, ref ATTACH_VIRTUAL_DISK_PARAMETERS Parameters, IntPtr Overlapped);
 
@@ -1514,6 +1516,7 @@ namespace Medo.IO {
             /// <param name="Overlapped">An optional pointer to a valid OVERLAPPED structure if asynchronous operation is desired.</param>
             /// <param name="Handle">A pointer to the handle object that represents the newly created virtual disk.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 CreateVirtualDisk(ref VIRTUAL_STORAGE_TYPE VirtualStorageType, String Path, VIRTUAL_DISK_ACCESS_MASK VirtualDiskAccessMask, IntPtr SecurityDescriptor, CREATE_VIRTUAL_DISK_FLAG Flags, Int32 ProviderSpecificFlags, ref CREATE_VIRTUAL_DISK_PARAMETERS Parameters, IntPtr Overlapped, ref VirtualDiskSafeHandle Handle);
 
@@ -1530,6 +1533,7 @@ namespace Medo.IO {
             /// <param name="Overlapped">An optional pointer to a valid OVERLAPPED structure if asynchronous operation is desired.</param>
             /// <param name="Handle">A pointer to the handle object that represents the newly created virtual disk.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 CreateVirtualDisk(ref VIRTUAL_STORAGE_TYPE VirtualStorageType, String Path, VIRTUAL_DISK_ACCESS_MASK VirtualDiskAccessMask, IntPtr SecurityDescriptor, CREATE_VIRTUAL_DISK_FLAG Flags, Int32 ProviderSpecificFlags, ref CREATE_VIRTUAL_DISK_PARAMETERS Parameters, ref NativeOverlapped Overlapped, ref VirtualDiskSafeHandle Handle);
 
@@ -1540,6 +1544,7 @@ namespace Medo.IO {
             /// <param name="Flags">A valid combination of values of the UNSURFACE_VIRTUAL_DISK_FLAG enumeration.</param>
             /// <param name="ProviderSpecificFlags">Flags specific to the type of virtual disk being unsurfaced. May be zero if none are required.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 DetachVirtualDisk(VirtualDiskSafeHandle VirtualDiskHandle, DETACH_VIRTUAL_DISK_FLAG Flags, Int32 ProviderSpecificFlags);
 
@@ -1574,6 +1579,7 @@ namespace Medo.IO {
             /// <param name="VirtualDiskInfo">A pointer to a valid GET_VIRTUAL_DISK_INFO structure. The format of the data returned is dependent on the value passed in the Version member by the caller.</param>
             /// <param name="SizeUsed">A pointer to a ULONG that contains the size used.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 GetVirtualDiskInformation(VirtualDiskSafeHandle VirtualDiskHandle, ref Int32 VirtualDiskInfoSize, ref GET_VIRTUAL_DISK_INFO VirtualDiskInfo, ref Int32 SizeUsed);
 
@@ -1584,6 +1590,7 @@ namespace Medo.IO {
             /// <param name="Overlapped">A pointer to a valid OVERLAPPED structure. This parameter must reference the same structure previously sent to the virtual disk operation being checked for progress.</param>
             /// <param name="Progress">A pointer to a VIRTUAL_DISK_PROGRESS structure that receives the current virtual disk operation progress.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 GetVirtualDiskOperationProgress(VirtualDiskSafeHandle VirtualDiskHandle, ref NativeOverlapped Overlapped, ref VIRTUAL_DISK_PROGRESS Progress);
 
@@ -1595,6 +1602,7 @@ namespace Medo.IO {
             /// <param name="DiskPathSizeInBytes">The size, in bytes, of the buffer pointed to by the DiskPath parameter.</param>
             /// <param name="DiskPath">A target buffer to receive the path of the physical disk device that contains the VHD.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 GetVirtualDiskPhysicalPath(VirtualDiskSafeHandle VirtualDiskHandle, ref Int32 DiskPathSizeInBytes, StringBuilder DiskPath);
 
@@ -1619,6 +1627,7 @@ namespace Medo.IO {
             /// <param name="Parameters">An optional pointer to a valid OPEN_VIRTUAL_DISK_PARAMETERS structure. Can be NULL. </param>
             /// <param name="Handle">A pointer to the handle object that represents the open VHD.</param>
             /// <returns>If the function succeeds, the return value is ERROR_SUCCESS and the Handle parameter contains a valid pointer to the new virtual disk object. If the function fails, the return value is an error code and the value of the Handle parameter is undefined.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("virtdisk.dll", CharSet = CharSet.Unicode)]
             public static extern Int32 OpenVirtualDisk(ref VIRTUAL_STORAGE_TYPE VirtualStorageType, String Path, VIRTUAL_DISK_ACCESS_MASK VirtualDiskAccessMask, OPEN_VIRTUAL_DISK_FLAG Flags, ref OPEN_VIRTUAL_DISK_PARAMETERS Parameters, ref VirtualDiskSafeHandle Handle);
 
@@ -1725,6 +1734,7 @@ namespace Medo.IO {
             /// </summary>
             /// <param name="hObject">A valid handle to an open object.</param>
             /// <returns>If the function succeeds, the return value is nonzero. If the function fails, the return value is zero. To get extended error information, call GetLastError.</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImportAttribute("kernel32.dll", SetLastError = true)]
             [return: MarshalAsAttribute(UnmanagedType.Bool)]
             public static extern Boolean CloseHandle(IntPtr hObject);

@@ -37,6 +37,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\Binaries\</OutputPath>
@@ -46,6 +47,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -58,23 +60,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="%28Medo%29\AboutBox [012].cs" />
-    <Compile Include="%28Medo%29\Args [001].cs" />
+    <Compile Include="%28Medo%29\AboutBox [013].cs" />
+    <Compile Include="%28Medo%29\Args [002].cs" />
     <Compile Include="%28Medo%29\BinaryPrefixExtensions [002x].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
     <Compile Include="%28Medo%29\ErrorReport [019].cs" />
-    <Compile Include="%28Medo%29\MessageBox [006].cs" />
-    <Compile Include="%28Medo%29\NamedPipe [002].cs" />
+    <Compile Include="%28Medo%29\MessageBox [007].cs" />
+    <Compile Include="%28Medo%29\NamedPipe [003].cs" />
     <Compile Include="%28Medo%29\NumberDeclination [001].cs" />
     <Compile Include="%28Medo%29\RecentFiles [005].cs" />
     <Compile Include="%28Medo%29\Settings [012].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\StringAdder [002].cs" />
-    <Compile Include="%28Medo%29\TaskbarProgress [002].cs" />
-    <Compile Include="%28Medo%29\TinyMessage [005].cs" />
+    <Compile Include="%28Medo%29\TaskbarProgress [003].cs" />
+    <Compile Include="%28Medo%29\TinyMessage [009].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\Upgrade [002].cs" />
-    <Compile Include="%28Medo%29\VirtualDisk [007].cs" />
+    <Compile Include="%28Medo%29\VirtualDisk [008].cs" />
     <Compile Include="..\VhdAttach-Service\FileWithOptions.cs">
       <Link>FileWithOptions.cs</Link>
     </Compile>

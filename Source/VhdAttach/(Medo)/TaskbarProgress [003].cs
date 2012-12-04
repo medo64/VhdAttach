@@ -1,6 +1,7 @@
-//Josip Medved <jmedved@jmedved.com>  http://www.jmedved.com  http://medo64.blogspot.com
+//Copyright (c) 2009 Josip Medved <jmedved@jmedved.com>
 
 //2009-07-01: New version.
+//2011-08-24: Added workaround for Seamless Citrix Application.
 
 
 using System;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 namespace Medo.Windows.Forms {
 
     /// <summary>
-    /// 
+    /// Support for Windows 7 taskbar progress.
     /// </summary>
     public static class TaskbarProgress {
 
@@ -61,8 +62,14 @@ namespace Medo.Windows.Forms {
                 }
             }
             Init();
-            var res = _taskbarList.SetProgressState(owner.Handle, newState);
-            if (res != NativeMethods.S_OK) { throw new Win32Exception(string.Format(CultureInfo.InvariantCulture, "Native error {0:x8}.", res)); }
+            try {
+                if (_taskbarList != null) {
+                    var res = _taskbarList.SetProgressState(owner.Handle, newState);
+                    if (res != NativeMethods.S_OK) { throw new Win32Exception(string.Format(CultureInfo.InvariantCulture, "Native error {0:x8}.", res)); }
+                }
+            } catch (NotImplementedException) {
+                if (DoNotThrowNotImplementedException == false) { throw; }
+            }
         }
 
         /// <summary>
@@ -96,8 +103,14 @@ namespace Medo.Windows.Forms {
                 }
             }
             Init();
-            var res = _taskbarList.SetProgressValue(owner.Handle, (ulong)newProgressPercentage, 100);
-            if (res != NativeMethods.S_OK) { throw new Win32Exception(string.Format(CultureInfo.InvariantCulture, "Native error {0:x8}.", res)); }
+            try {
+                if (_taskbarList != null) {
+                    var res = _taskbarList.SetProgressValue(owner.Handle, (ulong)newProgressPercentage, 100);
+                    if (res != NativeMethods.S_OK) { throw new Win32Exception(string.Format(CultureInfo.InvariantCulture, "Native error {0:x8}.", res)); }
+                }
+            } catch (NotImplementedException) {
+                if (DoNotThrowNotImplementedException == false) { throw; }
+            }
         }
 
 
@@ -105,10 +118,15 @@ namespace Medo.Windows.Forms {
         private static NativeMethods.ITaskbarList3 _taskbarList;
         private static void Init() {
             lock (_syncRoot) {
-                if (_taskbarList == null) {
-                    _taskbarList = (NativeMethods.ITaskbarList3)new NativeMethods.CTaskbarList();
-                    var res = _taskbarList.HrInit();
-                    if (res != NativeMethods.S_OK) { throw new Win32Exception(string.Format(CultureInfo.InvariantCulture, "Native error {0:x8}.", res)); }
+                try {
+                    if (_taskbarList == null) {
+                        _taskbarList = (NativeMethods.ITaskbarList3)new NativeMethods.CTaskbarList();
+                        var res = _taskbarList.HrInit();
+                        if (res != NativeMethods.S_OK) { throw new Win32Exception(string.Format(CultureInfo.InvariantCulture, "Native error {0:x8}.", res)); }
+                    }
+                } catch (NotImplementedException) {
+                    _taskbarList = null;
+                    if (DoNotThrowNotImplementedException == false) { throw; }
                 }
             }
         }

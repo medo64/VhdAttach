@@ -1,7 +1,7 @@
-//Josip Medved <jmedved@jmedved.com> http://www.jmedved.com
+//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
 
 //2008-11-04: First version.
-//2009-08-14: Changed to Environment.CommandLine since Environment.GetCommandLineArgs() didn't return correct results for e.g. /detachdrive "V:\"
+//2012-11-24: Validating arguments.
 
 
 using System;
@@ -22,9 +22,8 @@ namespace Medo.Application {
         public static Args Current {
             get {
                 if (_current == null) {
-                    //string[] envArgs = Environment.GetCommandLineArgs();
-                    //_current = new Args(envArgs, 1, envArgs.Length - 1);
-                    _current = new Args(Environment.CommandLine, true);
+                    string[] envArgs = Environment.GetCommandLineArgs();
+                    _current = new Args(envArgs, 1, envArgs.Length - 1);
                 }
                 return _current;
             }
@@ -51,38 +50,41 @@ namespace Medo.Application {
             List<string> list = new List<string>();
             StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < line.Length; ++i) {
-                char currChar = line[i];
-                switch (currChar) {
-                    case ' ':
-                        if (state == Helper.State.Default) {
-                            if (sb.Length > 0) {
-                                list.Add(sb.ToString());
-                                sb.Length = 0;
-                            }
-                        } else {
-                            sb.Append(currChar);
-                        }
-                        break;
-
-                    case '\"':
-                        if (state == Helper.State.Default) {
-                            state = Helper.State.Quoted;
-                        } else if (state == Helper.State.Quoted) {
-                            if ((i + 1 < line.Length) && (line[i + 1] == '\"')) {
-                                sb.Append("\"");
-                                i++;
+            if (line != null) {
+                for (int i = 0; i < line.Length; ++i) {
+                    char currChar = line[i];
+                    switch (currChar) {
+                        case ' ':
+                            if (state == Helper.State.Default) {
+                                if (sb.Length > 0) {
+                                    list.Add(sb.ToString());
+                                    sb.Length = 0;
+                                }
                             } else {
-                                state = Helper.State.Default;
+                                sb.Append(currChar);
                             }
-                        }
-                        break;
+                            break;
 
-                    default:
-                        sb.Append(currChar);
-                        break;
+                        case '\"':
+                            if (state == Helper.State.Default) {
+                                state = Helper.State.Quoted;
+                            } else if (state == Helper.State.Quoted) {
+                                if ((i + 1 < line.Length) && (line[i + 1] == '\"')) {
+                                    sb.Append("\"");
+                                    i++;
+                                } else {
+                                    state = Helper.State.Default;
+                                }
+                            }
+                            break;
+
+                        default:
+                            sb.Append(currChar);
+                            break;
+                    }
                 }
             }
+
             if (sb.Length > 0) {
                 list.Add(sb.ToString());
                 sb.Length = 0;
