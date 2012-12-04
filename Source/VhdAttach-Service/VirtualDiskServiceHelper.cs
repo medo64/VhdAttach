@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace VhdAttachService {
 
     [ComImport, Guid("118610b7-8d94-4030-b5b8-500889788e4e"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IEnumVdsObject {
+    internal interface IEnumVdsObject {
         void Next(uint numberOfObjects, [MarshalAs(UnmanagedType.IUnknown)] out object objectUnk, out uint numberFetched);
         void Skip(uint NumberOfObjects);
         void Reset();
@@ -13,7 +13,7 @@ namespace VhdAttachService {
 
 
     [ComImport, Guid("07e5c822-f00c-47a1-8fce-b244da56fd06"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVdsDisk {
+    internal interface IVdsDisk {
         void GetProperties(out VDS_DISK_PROP diskProperties);
         void GetPack(); // Unported method
         void GetIdentificationData(IntPtr lunInfo);
@@ -25,7 +25,7 @@ namespace VhdAttachService {
 
 
     [ComImport, Guid("0818a8ef-9ba9-40d8-a6f9-e22833cc771e"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVdsService {
+    internal interface IVdsService {
         [PreserveSig]
         int IsServiceReady();
         [PreserveSig]
@@ -49,13 +49,13 @@ namespace VhdAttachService {
 
 
     [ComImport, Guid("e0393303-90d4-4a97-ab71-e9b671ee2729"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVdsServiceLoader {
+    internal interface IVdsServiceLoader {
         void LoadService([In, MarshalAs(UnmanagedType.LPWStr)] string machineName, out IVdsService vdsService);
     }
 
 
     [ComImport, Guid("1e062b84-e5e6-4b4b-8a25-67b81e8f13e8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVdsVDisk {
+    internal interface IVdsVDisk {
         void Open(); // Unported method
         void GetProperties(out VDS_VDISK_PROPERTIES pDiskProperties);
         void GetHostVolume(); // Unported method
@@ -64,7 +64,7 @@ namespace VhdAttachService {
 
 
     [ComImport, Guid("b481498c-8354-45f9-84a0-0bdd2832a91f"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVdsVdProvider {
+    internal interface IVdsVdProvider {
         void QueryVDisks(out IEnumVdsObject ppEnum);
         void CreateVDisk(); // Unported method
         void AddVDisk(); // Unported method
@@ -74,12 +74,12 @@ namespace VhdAttachService {
 
 
     [ComImport, Guid("9c38ed61-d565-4728-aeee-c80952f0ecde")]
-    public class VdsServiceLoader {
+    internal class VdsServiceLoader {
     }
 
 
     [StructLayout(LayoutKind.Explicit)]
-    public struct Signature {
+    internal struct Signature {
         [FieldOffset(0)]
         public uint dwSignature;
         [FieldOffset(0)]
@@ -88,7 +88,7 @@ namespace VhdAttachService {
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct VDS_DISK_PROP {
+    internal struct VDS_DISK_PROP {
         public Guid Id;
         public VDS_DISK_STATUS Status;
         public VDS_LUN_RESERVE_MODE ReserveMode;
@@ -117,14 +117,14 @@ namespace VhdAttachService {
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct VIRTUAL_STORAGE_TYPE {
+    internal struct VIRTUAL_STORAGE_TYPE {
         public uint DeviceId;
         public Guid VendorId;
     }
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct VDS_VDISK_PROPERTIES {
+    internal struct VDS_VDISK_PROPERTIES {
         public Guid Id;
         public VDS_VDISK_STATE State;
         public VIRTUAL_STORAGE_TYPE VirtualDeviceType;
@@ -141,7 +141,7 @@ namespace VhdAttachService {
     }
 
 
-    public enum DEPENDENT_DISK_FLAG {
+    internal enum DEPENDENT_DISK_FLAG {
         DEPENDENT_DISK_FLAG_NONE = 0x00000000,
         DEPENDENT_DISK_FLAG_MULT_BACKING_FILES = 0x00000001,
         DEPENDENT_DISK_FLAG_FULLY_ALLOCATED = 0x00000002,
@@ -157,7 +157,7 @@ namespace VhdAttachService {
     }
 
 
-    public enum VDS_DISK_STATUS {
+    internal enum VDS_DISK_STATUS {
         VDS_DS_UNKNOWN = 0,
         VDS_DS_ONLINE = 1,
         VDS_DS_NOT_READY = 2,
@@ -168,7 +168,7 @@ namespace VhdAttachService {
     }
 
 
-    public enum VDS_HEALTH {
+    internal enum VDS_HEALTH {
         VDS_H_UNKNOWN = 0,
         VDS_H_HEALTHY = 1,
         VDS_H_REBUILDING = 2,
@@ -184,7 +184,7 @@ namespace VhdAttachService {
     }
 
 
-    public enum VDS_LUN_RESERVE_MODE {
+    internal enum VDS_LUN_RESERVE_MODE {
         VDS_LRM_NONE = 0,
         VDS_LRM_EXCLUSIVE_RW = 1,
         VDS_LRM_EXCLUSIVE_RO = 2,
@@ -193,21 +193,21 @@ namespace VhdAttachService {
     }
 
 
-    public enum VDS_PARTITION_STYLE {
+    internal enum VDS_PARTITION_STYLE {
         VDS_PST_UNKNOWN = 0,
         VDS_PST_MBR = 1,
         VDS_PST_GPT = 2
     }
 
 
-    public enum VDS_QUERY_PROVIDER_FLAG {
+    internal enum VDS_QUERY_PROVIDER_FLAG {
         VDS_QUERY_SOFTWARE_PROVIDERS = 0x1,
         VDS_QUERY_HARDWARE_PROVIDERS = 0x2,
         VDS_QUERY_VIRTUALDISK_PROVIDERS = 0x4
     }
 
 
-    public enum VDS_STORAGE_BUS_TYPE {
+    internal enum VDS_STORAGE_BUS_TYPE {
         VDSBusTypeUnknown = 0,
         VDSBusTypeScsi = 0x1,
         VDSBusTypeAtapi = 0x2,
@@ -228,7 +228,7 @@ namespace VhdAttachService {
     }
 
 
-    public enum VDS_VDISK_STATE {
+    internal enum VDS_VDISK_STATE {
         VDS_VST_UNKNOWN = 0,
         VDS_VST_ADDED,
         VDS_VST_OPEN,

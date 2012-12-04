@@ -230,7 +230,7 @@ namespace VhdAttachCommon {
         }
 
 
-        private class NativeMethods {
+        private static class NativeMethods {
 
             public const UInt32 FILE_SHARE_READ = 0x1;
             public const UInt32 FILE_SHARE_WRITE = 0x2;

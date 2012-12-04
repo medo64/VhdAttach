@@ -64,6 +64,7 @@
     <None Include="Properties\App.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="FileWithOptionsTest.cs" />
     <Compile Include="VhdFooterTest.cs">
       <SubType>Code</SubType>

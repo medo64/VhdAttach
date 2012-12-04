@@ -11,7 +11,7 @@ namespace VhdAttachService {
 
         private static NotifyIcon Notify;
 
-        internal static void Show(bool interactive = false) {
+        internal static void Show() {
             Tray.Notify = new NotifyIcon();
             Tray.Notify.ContextMenu = new ContextMenu();
             Tray.Notify.ContextMenu.MenuItems.Add(new MenuItem("Exit", Tray_Exit_OnClick));
@@ -85,9 +85,6 @@ namespace VhdAttachService {
 
             public const UInt32 IMAGE_ICON = 1;
 
-
-            [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-            static extern internal IntPtr LoadIcon(IntPtr hInstance, string lpIconName);
 
             [DllImport("user32.dll", CharSet = CharSet.Unicode)]
             static extern internal IntPtr LoadImage(IntPtr hInstance, String lpIconName, UInt32 uType, Int32 cxDesired, Int32 cyDesired, UInt32 fuLoad);

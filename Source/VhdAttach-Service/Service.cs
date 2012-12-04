@@ -53,7 +53,6 @@ namespace VhdAttachService {
                         using (var disk = new Medo.IO.VirtualDisk(fileName)) {
                             disk.Open(access);
                             disk.Attach(options);
-                            disk.Close();
                         }
                         Thread.Sleep(1000);
                     } catch (Exception ex) {
