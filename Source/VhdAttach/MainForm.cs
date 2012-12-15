@@ -225,8 +225,11 @@ namespace VhdAttach {
                         Guid vendorId;
                         document.GetVirtualStorageType(out deviceId, out vendorId);
                         string deviceText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", deviceId);
-                        if (deviceId == 1) { deviceText = "ISO"; }
-                        if (deviceId == 2) { deviceText = "VHD"; }
+                        switch (deviceId) {
+                            case 1: deviceText = "ISO"; break;
+                            case 2: deviceText = "VHD"; break;
+                            case 3: deviceText = "VHDX"; break;
+                        }
                         string vendorText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", vendorId);
                         if (vendorId.Equals(new Guid("EC984AEC-A0F9-47e9-901F-71415A66345B"))) { vendorText = "Microsoft"; }
                         items.Add(new ListViewItem(new string[] { "Device ID", deviceText }) { Group = GroupDetails });
@@ -415,7 +418,7 @@ namespace VhdAttach {
                 dialog.CheckPathExists = true;
                 dialog.DefaultExt = "vhd";
                 if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002) { //show if equal to or higher than Windows 8
-                    dialog.Filter = "Supported files (*.vhd;*.iso)|*.vhd;*.iso|Virtual disk files (*.vhd)|*.vhd|ISO image files (*.iso)|*.iso|All files (*.*)|*.*";
+                    dialog.Filter = "Supported files (*.vhd; *.vhdx; *.iso)|*.vhd;*.vhdx;*.iso|Virtual disk files (*.vhd; *.vhdx)|*.vhd;*.vhdx|ISO image files (*.iso)|*.iso|All files (*.*)|*.*";
                 } else {
                     dialog.Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*";
                 }

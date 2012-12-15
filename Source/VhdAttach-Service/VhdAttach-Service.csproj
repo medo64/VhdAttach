@@ -69,7 +69,7 @@
     <Compile Include="%28Medo%29\Settings [012].cs" />
     <Compile Include="%28Medo%29\TinyMessage [009].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="%28Medo%29\VirtualDisk [008].cs" />
+    <Compile Include="%28Medo%29\VirtualDisk [009].cs" />
     <Compile Include="..\VhdAttach\Properties\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>

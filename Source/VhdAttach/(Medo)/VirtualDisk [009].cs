@@ -13,6 +13,7 @@
 //2012-03-01: Added ISO image operations (experimental).
 //2012-08-27: Added ERROR_FILE_SYSTEM_LIMITATION error.
 //2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
+//2012-12-14: Added VHDX support.
 
 
 using System;
@@ -104,10 +105,19 @@ namespace Medo.IO {
                         fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
                         fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
                         this.DiskType = VirtualDiskType.Iso;
+                    } else if (this.FileName.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase)) {
+                        storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                        this.DiskType = VirtualDiskType.Vhdx;
                     } else {
                         storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
                         this.DiskType = VirtualDiskType.Vhd;
                     }
+                    break;
+
+                case VirtualDiskType.Iso: storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
+                    fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
+                    fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
+                    this.DiskType = VirtualDiskType.Iso;
                     break;
 
                 case VirtualDiskType.Vhd:
@@ -115,10 +125,9 @@ namespace Medo.IO {
                     this.DiskType = VirtualDiskType.Vhd;
                     break;
 
-                case VirtualDiskType.Iso: storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_ISO;
-                    fileAccess = ((fileAccess & VirtualDiskAccessMask.GetInfo) == VirtualDiskAccessMask.GetInfo) ? VirtualDiskAccessMask.GetInfo : 0;
-                    fileAccess |= VirtualDiskAccessMask.AttachReadOnly;
-                    this.DiskType = VirtualDiskType.Iso;
+                case VirtualDiskType.Vhdx:
+                    storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                    this.DiskType = VirtualDiskType.Vhdx;
                     break;
             }
             storageType.VendorId = NativeMethods.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
@@ -458,6 +467,7 @@ namespace Medo.IO {
         /// <summary>
         /// Gets unique identifier of the VHD.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Method does not behave as field.")]
         public Guid GetIdentifier() {
             var info = new NativeMethods.GET_VIRTUAL_DISK_INFO();
             info.Version = NativeMethods.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_IDENTIFIER;
@@ -505,6 +515,7 @@ namespace Medo.IO {
         /// <summary>
         /// Gets provider-specific subtype.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Method does not behave as field.")]
         public int GetProviderSubtype() {
             var info = new NativeMethods.GET_VIRTUAL_DISK_INFO();
             info.Version = NativeMethods.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_PROVIDER_SUBTYPE;
@@ -570,16 +581,24 @@ namespace Medo.IO {
             public const int OPEN_VIRTUAL_DISK_RW_DEPTH_DEFAULT = 1;
 
             /// <summary>
+            /// Device type is unknown or not valid.
             /// </summary>
             public const int VIRTUAL_STORAGE_TYPE_DEVICE_UNKNOWN = 0;
 
             /// <summary>
+            /// CD or DVD image file device type. (.iso file)
             /// </summary>
             public const int VIRTUAL_STORAGE_TYPE_DEVICE_ISO = 1;
 
             /// <summary>
+            /// Virtual hard disk device type. (.vhd file)
             /// </summary>
             public const int VIRTUAL_STORAGE_TYPE_DEVICE_VHD = 2;
+
+            /// <summary>
+            /// VHDX format virtual hard disk device type. (.vhdx file)
+            /// </summary>
+            public const int VIRTUAL_STORAGE_TYPE_DEVICE_VHDX = 3;
 
             /// <summary>
             /// </summary>
@@ -1810,13 +1829,17 @@ namespace Medo.IO {
         /// </summary>
         AutoDetect = 0,
         /// <summary>
-        /// Forces type to be VHD.
-        /// </summary>
-        Vhd = 1,
-        /// <summary>
         /// Forces type to be ISO.
         /// </summary>
-        Iso = 2,
+        Iso = 1,
+        /// <summary>
+        /// Forces type to be VHD.
+        /// </summary>
+        Vhd = 2,
+        /// <summary>
+        /// Forces type to be VHDX.
+        /// </summary>
+        Vhdx = 3,
     }
 
 
