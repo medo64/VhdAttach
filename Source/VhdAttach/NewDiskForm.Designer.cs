@@ -29,15 +29,19 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.chbThousandSize = new System.Windows.Forms.CheckBox();
             this.grpType = new System.Windows.Forms.GroupBox();
-            this.radFixed = new System.Windows.Forms.RadioButton();
-            this.radDynamic = new System.Windows.Forms.RadioButton();
+            this.radTypeFixed = new System.Windows.Forms.RadioButton();
+            this.radTypeDynamic = new System.Windows.Forms.RadioButton();
             this.lblSizeInBytes = new System.Windows.Forms.Label();
             this.txtSizeInBytes = new System.Windows.Forms.TextBox();
             this.erpError = new System.Windows.Forms.ErrorProvider(this.components);
             this.cmbSizeUnit = new System.Windows.Forms.ComboBox();
             this.txtSize = new System.Windows.Forms.TextBox();
+            this.grpFormat = new System.Windows.Forms.GroupBox();
+            this.radFormatVhdX = new System.Windows.Forms.RadioButton();
+            this.radFormatVhd = new System.Windows.Forms.RadioButton();
             this.grpType.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.erpError)).BeginInit();
+            this.grpFormat.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblSize
@@ -52,11 +56,11 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(68, 196);
+            this.btnOK.Location = new System.Drawing.Point(68, 283);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(100, 28);
-            this.btnOK.TabIndex = 7;
+            this.btnOK.TabIndex = 8;
             this.btnOK.Text = "Create";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -65,11 +69,11 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(174, 196);
+            this.btnCancel.Location = new System.Drawing.Point(174, 283);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 28);
-            this.btnCancel.TabIndex = 8;
+            this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -88,39 +92,39 @@
             // 
             this.grpType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpType.Controls.Add(this.radFixed);
-            this.grpType.Controls.Add(this.radDynamic);
+            this.grpType.Controls.Add(this.radTypeFixed);
+            this.grpType.Controls.Add(this.radTypeDynamic);
             this.grpType.Location = new System.Drawing.Point(12, 97);
             this.grpType.Name = "grpType";
             this.grpType.Size = new System.Drawing.Size(262, 81);
             this.grpType.TabIndex = 6;
             this.grpType.TabStop = false;
-            this.grpType.Text = "Format";
+            this.grpType.Text = "Type";
             // 
             // radFixed
             // 
-            this.radFixed.AutoSize = true;
-            this.radFixed.Location = new System.Drawing.Point(9, 54);
-            this.radFixed.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-            this.radFixed.Name = "radFixed";
-            this.radFixed.Size = new System.Drawing.Size(91, 21);
-            this.radFixed.TabIndex = 1;
-            this.radFixed.TabStop = true;
-            this.radFixed.Text = "Fixed size";
-            this.radFixed.UseVisualStyleBackColor = true;
+            this.radTypeFixed.AutoSize = true;
+            this.radTypeFixed.Location = new System.Drawing.Point(9, 54);
+            this.radTypeFixed.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+            this.radTypeFixed.Name = "radFixed";
+            this.radTypeFixed.Size = new System.Drawing.Size(91, 21);
+            this.radTypeFixed.TabIndex = 1;
+            this.radTypeFixed.TabStop = true;
+            this.radTypeFixed.Text = "Fixed size";
+            this.radTypeFixed.UseVisualStyleBackColor = true;
             // 
             // radDynamic
             // 
-            this.radDynamic.AutoSize = true;
-            this.radDynamic.Checked = true;
-            this.radDynamic.Location = new System.Drawing.Point(9, 27);
-            this.radDynamic.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
-            this.radDynamic.Name = "radDynamic";
-            this.radDynamic.Size = new System.Drawing.Size(173, 21);
-            this.radDynamic.TabIndex = 0;
-            this.radDynamic.TabStop = true;
-            this.radDynamic.Text = "Dynamically expanding";
-            this.radDynamic.UseVisualStyleBackColor = true;
+            this.radTypeDynamic.AutoSize = true;
+            this.radTypeDynamic.Checked = true;
+            this.radTypeDynamic.Location = new System.Drawing.Point(9, 27);
+            this.radTypeDynamic.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
+            this.radTypeDynamic.Name = "radDynamic";
+            this.radTypeDynamic.Size = new System.Drawing.Size(173, 21);
+            this.radTypeDynamic.TabIndex = 0;
+            this.radTypeDynamic.TabStop = true;
+            this.radTypeDynamic.Text = "Dynamically expanding";
+            this.radTypeDynamic.UseVisualStyleBackColor = true;
             // 
             // lblSizeInBytes
             // 
@@ -172,13 +176,52 @@
             this.txtSize.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSize_KeyDown);
             this.txtSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSize_KeyPress);
             // 
+            // grpFormat
+            // 
+            this.grpFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpFormat.Controls.Add(this.radFormatVhdX);
+            this.grpFormat.Controls.Add(this.radFormatVhd);
+            this.grpFormat.Location = new System.Drawing.Point(12, 184);
+            this.grpFormat.Name = "grpFormat";
+            this.grpFormat.Size = new System.Drawing.Size(262, 81);
+            this.grpFormat.TabIndex = 7;
+            this.grpFormat.TabStop = false;
+            this.grpFormat.Text = "Format";
+            // 
+            // radFormatVhdX
+            // 
+            this.radFormatVhdX.AutoSize = true;
+            this.radFormatVhdX.Location = new System.Drawing.Point(9, 54);
+            this.radFormatVhdX.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+            this.radFormatVhdX.Name = "radFormatVhdX";
+            this.radFormatVhdX.Size = new System.Drawing.Size(67, 21);
+            this.radFormatVhdX.TabIndex = 1;
+            this.radFormatVhdX.TabStop = true;
+            this.radFormatVhdX.Text = "VHDX";
+            this.radFormatVhdX.UseVisualStyleBackColor = true;
+            // 
+            // radFormatVhd
+            // 
+            this.radFormatVhd.AutoSize = true;
+            this.radFormatVhd.Checked = true;
+            this.radFormatVhd.Location = new System.Drawing.Point(9, 27);
+            this.radFormatVhd.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
+            this.radFormatVhd.Name = "radFormatVhd";
+            this.radFormatVhd.Size = new System.Drawing.Size(58, 21);
+            this.radFormatVhd.TabIndex = 0;
+            this.radFormatVhd.TabStop = true;
+            this.radFormatVhd.Text = "VHD";
+            this.radFormatVhd.UseVisualStyleBackColor = true;
+            // 
             // NewDiskForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(286, 236);
+            this.ClientSize = new System.Drawing.Size(286, 323);
+            this.Controls.Add(this.grpFormat);
             this.Controls.Add(this.txtSize);
             this.Controls.Add(this.cmbSizeUnit);
             this.Controls.Add(this.txtSizeInBytes);
@@ -202,6 +245,8 @@
             this.grpType.ResumeLayout(false);
             this.grpType.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.erpError)).EndInit();
+            this.grpFormat.ResumeLayout(false);
+            this.grpFormat.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,12 +259,15 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox chbThousandSize;
         private System.Windows.Forms.GroupBox grpType;
-        private System.Windows.Forms.RadioButton radFixed;
-        private System.Windows.Forms.RadioButton radDynamic;
+        private System.Windows.Forms.RadioButton radTypeFixed;
+        private System.Windows.Forms.RadioButton radTypeDynamic;
         private System.Windows.Forms.Label lblSizeInBytes;
         private System.Windows.Forms.TextBox txtSizeInBytes;
         private System.Windows.Forms.ErrorProvider erpError;
         private System.Windows.Forms.ComboBox cmbSizeUnit;
         private System.Windows.Forms.TextBox txtSize;
+        private System.Windows.Forms.GroupBox grpFormat;
+        private System.Windows.Forms.RadioButton radFormatVhdX;
+        private System.Windows.Forms.RadioButton radFormatVhd;
     }
 }

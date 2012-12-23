@@ -377,10 +377,10 @@ namespace VhdAttach {
             var recentItem = (Medo.Configuration.RecentFile)item.Tag;
             try {
                 var newDocument = new Medo.IO.VirtualDisk(recentItem.FileName);
-                UpdateData(newDocument.FileName);
                 this.VhdFileName = newDocument.FileName;
                 Recent.Push(recentItem.FileName);
                 UpdateRecent();
+                UpdateData(newDocument.FileName);
             } catch (Exception ex) {
                 var exFile = new FileInfo(recentItem.FileName);
                 if (Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}\n\nDo you wish to remove it from list?", exFile.Name, ex.Message), MessageBoxButtons.YesNo) == DialogResult.Yes) {
@@ -403,6 +403,10 @@ namespace VhdAttach {
                         this.VhdFileName = newDocument.FileName;
                         Recent.Push(fileName);
                         UpdateRecent();
+                        using (var form = new AttachForm(new FileInfo(fileName), false, true)) {
+                            form.StartPosition = FormStartPosition.CenterParent;
+                            form.ShowDialog(this);
+                        }
                     } catch (Exception ex) {
                         var exFile = new FileInfo(fileName);
                         Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}", exFile.Name, ex.Message));
@@ -427,10 +431,10 @@ namespace VhdAttach {
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
                     try {
                         var newDocument = new Medo.IO.VirtualDisk(dialog.FileName);
-                        UpdateData(newDocument.FileName);
                         this.VhdFileName = newDocument.FileName;
                         Recent.Push(dialog.FileName);
                         UpdateRecent();
+                        UpdateData(newDocument.FileName);
                     } catch (Exception ex) {
                         var exFile = new FileInfo(dialog.FileName);
                         Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}", exFile.Name, ex.Message));

@@ -24,7 +24,8 @@ namespace VhdAttach {
             cmbSizeUnit.SelectedItem = Settings.LastSizeUnit;
             txtSize.Text = GetSizeText(Settings.LastSize, cmbSizeUnit.Text);
             chbThousandSize.Checked = Settings.LastSizeThousandBased;
-            radFixed.Checked = Settings.LastSizeFixed;
+            radTypeFixed.Checked = Settings.LastSizeFixed;
+            radFormatVhdX.Checked = Settings.LastSizeVhdX;
         }
 
 
@@ -32,7 +33,16 @@ namespace VhdAttach {
             try {
                 this.Cursor = Cursors.WaitCursor;
 
-                using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*", FilterIndex = 0, OverwritePrompt = true, Title = "New disk", ValidateNames = true }) {
+                var isFormatVhdX = radFormatVhdX.Checked;
+                var isFormatVhd = !isFormatVhdX;
+
+                var isTypeFixed = radTypeFixed.Checked;
+                var isTypeDynamic = !isTypeFixed;
+
+
+                var filter = isFormatVhdX ? "Virtual disk files (*.vhdx)|*.vhdx|All files (*.*)|*.*" : "Virtual disk files (*.vhd)|*.vhd|All files (*.*)|*.*";
+
+                using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = filter, FilterIndex = 0, OverwritePrompt = true, Title = "New disk", ValidateNames = true }) {
                     if (frm.ShowDialog(this) == DialogResult.OK) {
                         this.FileName = frm.FileName;
                     } else {
@@ -45,12 +55,19 @@ namespace VhdAttach {
                     drive = new DriveInfo(this.FileName);
                     if (drive.DriveFormat.Equals("NTFS", StringComparison.OrdinalIgnoreCase) == false) {
                         if ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) < 6000002) { //Windows 8
-                            if (Medo.MessageBox.ShowWarning(this, "Due to operating system limitations, virtual disk created on this drive will not be attachable.\nIn order to attach virtual disk it will need to be on NTFS-formatted drive.\n\nDo you wish to continue?", MessageBoxButtons.YesNo) == DialogResult.No) {
-                                return;
+                            if (isFormatVhd && isTypeFixed) {
+                                if (Medo.MessageBox.ShowWarning(this, "Due to operating system limitations, virtual disk created on this drive will not be attachable.\nIn order to attach virtual disk it will need to be on NTFS-formatted drive.\n\nDo you wish to continue?", MessageBoxButtons.YesNo) == DialogResult.No) {
+                                    return;
+                                }
+                            } else {
+                                if (Medo.MessageBox.ShowWarning(this, "Due to operating system limitations, virtual disk cannot be created.\nIn order to create and attach virtual disk it will need to be on NTFS-formatted drive.\n\nDo you wish to continue anyway?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No) {
+                                    return;
+                                }
                             }
                         }
                     }
                 } catch (ArgumentException) { }
+
 
                 try {
                     File.Delete(this.FileName);
@@ -64,41 +81,48 @@ namespace VhdAttach {
                     return;
                 }
 
+
                 var diskSize = GetSizeInBytes();
                 if (drive != null) {
-                    if (drive.AvailableFreeSpace < diskSize) {
-                        if (Medo.MessageBox.ShowWarning(this, string.Format("There is not enough free space available!\nVirtual disk will require {0} while drive has only {1} free.\n\nDo you wish to continue?", BinaryPrefixExtensions.ToBinaryPrefixString(diskSize, "B", "0"), BinaryPrefixExtensions.ToBinaryPrefixString(drive.AvailableFreeSpace, "B", "0")), MessageBoxButtons.YesNo) == DialogResult.No) {
-                            return;
+                    if (drive.AvailableFreeSpace < diskSize) { //yes, no overhead is calculated in
+                        if (isTypeFixed) {
+                            if (Medo.MessageBox.ShowWarning(this, string.Format("There is not enough free space available!\nVirtual disk will require {0} while drive has only {1} free.\n\nDo you wish to continue?", BinaryPrefixExtensions.ToBinaryPrefixString(diskSize, "B", "0"), BinaryPrefixExtensions.ToBinaryPrefixString(drive.AvailableFreeSpace, "B", "0")), MessageBoxButtons.YesNo) == DialogResult.No) {
+                                return;
+                            }
+                        } else {
+                            if (Medo.MessageBox.ShowInformation(this, string.Format("This disk can expand to size larger than free space available at the moment.\nVirtual disk will require {0} while drive has only {1} free.\n\nDo you wish to continue?", BinaryPrefixExtensions.ToBinaryPrefixString(diskSize, "B", "0"), BinaryPrefixExtensions.ToBinaryPrefixString(drive.AvailableFreeSpace, "B", "0")), MessageBoxButtons.YesNo) == DialogResult.No) {
+                                return;
+                            }
                         }
                     }
-                    if (drive.DriveFormat.Equals("FAT32", StringComparison.OrdinalIgnoreCase)) {
+                    if (drive.DriveFormat.Equals("FAT32", StringComparison.OrdinalIgnoreCase) && (diskSize > int.MaxValue * 0.9)) { //just give warning if getting close to 2GB limit
                         if (Medo.MessageBox.ShowWarning(this, "Due to operating system limitations it will not be possible to create virtual disk larger than 2 GB.\n\nDo you wish to continue?", MessageBoxButtons.YesNo) == DialogResult.No) {
                             return;
                         }
                     }
                 }
 
+
                 try {
-                    if (radFixed.Checked) {
-                        using (var frm = new CreateFixedDiskForm(this.FileName, diskSize)) {
+                    if (isTypeFixed) {
+                        using (var frm = new CreateFixedDiskForm(this.FileName, diskSize, isFormatVhdX)) {
                             if (frm.ShowDialog(this) == DialogResult.Cancel) {
                                 return;
                             }
                         }
                     } else { //Dynamic
                         using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
-                            vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None);
+                            if (isFormatVhdX) {
+                                vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None, 0, 0, Medo.IO.VirtualDiskType.Vhdx);
+                            } else {
+                                vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None, 0, 0, Medo.IO.VirtualDiskType.Vhd);
+                            }
                         }
                     }
                 } catch (IOException ex) {
                     this.Cursor = Cursors.Default;
                     Medo.MessageBox.ShowError(this, "Virtual disk cannot be created.\n\n" + ex.Message);
                     return;
-                }
-
-                using (var form = new AttachForm(new FileInfo(this.FileName), false, true)) {
-                    form.StartPosition = FormStartPosition.CenterParent;
-                    form.ShowDialog(this);
                 }
 
                 this.DialogResult = DialogResult.OK;
@@ -197,7 +221,8 @@ namespace VhdAttach {
             Settings.LastSize = GetSizeInBytes(txtSize.Text, cmbSizeUnit.Text);
             Settings.LastSizeUnit = cmbSizeUnit.Text;
             Settings.LastSizeThousandBased = chbThousandSize.Checked;
-            Settings.LastSizeFixed = radFixed.Checked;
+            Settings.LastSizeFixed = radTypeFixed.Checked;
+            Settings.LastSizeVhdX = radFormatVhdX.Checked;
         }
 
 

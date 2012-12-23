@@ -14,6 +14,7 @@
 //2012-08-27: Added ERROR_FILE_SYSTEM_LIMITATION error.
 //2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
 //2012-12-14: Added VHDX support.
+//2012-12-22: Added VHDX creation.
 
 
 using System;
@@ -149,7 +150,7 @@ namespace Medo.IO {
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
@@ -159,102 +160,129 @@ namespace Medo.IO {
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Create(long size) {
-            Create(size, VirtualDiskCreateOptions.None, 0, 0, false);
+            Create(VirtualDiskType.AutoDetect, size, VirtualDiskCreateOptions.None, 0, 0, false);
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <param name="options">Options.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void Create(long size, VirtualDiskCreateOptions options) {
-            this.Create(size, options, 0, 0, false);
+            this.Create(VirtualDiskType.AutoDetect, size, options, 0, 0, false);
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <param name="options">Additional options.</param>
         /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
         /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
+        /// <param name="type">Type of disk to create.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
-        public void Create(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize) {
-            this.Create(size, options, blockSize, sectorSize, false);
+        public void Create(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize, VirtualDiskType type) {
+            this.Create(type, size, options, blockSize, sectorSize, false);
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void CreateAsync(long size) {
-            Create(size, VirtualDiskCreateOptions.None, 0, 0, true);
+            Create(VirtualDiskType.AutoDetect, size, VirtualDiskCreateOptions.None, 0, 0, true);
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <param name="options">Additional options.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void CreateAsync(long size, VirtualDiskCreateOptions options) {
-            this.Create(size, options, 0, 0, true);
+            this.Create(VirtualDiskType.AutoDetect, size, options, 0, 0, true);
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
         /// <param name="size">Size in bytes.</param>
         /// <param name="options">Additional options.</param>
         /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
         /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
         public void CreateAsync(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize) {
-            this.Create(size, options, blockSize, sectorSize, true);
+            this.Create(VirtualDiskType.AutoDetect, size, options, blockSize, sectorSize, true);
         }
 
         /// <summary>
-        /// Creates new virtual disk
+        /// Creates new virtual disk.
         /// </summary>
+        /// <param name="size">Size in bytes.</param>
+        /// <param name="options">Additional options.</param>
+        /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
+        /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
+        /// <param name="type">Type of disk to create.</param>
+        /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
+        /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
+        /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
+        /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
+        [SecurityPermission(SecurityAction.Demand)]
+        public void CreateAsync(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize, VirtualDiskType type) {
+            this.Create(type, size, options, blockSize, sectorSize, true);
+        }
+
+        /// <summary>
+        /// Creates new virtual disk.
+        /// </summary>
+        /// <param name="type">Type of disk to create.</param>
         /// <param name="size">Size in bytes.</param>
         /// <param name="options">Additional options.</param>
         /// <param name="blockSize">Block size in bytes. If value is 0, default is used.</param>
         /// <param name="sectorSize">Sector size in bytes. If value is 0, default is used.</param>
         /// <param name="createAsync">True if creation process is to be performed asynchronous.</param>
         /// <exception cref="System.ArgumentException">Invalid parameter.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
         /// <exception cref="System.IO.IOException">File already exists. -or- Virtual disk creation could not be completed due to a file system limitation.</exception>
         [SecurityPermission(SecurityAction.Demand)]
-        private void Create(long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize, bool createAsync) {
+        private void Create(VirtualDiskType type, long size, VirtualDiskCreateOptions options, int blockSize, int sectorSize, bool createAsync) {
             var parameters = new NativeMethods.CREATE_VIRTUAL_DISK_PARAMETERS();
             parameters.Version = NativeMethods.CREATE_VIRTUAL_DISK_VERSION.CREATE_VIRTUAL_DISK_VERSION_1;
             if (blockSize == 0) {
@@ -274,7 +302,24 @@ namespace Medo.IO {
             parameters.Version1.UniqueId = Guid.Empty;
 
             var storageType = new NativeMethods.VIRTUAL_STORAGE_TYPE();
-            storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+            switch (type) {
+                case VirtualDiskType.AutoDetect:
+                    if (this.FileName.EndsWith(".iso", StringComparison.OrdinalIgnoreCase)) {
+                        throw new InvalidOperationException("Cannot create iso file.");
+                    } else if (this.FileName.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase)) {
+                        storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                    } else {
+                        storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                    }
+                    break;
+                case VirtualDiskType.Vhd:
+                    storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                    break;
+                case VirtualDiskType.Vhdx:
+                    storageType.DeviceId = NativeMethods.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                    break;
+                case VirtualDiskType.Iso: throw new InvalidOperationException("Cannot create iso file.");
+            }
             storageType.VendorId = NativeMethods.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
 
             int res;
@@ -313,6 +358,7 @@ namespace Medo.IO {
         /// <summary>
         /// Returns progress for create operation.
         /// </summary>
+        /// <exception cref="System.InvalidOperationException">Cannot create iso file.</exception>
         /// <exception cref="System.ComponentModel.Win32Exception">Native error.</exception>
         /// <exception cref="System.IO.FileNotFoundException">File not found.</exception>
         /// <exception cref="System.IO.InvalidDataException">File type not recognized.</exception>
