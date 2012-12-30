@@ -14,6 +14,7 @@ namespace VhdAttach {
 
             erpError.SetIconAlignment(btnOK, ErrorIconAlignment.MiddleLeft);
             erpError.SetIconPadding(btnOK, SystemInformation.Border3DSize.Width);
+            radFormatVhdX.Enabled = ((Environment.OSVersion.Version.Major * 1000000 + Environment.OSVersion.Version.Minor) >= 6000002); //show if equal to or higher than Windows 8
         }
 
 
@@ -25,7 +26,7 @@ namespace VhdAttach {
             txtSize.Text = GetSizeText(Settings.LastSize, cmbSizeUnit.Text);
             chbThousandSize.Checked = Settings.LastSizeThousandBased;
             radTypeFixed.Checked = Settings.LastSizeFixed;
-            radFormatVhdX.Checked = Settings.LastSizeVhdX;
+            radFormatVhdX.Checked = radFormatVhdX.Enabled && Settings.LastSizeVhdX;
         }
 
 
