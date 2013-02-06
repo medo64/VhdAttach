@@ -5,7 +5,9 @@ SET     FILE_SOLUTION="..\Source\VhdAttach.sln"
 SET  FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.exe"
 SET       FILES_OTHER="..\Binaries\ReadMe.txt"
 
-SET         SIGN_TOOL="\Tools\SignTool\signtool.exe"
+SET      COMPILE_TOOL="%PROGRAMFILES(X86)%\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe"
+
+SET         SIGN_TOOL="%PROGRAMFILES%\Microsoft SDKs\Windows\v7.0\Bin\signtool.exe"
 SET         SIGN_HASH="EB41D6069805B20D87219E0757E07836FB763958"
 SET SIGN_TIMESTAMPURL="http://www.startssl.com/timestamp/"
 
@@ -14,7 +16,7 @@ ECHO --- BUILD SOLUTION
 ECHO.
 
 RMDIR /Q /S "..\Binaries" 2> NUL
-"%PROGRAMFILES(X86)%\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe" /Build "Release" %FILE_SOLUTION%
+%COMPILE_TOOL% /Build "Release" %FILE_SOLUTION%
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
 ECHO.
