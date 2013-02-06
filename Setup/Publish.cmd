@@ -1,11 +1,13 @@
 @ECHO OFF
 
-SET            FILE_SETUP=".\VhdAttach.iss"
-SET         FILE_SOLUTION="..\Source\VhdAttach.sln"
-SET      FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.exe"
-SET           FILES_OTHER="..\Binaries\ReadMe.txt"
-SET   CERTIFICATE_SUBJECT="Josip Medved"
-SET CERTIFICATE_TIMESTAMP=
+SET        FILE_SETUP=".\VhdAttach.iss"
+SET     FILE_SOLUTION="..\Source\VhdAttach.sln"
+SET  FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.exe"
+SET       FILES_OTHER="..\Binaries\ReadMe.txt"
+
+SET         SIGN_TOOL="\Tools\SignTool\signtool.exe"
+SET         SIGN_HASH="EB41D6069805B20D87219E0757E07836FB763958"
+SET SIGN_TIMESTAMPURL="http://www.startssl.com/timestamp/"
 
 
 ECHO --- BUILD SOLUTION
@@ -18,16 +20,25 @@ IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 ECHO.
 
 
-ECHO --- SIGN SOLUTION
-ECHO.
-
-IF [%CERTIFICATE_TIMESTAMP%]==[] (
-    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /v %FILES_EXECUTABLE%
+CERTUTIL -silent -verifystore -user My %SIGN_HASH% > NUL
+IF %ERRORLEVEL%==0 (
+    ECHO --- SIGN SOLUTION
+    ECHO.
+    
+    IF [%SIGN_TIMESTAMPURL%]==[] (
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /v %FILES_EXECUTABLE%
+    ) ELSE (
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /tr %SIGN_TIMESTAMPURL% /v %FILES_EXECUTABLE%
+    )
+    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 ) ELSE (
-    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /tr %CERTIFICATE_TIMESTAMP% /v %FILES_EXECUTABLE%
+    ECHO --- DID NOT SIGN SOLUTION
+    IF NOT [%SIGN_HASH%]==[] (
+        ECHO.
+        ECHO No certificate with hash %SIGN_HASH%.
+    ) 
 )
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
-
+ECHO.
 ECHO.
 
 
@@ -42,33 +53,39 @@ FOR /F %%I IN ('DIR ".\Temp\*.exe" /B') DO SET _SETUPEXE=%%I
 ECHO Setup is in file %_SETUPEXE%
 
 ECHO.
-
-
-ECHO --- SIGN SETUP
 ECHO.
 
-IF [%CERTIFICATE_TIMESTAMP%]==[] (
-    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /v ".\Temp\%_SETUPEXE%"
-) ELSE (
-    "\Tools\SignTool\signtool.exe" sign /s "My" /n %CERTIFICATE_SUBJECT% /tr %CERTIFICATE_TIMESTAMP% /v ".\Temp\%_SETUPEXE%"
-)
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
+CERTUTIL -silent -verifystore -user My %SIGN_HASH% > NUL
+IF %ERRORLEVEL%==0 (
+    ECHO --- SIGN SETUP
+    ECHO.
+    
+    IF [%SIGN_TIMESTAMPURL%]==[] (
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /v ".\Temp\%_SETUPEXE%"
+    ) ELSE (
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\%_SETUPEXE%"
+    )
+    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+) ELSE (
+    ECHO --- DID NOT SIGN SETUP
+)
+ECHO.
 ECHO.
 
 
 ECHO --- RELEASE
 ECHO.
 
-MOVE ".\Temp\*.*" "..\Releases\."
+MKDIR "..\Releases" 2> NUL
+MOVE ".\Temp\*.*" "..\Releases\." > NUL
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 RMDIR /Q /S ".\Temp"
 
 ECHO.
 
 
-ECHO.
-ECHO Done.
+ECHO --- DONE
 ECHO.
 
 PAUSE
