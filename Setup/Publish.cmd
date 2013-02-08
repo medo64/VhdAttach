@@ -6,8 +6,9 @@ SET  FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.
 SET       FILES_OTHER="..\Binaries\ReadMe.txt"
 
 SET      COMPILE_TOOL="%PROGRAMFILES(X86)%\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe"
+SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
-SET         SIGN_TOOL="%PROGRAMFILES%\Microsoft SDKs\Windows\v7.0\Bin\signtool.exe"
+SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
 SET         SIGN_HASH="EB41D6069805B20D87219E0757E07836FB763958"
 SET SIGN_TIMESTAMPURL="http://www.startssl.com/timestamp/"
 
@@ -48,7 +49,7 @@ ECHO --- BUILD SETUP
 ECHO.
 
 RMDIR /Q /S ".\Temp" 2> NUL
-CALL "%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe" /O".\Temp" %FILE_SETUP%
+CALL %SETUP_TOOL% /O".\Temp" %FILE_SETUP%
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
 FOR /F %%I IN ('DIR ".\Temp\*.exe" /B') DO SET _SETUPEXE=%%I
