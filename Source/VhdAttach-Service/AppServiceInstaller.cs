@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using Microsoft.Win32;
+using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
 using System.Diagnostics;
 using System.ServiceProcess;
 
 namespace VhdAttachService {
-    
+
     [RunInstaller(true)]
     public class AppServiceInstaller : Installer {
 
@@ -28,6 +29,11 @@ namespace VhdAttachService {
         protected override void OnCommitted(IDictionary savedState) {
             Debug.WriteLine("OnCommitted : Begin.");
             base.OnCommitted(savedState);
+
+            //delayed auto-start
+            var serviceKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\VhdAttach", true);
+            serviceKey.SetValue("DelayedAutostart", 1);
+
             using (ServiceController sc = new ServiceController(AppService.Instance.ServiceName)) {
                 Debug.WriteLine("OnCommitted : Service starting...");
                 sc.Start();
@@ -46,6 +52,11 @@ namespace VhdAttachService {
                 }
             }
             base.OnBeforeUninstall(savedState);
+
+            //remove delayed auto-start
+            var serviceKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\VhdAttach", true);
+            serviceKey.DeleteValue("DelayedAutostart");
+
             Debug.WriteLine("OnBeforeUninstall : End.");
         }
 
