@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using Medo.Extensions;
 using Medo.Localization.Croatia;
+using System.ComponentModel;
 
 namespace VhdAttach {
     internal partial class NewDiskForm : Form {
@@ -105,22 +106,26 @@ namespace VhdAttach {
 
 
                 try {
-                    if (isTypeFixed) {
-                        using (var frm = new CreateFixedDiskForm(this.FileName, diskSize, isFormatVhdX)) {
-                            if (frm.ShowDialog(this) == DialogResult.Cancel) {
-                                return;
+                    try {
+                        if (isTypeFixed) {
+                            using (var frm = new CreateFixedDiskForm(this.FileName, diskSize, isFormatVhdX)) {
+                                if (frm.ShowDialog(this) == DialogResult.Cancel) {
+                                    return;
+                                }
+                            }
+                        } else { //Dynamic
+                            using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
+                                if (isFormatVhdX) {
+                                    vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None, 0, 0, Medo.IO.VirtualDiskType.Vhdx);
+                                } else {
+                                    vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None, 0, 0, Medo.IO.VirtualDiskType.Vhd);
+                                }
                             }
                         }
-                    } else { //Dynamic
-                        using (var vhd = new Medo.IO.VirtualDisk(this.FileName)) {
-                            if (isFormatVhdX) {
-                                vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None, 0, 0, Medo.IO.VirtualDiskType.Vhdx);
-                            } else {
-                                vhd.Create(diskSize, Medo.IO.VirtualDiskCreateOptions.None, 0, 0, Medo.IO.VirtualDiskType.Vhd);
-                            }
-                        }
+                    } catch (Exception ex) {
+                        throw new InvalidOperationException(ex.Message, ex);
                     }
-                } catch (IOException ex) {
+                } catch (InvalidOperationException ex) {
                     this.Cursor = Cursors.Default;
                     Medo.MessageBox.ShowError(this, "Virtual disk cannot be created.\n\n" + ex.Message);
                     return;
