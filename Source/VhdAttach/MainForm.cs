@@ -184,7 +184,7 @@ namespace VhdAttach {
                         items.Add(new ListViewItem(new string[] { "Free space on " + di.Name, string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(di.AvailableFreeSpace, "B", "0"), di.AvailableFreeSpace) }) { Group = GroupFileSystem });
                     } catch { }
 
-                    document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo);
+                    document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo | Medo.IO.VirtualDiskAccessMask.Detach); //Workaround: The VirtualDiskAccessMask parameter must include the VIRTUAL_DISK_ACCESS_DETACH (0x00040000) flag.
                     string attachedDevice = null;
                     string[] attachedPaths = null;
                     try {
