@@ -836,9 +836,8 @@ namespace VhdAttach {
 
         private void staErrorServiceMissingText_Click(object sender, EventArgs e) {
             try {
-                var directory = (new FileInfo(Assembly.GetExecutingAssembly().Location)).DirectoryName;
-                Process.Start(Path.Combine(directory, "VhdAttachService.exe"), "/Install").WaitForExit();
-            } catch (Exception ex) {
+                Utility.ForceInstallService();
+            } catch (InvalidOperationException ex) {
                 Medo.MessageBox.ShowWarning(this, string.Format("Cannot install service.\n\n{0}", ex.Message));
             }
             CheckErrors();
@@ -846,9 +845,8 @@ namespace VhdAttach {
 
         private void staErrorServiceNotRunningText_Click(object sender, EventArgs e) {
             try {
-                var directory = (new FileInfo(Assembly.GetExecutingAssembly().Location)).DirectoryName;
-                Process.Start(Path.Combine(directory, "VhdAttachService.exe"), "/Start").WaitForExit();
-            } catch (Exception ex) {
+                Utility.ForceStartService();
+            } catch (InvalidOperationException ex) {
                 Medo.MessageBox.ShowWarning(this, string.Format("Cannot install service.\n\n{0}", ex.Message));
             }
             CheckErrors();

@@ -50,6 +50,7 @@ namespace VhdAttach {
                     iFile = this.Files[i];
                     bw.ReportProgress(-1, iFile.Name);
 
+                    Utility.FixServiceErrorsIfNeeded();
                     var res = PipeClient.Attach(iFile.FullName, this.MountReadOnly, this.InitializeDisk);
                     if (res.IsError) {
                         this._exceptions.Add(new InvalidOperationException(iFile.Name, new Exception(res.Message)));

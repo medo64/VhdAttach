@@ -40,6 +40,7 @@ namespace VhdAttach {
                     iDirectory = new DirectoryInfo(this._files[i].FullName);
                     bw.ReportProgress(-1, iDirectory.Name);
 
+                    Utility.FixServiceErrorsIfNeeded();
                     var res = PipeClient.DetachDrive(iDirectory.FullName);
                     if (res.IsError) {
                         this._exceptions.Add(new InvalidOperationException(iDirectory.Name, new Exception(res.Message)));
