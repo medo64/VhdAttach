@@ -11,7 +11,7 @@ AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppPublisher={#AppCompany}
-AppPublisherURL=http://www.jmedved.com/{#AppBase}/
+AppPublisherURL=http://jmedved.com/{#AppBase}/
 AppCopyright={#AppCopyright}
 VersionInfoProductVersion={#AppVersion}
 VersionInfoProductTextVersion={#AppVersion}
@@ -34,6 +34,12 @@ ShowLanguageDialog=no
 SolidCompression=yes
 ChangesAssociations=yes
 DisableWelcomePage=yes
+
+
+[Messages]
+SetupAppTitle=Setup {#AppName} {#AppVersion}
+SetupWindowTitle=Setup {#AppName} {#AppVersion}
+BeveledLabel=jmedved.com
 
 
 [Files]
