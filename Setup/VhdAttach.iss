@@ -5,6 +5,7 @@
 #define AppCopyright   GetStringFileInfo('..\Binaries\VhdAttach.exe', 'LegalCopyright')
 #define AppBase        LowerCase(StringChange(AppName, ' ', ''))
 #define AppSetupFile   AppBase + StringChange(AppVersion, '.', '')
+#define AppVersionEx   StringChange(AppVersion, '0.00', '(latest)')
 
 [Setup]
 AppName={#AppName}
@@ -37,8 +38,8 @@ DisableWelcomePage=yes
 
 
 [Messages]
-SetupAppTitle=Setup {#AppName} {#AppVersion}
-SetupWindowTitle=Setup {#AppName} {#AppVersion}
+SetupAppTitle=Setup {#AppName} {#AppVersionEx}
+SetupWindowTitle=Setup {#AppName} {#AppVersionEx}
 BeveledLabel=jmedved.com
 
 
