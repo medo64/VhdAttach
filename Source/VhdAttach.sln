@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach", "VhdAttach\VhdAttach.csproj", "{523842B0-C6A8-4126-B9DE-0D9D814F838E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VhdAttach-Service", "VhdAttach-Service\VhdAttach-Service.csproj", "{6FACC55B-3441-4A4E-885B-269D82820F9E}"
