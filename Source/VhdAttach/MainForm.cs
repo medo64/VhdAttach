@@ -80,8 +80,12 @@ namespace VhdAttach {
                     mnuDetach.PerformClick();
                     return true;
 
-                case Keys.Alt | Keys.T:
-                    mnuTools.PerformClick();
+                case Keys.Alt | Keys.M:
+                    if (mnuAutomount.Enabled) { mnuAutomount.ShowDropDown(); }
+                    return true;
+
+                case Keys.Alt | Keys.L:
+                    if (mnuDrive.Enabled) { mnuDrive.ShowDropDown(); }
                     return true;
 
                 case Keys.F1:
@@ -162,8 +166,9 @@ namespace VhdAttach {
                 mnuAttach.Enabled = false;
                 mnuDetach.Enabled = false;
                 mnuAutomount.Enabled = false;
-                mnuTools.Enabled = false;
+                mnuDrive.Enabled = false;
                 mnuAutomount_DropDownOpening(null, null);
+                mnuDrive_DropDownOpening(null, null);
                 return;
             }
 
@@ -320,8 +325,9 @@ namespace VhdAttach {
                     mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
                     mnuDetach.Enabled = !mnuAttach.Enabled;
                     mnuAutomount.Enabled = true;
-                    mnuTools.Enabled = true;
+                    mnuDrive.Enabled = true;
                     mnuAutomount_DropDownOpening(null, null);
+                    mnuDrive_DropDownOpening(null, null);
 
                     list.BeginUpdate();
                     list.Items.Clear();
@@ -578,8 +584,9 @@ namespace VhdAttach {
             }
         }
 
-        private void mnuTools_DropDownOpening(object sender, EventArgs e) {
-            mnuTools.DropDownItems.Clear();
+
+        private void mnuDrive_DropDownOpening(object sender, EventArgs e) {
+            string newMenuTitle = null;
 
             string attachedDevice = null;
             try {
@@ -588,6 +595,11 @@ namespace VhdAttach {
                     attachedDevice = document.GetAttachedPath();
                 }
             } catch { }
+
+            mnuDrive.Tag = null;
+            mnuDrive.Text = "Drive";
+            mnuDrive.DropDownItems.Clear();
+
             if (attachedDevice != null) {
                 var volumes = new List<Volume>(Volume.GetVolumesOnPhysicalDrive(attachedDevice));
                 var availableVolumes = new List<Volume>();
@@ -599,42 +611,67 @@ namespace VhdAttach {
 
                 if (availableVolumes.Count > 0) {
                     foreach (var volume in availableVolumes) {
-                        mnuTools.DropDownItems.Add(new ToolStripMenuItem("Open " + volume.DriveLetter3, null, mnuOpenDriveLetter_Click) { Tag = volume });
+                        mnuDrive.DropDownItems.Add(new ToolStripMenuItem("Open " + volume.DriveLetter3, null, mnuDriveOpen_Click) { Tag = volume });
+                        if (newMenuTitle == null) {
+                            mnuDrive.Tag = volume;
+                            newMenuTitle = volume.DriveLetter3;
+                        }
                     }
                 }
 
                 if (volumes.Count > 0) {
-                    mnuTools.DropDownItems.Add(new ToolStripSeparator());
+                    if (mnuDrive.DropDownItems.Count > 0) {
+                        mnuDrive.DropDownItems.Add(new ToolStripSeparator());
+                    }
                     foreach (var volume in volumes) {
                         if (volume.DriveLetter2 != null) {
-                            mnuTools.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter2, null, mnuChangeDriveLetter_Click) { Tag = volume });
+                            mnuDrive.DropDownItems.Add(new ToolStripMenuItem("Change drive letter " + volume.DriveLetter2, null, mnuDriveLetter_Click) { Tag = volume });
                         } else {
-                            mnuTools.DropDownItems.Add(new ToolStripMenuItem("Add drive letter", null, mnuChangeDriveLetter_Click) { Tag = volume });
+                            if (mnuDrive.Tag == null) { mnuDrive.Tag = volume; }
+                            mnuDrive.DropDownItems.Add(new ToolStripMenuItem("Add drive letter", null, mnuDriveLetter_Click) { Tag = volume });
                         }
                     }
                 }
             }
+
+            if (newMenuTitle == null) { newMenuTitle = "Drive"; }
+            mnuDrive.Text = newMenuTitle;
+
+            mnuDrive.Enabled = (mnuDrive.DropDownItems.Count > 0);
         }
 
-
-        private void mnuOpenDriveLetter_Click(object sender, EventArgs e) {
-            var volume = (Volume)(((ToolStripMenuItem)sender).Tag);
-            var drive = new DriveInfo(volume.DriveLetter3);
-            if (drive.IsReady) {
-                Process.Start(volume.DriveLetter3);
-            } else {
-                Process.Start("explorer.exe", "/select," + volume.DriveLetter3);
+        private void mnuDrive_ButtonClick(object sender, EventArgs e) {
+            var volume = ((ToolStripDropDownItem)sender).Tag as Volume;
+            if (volume != null) {
+                if (volume.DriveLetter2 != null) {
+                    mnuDriveOpen_Click(sender, e);
+                } else {
+                    mnuDriveLetter_Click(sender, e);
+                }
             }
         }
 
-        private void mnuChangeDriveLetter_Click(object sender, EventArgs e) {
-            var volume = (Volume)(((ToolStripMenuItem)sender).Tag);
+        private void mnuDriveOpen_Click(object sender, EventArgs e) {
+            var volume = ((ToolStripDropDownItem)sender).Tag as Volume;
+            if (volume != null) {
+                var drive = new DriveInfo(volume.DriveLetter3);
+                if (drive.IsReady) {
+                    Process.Start(volume.DriveLetter3);
+                } else {
+                    Process.Start("explorer.exe", "/select," + volume.DriveLetter3);
+                }
+            }
+        }
+
+        private void mnuDriveLetter_Click(object sender, EventArgs e) {
+            var volume = ((ToolStripDropDownItem)sender).Tag as Volume;
             using (var frm = new ChangeDriveLetterForm(volume)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     UpdateData(this.VhdFileName);
                 }
             }
         }
+
 
         private void mnuOptions_Click(object sender, EventArgs e) {
             using (var form = new SettingsForm()) {

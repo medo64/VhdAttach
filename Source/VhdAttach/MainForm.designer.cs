@@ -57,7 +57,7 @@ namespace VhdAttach {
             this.mnuAutomountReadonly = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAutomountDisable = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuTools = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mnuDrive = new System.Windows.Forms.ToolStripSplitButton();
             this.staErrorStolenExtension = new System.Windows.Forms.StatusStrip();
             this.staErrorStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
             this.staErrorServiceMissing = new System.Windows.Forms.StatusStrip();
@@ -85,7 +85,7 @@ namespace VhdAttach {
             this.list.HideSelection = false;
             this.list.Location = new System.Drawing.Point(0, 27);
             this.list.Name = "list";
-            this.list.Size = new System.Drawing.Size(622, 368);
+            this.list.Size = new System.Drawing.Size(602, 368);
             this.list.TabIndex = 2;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
@@ -294,11 +294,11 @@ namespace VhdAttach {
             this.toolStripSeparator5,
             this.mnuAutomount,
             this.toolStripSeparator2,
-            this.mnuTools});
+            this.mnuDrive});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.mnu.Size = new System.Drawing.Size(622, 27);
+            this.mnu.Size = new System.Drawing.Size(602, 27);
             this.mnu.Stretch = true;
             this.mnu.TabIndex = 1;
             // 
@@ -353,15 +353,17 @@ namespace VhdAttach {
             this.mnuAutomountDisable.Text = "Do not auto-mount";
             this.mnuAutomountDisable.Click += new System.EventHandler(this.mnuAutomountStop_Click);
             // 
-            // mnuTools
+            // mnuDrive
             // 
-            this.mnuTools.Enabled = false;
-            this.mnuTools.Image = ((System.Drawing.Image)(resources.GetObject("mnuTools.Image")));
-            this.mnuTools.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnuTools.Name = "mnuTools";
-            this.mnuTools.Size = new System.Drawing.Size(74, 24);
-            this.mnuTools.Text = "Tools";
-            this.mnuTools.DropDownOpening += new System.EventHandler(this.mnuTools_DropDownOpening);
+            this.mnuDrive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.mnuDrive.Enabled = false;
+            this.mnuDrive.Image = ((System.Drawing.Image)(resources.GetObject("mnuDrive.Image")));
+            this.mnuDrive.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuDrive.Name = "mnuDrive";
+            this.mnuDrive.Size = new System.Drawing.Size(60, 24);
+            this.mnuDrive.Text = "Drive";
+            this.mnuDrive.ButtonClick += new System.EventHandler(this.mnuDrive_ButtonClick);
+            this.mnuDrive.DropDownOpening += new System.EventHandler(this.mnuDrive_DropDownOpening);
             // 
             // staErrorStolenExtension
             // 
@@ -430,7 +432,7 @@ namespace VhdAttach {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(622, 395);
+            this.ClientSize = new System.Drawing.Size(602, 395);
             this.Controls.Add(this.list);
             this.Controls.Add(this.staErrorServiceMissing);
             this.Controls.Add(this.staErrorServiceNotRunning);
@@ -492,13 +494,13 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripStatusLabel staErrorServiceMissingText;
         private System.Windows.Forms.StatusStrip staErrorServiceNotRunning;
         private System.Windows.Forms.ToolStripStatusLabel staErrorServiceNotRunningText;
-        private System.Windows.Forms.ToolStripDropDownButton mnuTools;
         private System.Windows.Forms.ToolStripDropDownButton mnuAutomount;
         private System.Windows.Forms.ToolStripMenuItem mnuAutomountNormal;
         private System.Windows.Forms.ToolStripMenuItem mnuAutomountReadonly;
         private System.Windows.Forms.ToolStripMenuItem mnuAutomountDisable;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripSplitButton mnuDrive;
     }
 }
 
