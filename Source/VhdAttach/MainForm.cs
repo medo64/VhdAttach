@@ -1,3 +1,5 @@
+using Medo.Extensions;
+using Medo.Localization.Croatia;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,8 +13,6 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Medo.Extensions;
-using Medo.Localization.Croatia;
 using VhdAttachCommon;
 using VirtualHardDiskImage;
 
@@ -161,7 +161,9 @@ namespace VhdAttach {
                 list.Groups.Clear();
                 mnuAttach.Enabled = false;
                 mnuDetach.Enabled = false;
+                mnuAutomount.Enabled = false;
                 mnuTools.Enabled = false;
+                mnuAutomount_DropDownOpening(null, null);
                 return;
             }
 
@@ -317,16 +319,9 @@ namespace VhdAttach {
 
                     mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
                     mnuDetach.Enabled = !mnuAttach.Enabled;
+                    mnuAutomount.Enabled = true;
                     mnuTools.Enabled = true;
-
-                    bool isAutoMount = false;
-                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(document.FileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
-                            isAutoMount = true;
-                            break;
-                        }
-                    }
-                    mnuAutoMount.Checked = isAutoMount;
+                    mnuAutomount_DropDownOpening(null, null);
 
                     list.BeginUpdate();
                     list.Items.Clear();
@@ -511,19 +506,80 @@ namespace VhdAttach {
         }
 
 
-        private void mnuTools_DropDownOpening(object sender, EventArgs e) {
-            bool isAutoMount = false;
+        private void mnuAutomount_DropDownOpening(object sender, EventArgs e) {
+            bool isAutoMountNormal = false;
+            bool isAutoMountReadonly = false;
             foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
                 if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
-                    isAutoMount = true;
+                    isAutoMountNormal = !fwo.ReadOnly;
+                    isAutoMountReadonly = fwo.ReadOnly;
                     break;
                 }
             }
-            mnuAutoMount.Checked = isAutoMount;
 
-            for (int i = mnuTools.DropDownItems.Count - 1; i >= 1; i--) { //remove old drive letters
-                mnuTools.DropDownItems.RemoveAt(i);
+            mnuAutomountNormal.Enabled = !isAutoMountNormal;
+            mnuAutomountReadonly.Enabled = !isAutoMountReadonly;
+            mnuAutomountDisable.Enabled = isAutoMountNormal | isAutoMountReadonly;
+
+            if (this.VhdFileName == null) {
+                mnuAutomount.Text = "Auto-mount";
+                mnuAutomount.Image = mnuAutomountDisable.Image;
+            } else if (isAutoMountNormal) {
+                mnuAutomount.Text = "Auto-mounted";
+                mnuAutomount.Image = mnuAutomountNormal.Image;
+            } else if (isAutoMountReadonly) {
+                mnuAutomount.Text = "Auto-mounted";
+                mnuAutomount.Image = mnuAutomountReadonly.Image;
+            } else {
+                mnuAutomount.Text = "Not auto-mounted";
+                mnuAutomount.Image = mnuAutomountDisable.Image;
             }
+        }
+
+        private void mnuAutomountNormal_Click(object sender, EventArgs e) {
+            var list = new FileWithOptionsCollection(ServiceSettings.AutoAttachVhdList);
+            list.Remove(this.VhdFileName);
+            list.Add(new FileWithOptions(this.VhdFileName));
+            SaveAutomountSettings(list);
+            mnuAutomount_DropDownOpening(null, null);
+        }
+
+        private void mnuAutomountReadonly_Click(object sender, EventArgs e) {
+            var list = new FileWithOptionsCollection(ServiceSettings.AutoAttachVhdList);
+            list.Remove(this.VhdFileName);
+            list.Add(new FileWithOptions(this.VhdFileName) { ReadOnly = true });
+            SaveAutomountSettings(list);
+            mnuAutomount_DropDownOpening(null, null);
+        }
+
+        private void mnuAutomountStop_Click(object sender, EventArgs e) {
+            var list = new FileWithOptionsCollection(ServiceSettings.AutoAttachVhdList);
+            list.Remove(this.VhdFileName);
+            SaveAutomountSettings(list);
+            mnuAutomount_DropDownOpening(null, null);
+        }
+
+        private void SaveAutomountSettings(IEnumerable<FileWithOptions> files) {
+            try {
+                this.Cursor = Cursors.WaitCursor;
+
+                var vhds = new List<string>();
+                foreach (FileWithOptions file in files) {
+                    vhds.Add(file.ToString());
+                }
+                var resAA = PipeClient.WriteAutoAttachSettings(vhds.ToArray());
+                if (resAA.IsError) {
+                    Medo.MessageBox.ShowError(this, resAA.Message);
+                }
+            } catch (IOException ex) {
+                Messages.ShowServiceIOException(this, ex);
+            } finally {
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        private void mnuTools_DropDownOpening(object sender, EventArgs e) {
+            mnuTools.DropDownItems.Clear();
 
             string attachedDevice = null;
             try {
@@ -542,7 +598,6 @@ namespace VhdAttach {
                 }
 
                 if (availableVolumes.Count > 0) {
-                    mnuTools.DropDownItems.Add(new ToolStripSeparator());
                     foreach (var volume in availableVolumes) {
                         mnuTools.DropDownItems.Add(new ToolStripMenuItem("Open " + volume.DriveLetter3, null, mnuOpenDriveLetter_Click) { Tag = volume });
                     }
@@ -561,56 +616,6 @@ namespace VhdAttach {
             }
         }
 
-
-        private bool doNotUpdateAutoMountChecked = false;
-
-        private void mnuAutoMount_Click(object sender, EventArgs e) {
-            if (doNotUpdateAutoMountChecked) { return; }
-            var newState = !mnuAutoMount.Checked;
-
-            try {
-                this.Cursor = Cursors.WaitCursor;
-                var vhds = new List<string>();
-                if (newState) { //add if possible
-                    bool isIn = false;
-                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
-                        vhds.Add(fwo.FileName);
-                        if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
-                            isIn = true;
-                        }
-                    }
-                    if (isIn == false) {
-                        vhds.Add(this.VhdFileName);
-                    }
-                } else { //remove if exists
-                    foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
-                        if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) != 0) {
-                            vhds.Add(fwo.FileName);
-                        }
-                    }
-                }
-                var res = PipeClient.WriteAutoAttachSettings(vhds.ToArray());
-                if (res.IsError) {
-                    Medo.MessageBox.ShowError(this, res.Message);
-                }
-            } catch (IOException ex) {
-                Messages.ShowServiceIOException(this, ex);
-            } finally {
-                this.Cursor = Cursors.Default;
-
-                bool isAutoMount = false;
-                foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
-                    if (string.Compare(this.VhdFileName, fwo.FileName, StringComparison.OrdinalIgnoreCase) == 0) {
-                        isAutoMount = true;
-                        break;
-                    }
-                }
-
-                doNotUpdateAutoMountChecked = true;
-                mnuAutoMount.Checked = isAutoMount;
-                doNotUpdateAutoMountChecked = false;
-            }
-        }
 
         private void mnuOpenDriveLetter_Click(object sender, EventArgs e) {
             var volume = (Volume)(((ToolStripMenuItem)sender).Tag);
