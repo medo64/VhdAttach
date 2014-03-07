@@ -50,6 +50,12 @@ namespace VhdAttach {
             get { return 1024 * 1024; }
         }
 
+
+        public static double ScaleFactor {
+            get { return Medo.Configuration.Settings.Read("ScaleFactor", 0.0); }
+            set { Medo.Configuration.Settings.Write("ScaleFactor", 0.0); }
+        }
+
     }
 
 }
