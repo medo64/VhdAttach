@@ -52,11 +52,6 @@ namespace VhdAttach {
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuAutomount = new System.Windows.Forms.ToolStripDropDownButton();
-            this.mnuAutomountNormal = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAutomountReadonly = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuAutomountDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDrive = new System.Windows.Forms.ToolStripSplitButton();
             this.staErrorStolenExtension = new System.Windows.Forms.StatusStrip();
             this.staErrorStolenExtensionText = new System.Windows.Forms.ToolStripStatusLabel();
@@ -64,6 +59,11 @@ namespace VhdAttach {
             this.staErrorServiceMissingText = new System.Windows.Forms.ToolStripStatusLabel();
             this.staErrorServiceNotRunning = new System.Windows.Forms.StatusStrip();
             this.staErrorServiceNotRunningText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mnuAutomount = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuAutomountNormal = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAutomountReadonly = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuAutomountDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxList.SuspendLayout();
             this.mnu.SuspendLayout();
             this.staErrorStolenExtension.SuspendLayout();
@@ -312,47 +312,6 @@ namespace VhdAttach {
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 27);
             // 
-            // mnuAutomount
-            // 
-            this.mnuAutomount.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuAutomountNormal,
-            this.mnuAutomountReadonly,
-            this.toolStripMenuItem2,
-            this.mnuAutomountDisable});
-            this.mnuAutomount.Enabled = false;
-            this.mnuAutomount.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnuAutomount.Name = "mnuAutomount";
-            this.mnuAutomount.Size = new System.Drawing.Size(103, 24);
-            this.mnuAutomount.Text = "Auto-mount";
-            this.mnuAutomount.DropDownOpening += new System.EventHandler(this.mnuAutomount_DropDownOpening);
-            // 
-            // mnuAutomountNormal
-            // 
-            this.mnuAutomountNormal.Name = "mnuAutomountNormal";
-            this.mnuAutomountNormal.Size = new System.Drawing.Size(227, 24);
-            this.mnuAutomountNormal.Text = "Auto-mount";
-            this.mnuAutomountNormal.Click += new System.EventHandler(this.mnuAutomountNormal_Click);
-            // 
-            // mnuAutomountReadonly
-            // 
-            this.mnuAutomountReadonly.Image = ((System.Drawing.Image)(resources.GetObject("mnuAutomountReadonly.Image")));
-            this.mnuAutomountReadonly.Name = "mnuAutomountReadonly";
-            this.mnuAutomountReadonly.Size = new System.Drawing.Size(227, 24);
-            this.mnuAutomountReadonly.Text = "Auto-mount read-only";
-            this.mnuAutomountReadonly.Click += new System.EventHandler(this.mnuAutomountReadonly_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(224, 6);
-            // 
-            // mnuAutomountDisable
-            // 
-            this.mnuAutomountDisable.Name = "mnuAutomountDisable";
-            this.mnuAutomountDisable.Size = new System.Drawing.Size(227, 24);
-            this.mnuAutomountDisable.Text = "Do not auto-mount";
-            this.mnuAutomountDisable.Click += new System.EventHandler(this.mnuAutomountStop_Click);
-            // 
             // mnuDrive
             // 
             this.mnuDrive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -428,6 +387,48 @@ namespace VhdAttach {
             this.staErrorServiceNotRunningText.Text = "Service is not running. Click to start.";
             this.staErrorServiceNotRunningText.Click += new System.EventHandler(this.staErrorServiceNotRunningText_Click);
             // 
+            // mnuAutomount
+            // 
+            this.mnuAutomount.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuAutomountNormal,
+            this.mnuAutomountReadonly,
+            this.toolStripMenuItem2,
+            this.mnuAutomountDisable});
+            this.mnuAutomount.Enabled = false;
+            this.mnuAutomount.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuAutomount.Name = "mnuAutomount";
+            this.mnuAutomount.Size = new System.Drawing.Size(106, 24);
+            this.mnuAutomount.Text = "Auto-mount";
+            this.mnuAutomount.ButtonClick += new System.EventHandler(this.mnuAutomount_ButtonClick);
+            this.mnuAutomount.DropDownOpening += new System.EventHandler(this.mnuAutomount_DropDownOpening);
+            // 
+            // mnuAutomountNormal
+            // 
+            this.mnuAutomountNormal.Name = "mnuAutomountNormal";
+            this.mnuAutomountNormal.Size = new System.Drawing.Size(227, 24);
+            this.mnuAutomountNormal.Text = "Auto-mount";
+            this.mnuAutomountNormal.Click += new System.EventHandler(this.mnuAutomountNormal_Click);
+            // 
+            // mnuAutomountReadonly
+            // 
+            this.mnuAutomountReadonly.Image = ((System.Drawing.Image)(resources.GetObject("mnuAutomountReadonly.Image")));
+            this.mnuAutomountReadonly.Name = "mnuAutomountReadonly";
+            this.mnuAutomountReadonly.Size = new System.Drawing.Size(227, 24);
+            this.mnuAutomountReadonly.Text = "Auto-mount read-only";
+            this.mnuAutomountReadonly.Click += new System.EventHandler(this.mnuAutomountReadonly_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(224, 6);
+            // 
+            // mnuAutomountDisable
+            // 
+            this.mnuAutomountDisable.Name = "mnuAutomountDisable";
+            this.mnuAutomountDisable.Size = new System.Drawing.Size(227, 24);
+            this.mnuAutomountDisable.Text = "Do not auto-mount";
+            this.mnuAutomountDisable.Click += new System.EventHandler(this.mnuAutomountDisable_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -494,13 +495,13 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripStatusLabel staErrorServiceMissingText;
         private System.Windows.Forms.StatusStrip staErrorServiceNotRunning;
         private System.Windows.Forms.ToolStripStatusLabel staErrorServiceNotRunningText;
-        private System.Windows.Forms.ToolStripDropDownButton mnuAutomount;
-        private System.Windows.Forms.ToolStripMenuItem mnuAutomountNormal;
-        private System.Windows.Forms.ToolStripMenuItem mnuAutomountReadonly;
-        private System.Windows.Forms.ToolStripMenuItem mnuAutomountDisable;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSplitButton mnuDrive;
+        private System.Windows.Forms.ToolStripSplitButton mnuAutomount;
+        private System.Windows.Forms.ToolStripMenuItem mnuAutomountNormal;
+        private System.Windows.Forms.ToolStripMenuItem mnuAutomountReadonly;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem mnuAutomountDisable;
     }
 }
 

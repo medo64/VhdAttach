@@ -528,17 +528,33 @@ namespace VhdAttach {
             mnuAutomountDisable.Enabled = isAutoMountNormal | isAutoMountReadonly;
 
             if (this.VhdFileName == null) {
+                mnuAutomount.Tag = null;
                 mnuAutomount.Text = "Auto-mount";
                 mnuAutomount.Image = mnuAutomountDisable.Image;
             } else if (isAutoMountNormal) {
+                mnuAutomount.Tag = true;
                 mnuAutomount.Text = "Auto-mounted";
                 mnuAutomount.Image = mnuAutomountNormal.Image;
             } else if (isAutoMountReadonly) {
+                mnuAutomount.Tag = true;
                 mnuAutomount.Text = "Auto-mounted";
                 mnuAutomount.Image = mnuAutomountReadonly.Image;
             } else {
+                mnuAutomount.Tag = false;
                 mnuAutomount.Text = "Not auto-mounted";
                 mnuAutomount.Image = mnuAutomountDisable.Image;
+            }
+        }
+
+        private void mnuAutomount_ButtonClick(object sender, EventArgs e) {
+            var senderObject = ((ToolStripDropDownItem)sender).Tag as object;
+            if (senderObject != null) {
+                var isMounted = (bool)senderObject;
+                if (isMounted) {
+                    mnuAutomountDisable_Click(null, null);
+                } else {
+                    mnuAutomountNormal_Click(null, null);
+                }
             }
         }
 
@@ -558,7 +574,7 @@ namespace VhdAttach {
             mnuAutomount_DropDownOpening(null, null);
         }
 
-        private void mnuAutomountStop_Click(object sender, EventArgs e) {
+        private void mnuAutomountDisable_Click(object sender, EventArgs e) {
             var list = new FileWithOptionsCollection(ServiceSettings.AutoAttachVhdList);
             list.Remove(this.VhdFileName);
             SaveAutomountSettings(list);
