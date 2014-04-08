@@ -35,6 +35,7 @@ ShowLanguageDialog=no
 SolidCompression=yes
 ChangesAssociations=yes
 DisableWelcomePage=yes
+LicenseFile=..\Setup\License.txt
 
 
 [Messages]
