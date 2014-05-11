@@ -99,6 +99,7 @@
     <Compile Include="ChangeDriveLetterForm.Designer.cs">
       <DependentUpon>ChangeDriveLetterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CommandLineAddon.cs" />
     <Compile Include="FileWithOptionsCollection.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="PathFromDevice.cs" />
