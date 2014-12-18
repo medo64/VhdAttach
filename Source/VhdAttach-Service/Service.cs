@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -42,24 +43,7 @@ namespace VhdAttachService {
 
         private static void Run() {
             try {
-
-                foreach (var fwo in ServiceSettings.AutoAttachVhdList) {
-                    try {
-                        var access = Medo.IO.VirtualDiskAccessMask.All;
-                        var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
-                        if (fwo.ReadOnly) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
-                        if (fwo.NoDriveLetter) { options |= Medo.IO.VirtualDiskAttachOptions.NoDriveLetter; }
-                        var fileName = fwo.FileName;
-                        using (var disk = new Medo.IO.VirtualDisk(fileName)) {
-                            disk.Open(access);
-                            disk.Attach(options);
-                        }
-                        Thread.Sleep(1000);
-                    } catch (Exception ex) {
-                        Trace.TraceError("E: Cannot attach file \"" + fwo.FileName + "\". " + ex.Message);
-                    }
-                }
-
+                ThreadPool.QueueUserWorkItem(new WaitCallback(RunAttachAutomatics));
 
                 try {
                     PipeServer.Start();
@@ -84,6 +68,38 @@ namespace VhdAttachService {
 
             } catch (ThreadAbortException) {
                 Debug.WriteLine("AppServiceThread.Run: Thread aborted.");
+            }
+        }
+
+        private static void RunAttachAutomatics(Object stateInfo) {
+            var todoList = new List<FileWithOptions>(ServiceSettings.AutoAttachVhdList);
+            var failedList = new List<FileWithOptions>();
+
+            AttachAutomatics(todoList, failedList);
+            if (failedList.Count > 0) {
+                Thread.Sleep(1000); //give it a bit more time
+                AttachAutomatics(failedList, null);
+            }
+        }
+
+        private static void AttachAutomatics(List<FileWithOptions> todoList, List<FileWithOptions> failedList) {
+            foreach (var fwo in todoList) {
+                try {
+                    Thread.Sleep(1000); //a bit of breather
+                    var access = Medo.IO.VirtualDiskAccessMask.All;
+                    var options = Medo.IO.VirtualDiskAttachOptions.PermanentLifetime;
+                    if (fwo.ReadOnly) { options |= Medo.IO.VirtualDiskAttachOptions.ReadOnly; }
+                    if (fwo.NoDriveLetter) { options |= Medo.IO.VirtualDiskAttachOptions.NoDriveLetter; }
+                    var fileName = fwo.FileName;
+                    using (var disk = new Medo.IO.VirtualDisk(fileName)) {
+                        disk.Open(access);
+                        disk.Attach(options);
+                    }
+                } catch (Exception ex) {
+                    if (failedList != null) { failedList.Add(fwo); }
+                    Trace.TraceError("E: Cannot attach file \"" + fwo.FileName + "\". " + ex.Message);
+                    Medo.Diagnostics.ErrorReport.SaveToTemp(ex, fwo.FileName);
+                }
             }
         }
 
