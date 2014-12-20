@@ -863,6 +863,40 @@ namespace VhdAttach {
         }
 
 
+        private void tmrUpdateMenu_Tick(object sender, EventArgs e) {
+#if DEBUG
+            var sw = Stopwatch.StartNew();
+#endif
+            if (this.VhdFileName == null) {
+                mnuAttach.Enabled = false;
+                mnuDetach.Enabled = false;
+                mnuAutomount.Enabled = false;
+                mnuDrive.Enabled = false;
+                return;
+            }
+
+            try {
+                if (!File.Exists(this.VhdFileName)) { return; }
+                using (var document = new Medo.IO.VirtualDisk(this.VhdFileName)) {
+                    document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo | Medo.IO.VirtualDiskAccessMask.Detach); //Workaround: The VirtualDiskAccessMask parameter must include the VIRTUAL_DISK_ACCESS_DETACH (0x00040000) flag.
+                    string attachedDevice = null;
+                    try {
+                        attachedDevice = document.GetAttachedPath();
+                    } catch { }
+
+                    mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
+                    mnuDetach.Enabled = !mnuAttach.Enabled;
+                    mnuAutomount.Enabled = true;
+                    mnuDrive.Enabled = true;
+                }
+            } catch { }
+#if DEBUG
+            sw.Stop();
+            Debug.WriteLine("VhdAttach: Menu update in " + sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture) + " milliseconds.");
+#endif
+        }
+
+
         private static class NativeMethods {
 
             [DllImportAttribute("user32.dll", EntryPoint = "AllowSetForegroundWindow")]
