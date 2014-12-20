@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -60,7 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="%28Medo%29\AboutBox [013].cs" />
+    <Compile Include="%28Medo%29\AboutBox [014].cs" />
     <Compile Include="%28Medo%29\Args [002].cs" />
     <Compile Include="%28Medo%29\BinaryPrefixExtensions [002x].cs" />
     <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
@@ -163,9 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
-    <Content Include="ReadMe.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AttachForm.resx">

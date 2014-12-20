@@ -1,6 +1,12 @@
 VHD Attach
 ==========
 
+This is small tool that adds Attach and Detach option to contextual (aka
+right-click) menu of the Virtual disk (vhd) files. That enables those
+operations to be done without trip to Disk Management console and allows for
+automatic disk attachment during sysstem startup.
+
+
 Shortcut Keys
 -------------
 
@@ -42,7 +48,7 @@ so, subject to the following conditions:
 
   * The above copyright notice and this permission notice shall be included in
     all copies or substantial portions of the Software.
-        
+
   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
