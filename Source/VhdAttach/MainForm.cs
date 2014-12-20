@@ -174,6 +174,7 @@ namespace VhdAttach {
             if (vhdFileName == null) {
                 list.Items.Clear();
                 list.Groups.Clear();
+                mnuRefresh.Enabled = false;
                 mnuAttach.Enabled = false;
                 mnuDetach.Enabled = false;
                 mnuAutomount.Enabled = false;
@@ -185,6 +186,7 @@ namespace VhdAttach {
 
             try {
                 this.Cursor = Cursors.WaitCursor;
+                mnuRefresh.Enabled = true;
 
                 using (var document = new Medo.IO.VirtualDisk(vhdFileName)) {
                     var items = new List<ListViewItem>();
@@ -389,10 +391,10 @@ namespace VhdAttach {
             var recentItem = (Medo.Configuration.RecentFile)item.Tag;
             try {
                 var newDocument = new Medo.IO.VirtualDisk(recentItem.FileName);
-                this.VhdFileName = newDocument.FileName;
                 Recent.Push(recentItem.FileName);
                 UpdateRecent();
                 UpdateData(newDocument.FileName);
+                this.VhdFileName = newDocument.FileName;
             } catch (Exception ex) {
                 var exFile = new FileInfo(recentItem.FileName);
                 if (Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}\n\nDo you wish to remove it from list?", exFile.Name, ex.Message), MessageBoxButtons.YesNo) == DialogResult.Yes) {
@@ -868,6 +870,7 @@ namespace VhdAttach {
             var sw = Stopwatch.StartNew();
 #endif
             if (this.VhdFileName == null) {
+                mnuRefresh.Enabled = false;
                 mnuAttach.Enabled = false;
                 mnuDetach.Enabled = false;
                 mnuAutomount.Enabled = false;
@@ -876,6 +879,8 @@ namespace VhdAttach {
             }
 
             try {
+                mnuRefresh.Enabled = true;
+
                 if (!File.Exists(this.VhdFileName)) { return; }
                 using (var document = new Medo.IO.VirtualDisk(this.VhdFileName)) {
                     document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo | Medo.IO.VirtualDiskAccessMask.Detach); //Workaround: The VirtualDiskAccessMask parameter must include the VIRTUAL_DISK_ACCESS_DETACH (0x00040000) flag.

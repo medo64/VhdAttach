@@ -270,6 +270,7 @@ namespace VhdAttach {
             // mnuRefresh
             // 
             this.mnuRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuRefresh.Enabled = false;
             this.mnuRefresh.Image = ((System.Drawing.Image)(resources.GetObject("mnuRefresh.Image")));
             this.mnuRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuRefresh.Name = "mnuRefresh";
@@ -285,8 +286,6 @@ namespace VhdAttach {
             this.mnuNew,
             this.mnuOpen,
             this.toolStripSeparator1,
-            this.mnuRefresh,
-            this.toolStripSeparator3,
             this.mnuAttach,
             this.mnuDetach,
             this.mnuApp,
@@ -295,7 +294,9 @@ namespace VhdAttach {
             this.toolStripSeparator5,
             this.mnuAutomount,
             this.toolStripSeparator2,
-            this.mnuDrive});
+            this.mnuDrive,
+            this.toolStripSeparator3,
+            this.mnuRefresh});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
