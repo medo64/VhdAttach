@@ -893,6 +893,8 @@ namespace VhdAttach {
                     mnuDetach.Enabled = !mnuAttach.Enabled;
                     mnuAutomount.Enabled = true;
                     mnuDrive.Enabled = true;
+                    if (!mnuAutomount.DropDownButtonPressed) { mnuAutomount_DropDownOpening(null, null); }
+                    if (!mnuDrive.DropDownButtonPressed) { mnuDrive_DropDownOpening(null, null); }
                 }
             } catch { }
 #if DEBUG
