@@ -14,6 +14,8 @@ SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe
 SET         SIGN_HASH="C02FF227D5EE9F555C13D4C622697DF15C6FF871"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
+FOR /F "delims=" %%N IN ('hg id -i 2^> NUL') DO @SET HgNode=%%N%
+
 
 ECHO --- BUILD SOLUTION
 ECHO.
@@ -65,7 +67,7 @@ ECHO --- BUILD SETUP
 ECHO.
 
 RMDIR /Q /S ".\Temp" 2> NUL
-CALL %SETUP_TOOL% /O".\Temp" %FILE_SETUP%
+CALL %SETUP_TOOL% /DHgNode=%HgNode% /O".\Temp" %FILE_SETUP%
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
 FOR /F %%I IN ('DIR ".\Temp\*.exe" /B') DO SET _SETUPEXE=%%I
