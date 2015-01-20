@@ -1,4 +1,5 @@
 @ECHO OFF
+SETLOCAL enabledelayedexpansion
 
 SET        FILE_SETUP=".\VhdAttach.iss"
 SET     FILE_SOLUTION="..\Source\VhdAttach.sln"
@@ -14,7 +15,8 @@ SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe
 SET         SIGN_HASH="C02FF227D5EE9F555C13D4C622697DF15C6FF871"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
-FOR /F "delims=" %%N IN ('hg id -i 2^> NUL') DO @SET HgNode=%%N%
+FOR /F "delims=" %%N IN ('hg id -i 2^> NUL') DO @SET HG_NODE=%%N%
+FOR /F "delims=+" %%N IN ('hg id -n 2^> NUL') DO @SET HG_NODE_NUMBER=%%N%
 
 
 ECHO --- BUILD SOLUTION
@@ -77,14 +79,17 @@ ECHO.
 ECHO.
 
 
-ECHO --- RENAME LATEST
+ECHO --- RENAME BUILD
 ECHO.
 
 SET _OLDSETUPEXE=%_SETUPEXE%
-SET _SETUPEXE=%_SETUPEXE:000=-LATEST%
+IF NOT [%HG_NODE%]==[] (
+    SET SPACE=" "
+    SET _SETUPEXE=!_SETUPEXE:000=#%HG_NODE_NUMBER%~%HG_NODE%!
+)
 IF NOT %_OLDSETUPEXE%==%_SETUPEXE% (
     ECHO Renaming %_OLDSETUPEXE% to %_SETUPEXE%
-    MOVE .\Temp\%_OLDSETUPEXE% .\Temp\%_SETUPEXE%
+    MOVE ".\Temp\%_OLDSETUPEXE%" ".\Temp\%_SETUPEXE%"
 ) ELSE (
     ECHO No rename needed.
 )
