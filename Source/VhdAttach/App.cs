@@ -32,6 +32,8 @@ namespace VhdAttach {
                     System.Environment.Exit(1);
                 }
 
+                Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
+
 
                 bool doAttach = Medo.Application.Args.Current.ContainsKey("Attach");
                 bool doDetach = Medo.Application.Args.Current.ContainsKey("Detach") && (!doAttach);
