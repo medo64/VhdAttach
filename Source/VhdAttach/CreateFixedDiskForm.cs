@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -86,7 +86,9 @@ namespace VhdAttach {
 
 
         private bool CreateVhd() {
-            using (var stream = new FileStream(this.FileName, FileMode.CreateNew, FileAccess.Write, FileShare.None, 1, FileOptions.WriteThrough)) {
+            using (var stream = new FileStream(this.FileName, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.WriteThrough)) {
+                ReFS.RemoveIntegrityStream(stream.SafeFileHandle);
+
                 var footer = new HardDiskFooter();
                 footer.BeginUpdate();
                 footer.CreatorApplication = VhdCreatorApplication.JosipMedvedVhdAttach;

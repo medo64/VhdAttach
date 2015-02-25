@@ -389,20 +389,9 @@ namespace VhdAttach {
         void recentItem_Click(object sender, EventArgs e) {
             var item = (ToolStripMenuItem)sender;
             var recentItem = (Medo.Configuration.RecentFile)item.Tag;
-            try {
-                var newDocument = new Medo.IO.VirtualDisk(recentItem.FileName);
-                Recent.Push(recentItem.FileName);
-                UpdateRecent();
-                UpdateData(newDocument.FileName);
-                this.VhdFileName = newDocument.FileName;
-            } catch (Exception ex) {
-                var exFile = new FileInfo(recentItem.FileName);
-                if (Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}\n\nDo you wish to remove it from list?", exFile.Name, ex.Message), MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                    Recent.Remove(recentItem.FileName);
-                    UpdateRecent();
-                }
-            }
+            this.OpenFile(recentItem.FileName, removeRecent: true);
         }
+
 
         #region Menu
 
@@ -443,19 +432,42 @@ namespace VhdAttach {
                 dialog.Multiselect = false;
                 dialog.ShowReadOnly = false;
                 if (dialog.ShowDialog(this) == DialogResult.OK) {
-                    try {
-                        var newDocument = new Medo.IO.VirtualDisk(dialog.FileName);
-                        this.VhdFileName = newDocument.FileName;
-                        Recent.Push(dialog.FileName);
-                        UpdateRecent();
-                        UpdateData(newDocument.FileName);
-                    } catch (Exception ex) {
-                        var exFile = new FileInfo(dialog.FileName);
-                        Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}", exFile.Name, ex.Message));
-                    }
+                    this.OpenFile(dialog.FileName);
                 }
             }
         }
+
+        private void OpenFile(string fileName, bool removeRecent = false) {
+            var file = new FileInfo(fileName);
+            try {
+                if (!file.Exists) { throw new IOException("File not found."); }
+
+                var isIntegrityStream = ((int)(file.Attributes) & NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM) == NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM;
+                if (Medo.MessageBox.ShowWarning(this, string.Format("Integrity stream is enabled for \"{0}\".\n\nVirtual disk does not support ReFS integrity streams.\n\nDo you wish to remove integrity stream?", file.Name), MessageBoxButtons.YesNo) == DialogResult.Yes) {
+                    using (var frm = new RemoveIntegrityStreamForm(file)) {
+                        frm.ShowDialog(this);
+                    }
+                }
+
+
+                var newDocument = new Medo.IO.VirtualDisk(fileName);
+                this.VhdFileName = newDocument.FileName;
+                Recent.Push(fileName);
+                UpdateRecent();
+                UpdateData(newDocument.FileName);
+                this.VhdFileName = newDocument.FileName;
+            } catch (Exception ex) {
+                if (removeRecent) {
+                    if (Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}\n\nDo you wish to remove it from list?", file.Name, ex.Message), MessageBoxButtons.YesNo) == DialogResult.Yes) {
+                        Recent.Remove(fileName);
+                        UpdateRecent();
+                    }
+                } else {
+                    Medo.MessageBox.ShowError(this, string.Format("Cannot open \"{0}\".\n\n{1}", file.Name, ex.Message));
+                }
+            }
+        }
+
 
         private void mnuRefresh_Click(object sender, EventArgs e) {
             UpdateData(this.VhdFileName);
@@ -906,9 +918,11 @@ namespace VhdAttach {
 
         private static class NativeMethods {
 
+            internal const int FILE_ATTRIBUTE_INTEGRITY_STREAM = 0x8000;
+
             [DllImportAttribute("user32.dll", EntryPoint = "AllowSetForegroundWindow")]
             [return: MarshalAsAttribute(UnmanagedType.Bool)]
-            public static extern bool AllowSetForegroundWindow(int dwProcessId);
+            internal static extern bool AllowSetForegroundWindow(int dwProcessId);
 
         }
 
