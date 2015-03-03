@@ -164,6 +164,11 @@ Filename: "{app}\VhdAttachService.exe";  Parameters: "/Uninstall";  Flags: runas
 
 [Code]
 
+procedure InitializeWizard;
+begin
+  WizardForm.LicenseAcceptedRadio.Checked := True;
+end;
+
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
     ResultCode: Integer;
