@@ -444,7 +444,7 @@ namespace VhdAttach {
                 if (!file.Exists) { throw new IOException("File not found."); }
 
                 var isIntegrityStream = ((int)(file.Attributes) & NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM) == NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM;
-                if (Medo.MessageBox.ShowWarning(this, string.Format("Integrity stream is enabled for \"{0}\".\n\nVirtual disk does not support ReFS integrity streams.\n\nDo you wish to remove integrity stream?", file.Name), MessageBoxButtons.YesNo) == DialogResult.Yes) {
+                if (isIntegrityStream && Medo.MessageBox.ShowWarning(this, string.Format("Integrity stream is enabled for \"{0}\".\n\nVirtual disk does not support ReFS integrity streams.\n\nDo you wish to remove integrity stream?", file.Name), MessageBoxButtons.YesNo) == DialogResult.Yes) {
                     using (var frm = new RemoveIntegrityStreamForm(file)) {
                         frm.ShowDialog(this);
                     }
