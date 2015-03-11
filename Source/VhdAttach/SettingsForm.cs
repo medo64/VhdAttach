@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -9,7 +9,7 @@ namespace VhdAttach {
     internal partial class SettingsForm : Form {
         public SettingsForm() {
             InitializeComponent();
-            toolVhdOrder.Renderer = new ToolStripBorderlessSystemRenderer();
+            toolVhdOrder.Renderer = new Helper.ToolStripBorderlessSystemRenderer();
             this.Font = SystemFonts.MessageBoxFont;
         }
 

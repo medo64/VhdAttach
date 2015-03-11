@@ -36,7 +36,8 @@ namespace VhdAttach {
             Medo.Windows.Forms.TaskbarProgress.DefaultOwner = this;
             Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
 
-            mnu.Renderer = new ToolStripBorderlessProfessionalRenderer();
+            mnu.Renderer = new Helper.ToolStripBorderlessProfessionalRenderer();
+            Helper.UpdateToolstripImages(mnu);
 
             using (var g = this.CreateGraphics()) {
                 var scale = (Settings.ScaleFactor > 1) ? Settings.ScaleFactor : Math.Max(g.DpiX, g.DpiY) / 96.0;
@@ -714,7 +715,7 @@ namespace VhdAttach {
         }
 
 
-        private void mnuOptions_Click(object sender, EventArgs e) {
+        private void mnuAppOptions_Click(object sender, EventArgs e) {
             using (var form = new SettingsForm()) {
                 if (form.ShowDialog(this) == DialogResult.OK) {
                     staErrorStolenExtension.Visible = !ServiceSettings.ContextMenuVhd;
@@ -955,7 +956,7 @@ namespace VhdAttach {
         }
 
         private void staStolenExtensionText_Click(object sender, EventArgs e) {
-            mnuOptions_Click(null, null);
+            mnuAppOptions_Click(null, null);
         }
 
         private void staErrorServiceMissingText_Click(object sender, EventArgs e) {

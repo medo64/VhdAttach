@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="CommandLineAddon.cs" />
     <Compile Include="FileWithOptionsCollection.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="PathFromDevice.cs" />
     <Compile Include="ReFS.cs" />
@@ -110,13 +111,17 @@
     <Compile Include="RemoveIntegrityStreamForm.Designer.cs">
       <DependentUpon>RemoveIntegrityStreamForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ServiceWaitForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ServiceWaitForm.Designer.cs">
       <DependentUpon>ServiceWaitForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolStripBorderlessProfessionalRenderer.cs" />
     <Compile Include="CreateFixedDiskForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -161,7 +166,6 @@
     <Compile Include="SettingsForm.designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolStripBorderlessSystemRenderer.cs" />
     <Compile Include="Utility.cs" />
     <None Include="Properties\App.snk" />
     <None Include="Properties\App.manifest">
@@ -195,6 +199,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RemoveIntegrityStreamForm.resx">
       <DependentUpon>RemoveIntegrityStreamForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ServiceWaitForm.resx">
       <DependentUpon>ServiceWaitForm.cs</DependentUpon>

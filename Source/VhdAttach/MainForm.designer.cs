@@ -40,12 +40,13 @@ namespace VhdAttach {
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDetach = new System.Windows.Forms.ToolStripButton();
             this.mnuApp = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mnuAppOptions = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuApp0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppFeedback = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAppUpgrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAppDonate = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuOptions = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuRefresh = new System.Windows.Forms.ToolStripButton();
@@ -142,7 +143,7 @@ namespace VhdAttach {
             // 
             // mnuNew
             // 
-            this.mnuNew.Image = ((System.Drawing.Image)(resources.GetObject("mnuNew.Image")));
+            this.mnuNew.Image = global::VhdAttach.Properties.Resources.mnuNew_16;
             this.mnuNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuNew.Name = "mnuNew";
             this.mnuNew.Size = new System.Drawing.Size(59, 24);
@@ -155,7 +156,7 @@ namespace VhdAttach {
             this.mnuAttach.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuAttachReadOnly});
             this.mnuAttach.Enabled = false;
-            this.mnuAttach.Image = ((System.Drawing.Image)(resources.GetObject("mnuAttach.Image")));
+            this.mnuAttach.Image = global::VhdAttach.Properties.Resources.mnuAttach_16;
             this.mnuAttach.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuAttach.Name = "mnuAttach";
             this.mnuAttach.Size = new System.Drawing.Size(84, 24);
@@ -172,7 +173,7 @@ namespace VhdAttach {
             // 
             // mnuOpen
             // 
-            this.mnuOpen.Image = ((System.Drawing.Image)(resources.GetObject("mnuOpen.Image")));
+            this.mnuOpen.Image = global::VhdAttach.Properties.Resources.mnuOpen_16;
             this.mnuOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuOpen.Name = "mnuOpen";
             this.mnuOpen.Size = new System.Drawing.Size(77, 24);
@@ -188,7 +189,7 @@ namespace VhdAttach {
             // mnuDetach
             // 
             this.mnuDetach.Enabled = false;
-            this.mnuDetach.Image = ((System.Drawing.Image)(resources.GetObject("mnuDetach.Image")));
+            this.mnuDetach.Image = global::VhdAttach.Properties.Resources.mnuDetach_16;
             this.mnuDetach.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuDetach.Name = "mnuDetach";
             this.mnuDetach.Size = new System.Drawing.Size(76, 24);
@@ -201,16 +202,30 @@ namespace VhdAttach {
             this.mnuApp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.mnuApp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnuApp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuAppOptions,
+            this.mnuApp0,
             this.mnuAppFeedback,
             this.mnuAppUpgrade,
             this.mnuAppDonate,
-            this.toolStripMenuItem1,
+            this.mnuApp1,
             this.mnuAppAbout});
-            this.mnuApp.Image = ((System.Drawing.Image)(resources.GetObject("mnuApp.Image")));
+            this.mnuApp.Image = global::VhdAttach.Properties.Resources.mnuApp_16;
             this.mnuApp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuApp.Name = "mnuApp";
             this.mnuApp.Size = new System.Drawing.Size(29, 24);
-            this.mnuApp.Text = "VHD Attach";
+            this.mnuApp.Text = "Application";
+            // 
+            // mnuAppOptions
+            // 
+            this.mnuAppOptions.Name = "mnuAppOptions";
+            this.mnuAppOptions.Size = new System.Drawing.Size(200, 24);
+            this.mnuAppOptions.Text = "&Options";
+            this.mnuAppOptions.Click += new System.EventHandler(this.mnuAppOptions_Click);
+            // 
+            // mnuApp0
+            // 
+            this.mnuApp0.Name = "mnuApp0";
+            this.mnuApp0.Size = new System.Drawing.Size(197, 6);
             // 
             // mnuAppFeedback
             // 
@@ -233,10 +248,10 @@ namespace VhdAttach {
             this.mnuAppDonate.Text = "&Donate";
             this.mnuAppDonate.Click += new System.EventHandler(this.mnuAppDonate_Click);
             // 
-            // toolStripMenuItem1
+            // mnuApp1
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(197, 6);
+            this.mnuApp1.Name = "mnuApp1";
+            this.mnuApp1.Size = new System.Drawing.Size(197, 6);
             // 
             // mnuAppAbout
             // 
@@ -244,17 +259,6 @@ namespace VhdAttach {
             this.mnuAppAbout.Size = new System.Drawing.Size(200, 24);
             this.mnuAppAbout.Text = "&About";
             this.mnuAppAbout.Click += new System.EventHandler(this.mnuAppAbout_Click);
-            // 
-            // mnuOptions
-            // 
-            this.mnuOptions.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.mnuOptions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mnuOptions.Image = ((System.Drawing.Image)(resources.GetObject("mnuOptions.Image")));
-            this.mnuOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnuOptions.Name = "mnuOptions";
-            this.mnuOptions.Size = new System.Drawing.Size(23, 24);
-            this.mnuOptions.Text = "Options";
-            this.mnuOptions.Click += new System.EventHandler(this.mnuOptions_Click);
             // 
             // toolStripSeparator4
             // 
@@ -271,7 +275,7 @@ namespace VhdAttach {
             // 
             this.mnuRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnuRefresh.Enabled = false;
-            this.mnuRefresh.Image = ((System.Drawing.Image)(resources.GetObject("mnuRefresh.Image")));
+            this.mnuRefresh.Image = global::VhdAttach.Properties.Resources.mnuRefresh_16;
             this.mnuRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuRefresh.Name = "mnuRefresh";
             this.mnuRefresh.Size = new System.Drawing.Size(23, 24);
@@ -289,7 +293,6 @@ namespace VhdAttach {
             this.mnuAttach,
             this.mnuDetach,
             this.mnuApp,
-            this.mnuOptions,
             this.toolStripSeparator4,
             this.toolStripSeparator5,
             this.mnuAutomount,
@@ -488,14 +491,13 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripDropDownButton mnuApp;
         private System.Windows.Forms.ToolStripMenuItem mnuAppFeedback;
         private System.Windows.Forms.ToolStripMenuItem mnuAppAbout;
-        private System.Windows.Forms.ToolStripButton mnuOptions;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton mnuRefresh;
         private System.Windows.Forms.ToolStrip mnu;
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
         private System.Windows.Forms.ToolStripMenuItem mnuAppDonate;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator mnuApp1;
         private System.Windows.Forms.StatusStrip staErrorStolenExtension;
         private System.Windows.Forms.ToolStripStatusLabel staErrorStolenExtensionText;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -511,6 +513,8 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem mnuAutomountDisable;
         private System.Windows.Forms.Timer tmrUpdateMenu;
+        private System.Windows.Forms.ToolStripMenuItem mnuAppOptions;
+        private System.Windows.Forms.ToolStripSeparator mnuApp0;
     }
 }
 
