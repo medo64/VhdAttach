@@ -40,7 +40,7 @@ ShowLanguageDialog=no
 SolidCompression=yes
 ChangesAssociations=yes
 DisableWelcomePage=yes
-LicenseFile=..\Setup\License.txt
+LicenseFile=..\Setup\License.rtf
 
 
 [Messages]
