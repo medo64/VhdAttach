@@ -37,7 +37,7 @@ namespace VhdAttach {
             Medo.Windows.Forms.TaskbarProgress.DoNotThrowNotImplementedException = true;
 
             mnu.Renderer = new Helper.ToolStripBorderlessProfessionalRenderer();
-            Helper.UpdateToolstripImages(mnu);
+            Helper.UpdateToolstripImages(null, mnu);
 
             using (var g = this.CreateGraphics()) {
                 var scale = (Settings.ScaleFactor > 1) ? Settings.ScaleFactor : Math.Max(g.DpiX, g.DpiY) / 96.0;

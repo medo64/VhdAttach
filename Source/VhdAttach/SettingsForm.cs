@@ -10,6 +10,9 @@ namespace VhdAttach {
         public SettingsForm() {
             InitializeComponent();
             toolVhdOrder.Renderer = new Helper.ToolStripBorderlessSystemRenderer();
+
+            Helper.UpdateToolstripImages(imagesAutoAttach, toolVhdOrder);
+
             this.Font = SystemFonts.MessageBoxFont;
         }
 
@@ -32,6 +35,11 @@ namespace VhdAttach {
                 listAutoAttach.Items.Add(new ListViewVhdItem(fwo));
             }
             btnRegisterExtensionVhd.Visible = !ServiceSettings.ContextMenuVhd;
+
+            toolVhdOrder.Size = new Size(toolVhdOrder.ImageScalingSize.Width + toolVhdOrder.ImageScalingSize.Width / 2, listAutoAttach.Height);
+            toolVhdOrder.Location = new Point(groupAutoAttach.ClientSize.Width - toolVhdOrder.Width - SystemInformation.BorderSize.Width, toolVhdOrder.Top);
+            listAutoAttach.Width = toolVhdOrder.Left - listAutoAttach.Left - SystemInformation.Border3DSize.Width;
+            SettingsForm_Resize(null, null);
         }
 
         private void buttonOk_Click(object sender, EventArgs e) {
@@ -82,6 +90,7 @@ namespace VhdAttach {
                     item.Selected = true;
                     listAutoAttach.EnsureVisible(item.Index);
                     listAutoAttach.EndUpdate();
+                    listAutoAttach_SelectedIndexChanged(null, null);
                 }
             }
         }
@@ -98,6 +107,7 @@ namespace VhdAttach {
                     item.Selected = true;
                     listAutoAttach.EnsureVisible(item.Index);
                     listAutoAttach.EndUpdate();
+                    listAutoAttach_SelectedIndexChanged(null, null);
                 }
             }
         }

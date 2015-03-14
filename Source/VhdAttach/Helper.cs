@@ -30,8 +30,13 @@ namespace VhdAttach {
 
         #region Toolstrip images
 
-        internal static void UpdateToolstripImages(ToolStrip toolstrip) {
-            var form = toolstrip.Parent as Form;
+        internal static void UpdateToolstripImages(ImageList imageList, ToolStrip toolstrip) {
+            Form form = null;
+            Control findParent = toolstrip;
+            while ((findParent != null) && (form == null)) {
+                form = findParent.Parent as Form;
+                findParent = findParent.Parent;
+            }
 
             using (var g = form.CreateGraphics()) {
                 var scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;
@@ -69,6 +74,16 @@ namespace VhdAttach {
                     if (bitmap != null) {
                         item.Image = bitmap;
                     }
+                }
+
+                if (imageList != null) {
+                    imageList.Images.Clear();
+                    imageList.ImageSize = new Size(size, size);
+                    imageList.Images.Add(resources.GetObject("StatusInformation" + set) as Bitmap);
+                    imageList.Images.Add(resources.GetObject("StatusWarning" + set) as Bitmap);
+                    imageList.Images.Add(resources.GetObject("StatusError" + set) as Bitmap);
+                    imageList.Images.Add(resources.GetObject("StatusCritical" + set) as Bitmap);
+                    imageList.Images.Add(resources.GetObject("StatusLocked" + set) as Bitmap);
                 }
             }
         }

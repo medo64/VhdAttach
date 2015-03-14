@@ -1,4 +1,4 @@
-﻿namespace VhdAttach {
+namespace VhdAttach {
     partial class SettingsForm {
         /// <summary>
         /// Required designer variable.
@@ -223,46 +223,43 @@
             this.toolVhdOrder.Location = new System.Drawing.Point(374, 27);
             this.toolVhdOrder.Name = "toolVhdOrder";
             this.toolVhdOrder.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolVhdOrder.Size = new System.Drawing.Size(31, 148);
+            this.toolVhdOrder.Size = new System.Drawing.Size(32, 148);
             this.toolVhdOrder.TabIndex = 1;
             // 
             // buttonMoveVhdUp
             // 
-            this.buttonMoveVhdUp.AutoSize = false;
             this.buttonMoveVhdUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttonMoveVhdUp.Enabled = false;
-            this.buttonMoveVhdUp.Image = ((System.Drawing.Image)(resources.GetObject("buttonMoveVhdUp.Image")));
+            this.buttonMoveVhdUp.Image = global::VhdAttach.Properties.Resources.buttonMoveVhdUp_16;
             this.buttonMoveVhdUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonMoveVhdUp.Name = "buttonMoveVhdUp";
-            this.buttonMoveVhdUp.Size = new System.Drawing.Size(23, 23);
+            this.buttonMoveVhdUp.Size = new System.Drawing.Size(23, 20);
             this.buttonMoveVhdUp.Text = "Move Up";
             this.buttonMoveVhdUp.ToolTipText = "Move up (Alt+Up)";
             this.buttonMoveVhdUp.Click += new System.EventHandler(this.buttonMoveVhdUp_Click);
             // 
             // buttonMoveVhdDown
             // 
-            this.buttonMoveVhdDown.AutoSize = false;
             this.buttonMoveVhdDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttonMoveVhdDown.Enabled = false;
-            this.buttonMoveVhdDown.Image = ((System.Drawing.Image)(resources.GetObject("buttonMoveVhdDown.Image")));
+            this.buttonMoveVhdDown.Image = global::VhdAttach.Properties.Resources.buttonMoveVhdDown_16;
             this.buttonMoveVhdDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonMoveVhdDown.Name = "buttonMoveVhdDown";
             this.buttonMoveVhdDown.RightToLeftAutoMirrorImage = true;
-            this.buttonMoveVhdDown.Size = new System.Drawing.Size(23, 23);
+            this.buttonMoveVhdDown.Size = new System.Drawing.Size(23, 20);
             this.buttonMoveVhdDown.Text = "Move down";
             this.buttonMoveVhdDown.ToolTipText = "Move down (Alt+Down)";
             this.buttonMoveVhdDown.Click += new System.EventHandler(this.buttonMoveVhdDown_Click);
             // 
             // buttonVhdReadOnly
             // 
-            this.buttonVhdReadOnly.AutoSize = false;
             this.buttonVhdReadOnly.CheckOnClick = true;
             this.buttonVhdReadOnly.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.buttonVhdReadOnly.Image = ((System.Drawing.Image)(resources.GetObject("buttonVhdReadOnly.Image")));
+            this.buttonVhdReadOnly.Image = global::VhdAttach.Properties.Resources.buttonVhdReadOnly_16;
             this.buttonVhdReadOnly.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonVhdReadOnly.Margin = new System.Windows.Forms.Padding(0, 8, 0, 2);
             this.buttonVhdReadOnly.Name = "buttonVhdReadOnly";
-            this.buttonVhdReadOnly.Size = new System.Drawing.Size(23, 23);
+            this.buttonVhdReadOnly.Size = new System.Drawing.Size(23, 20);
             this.buttonVhdReadOnly.Text = "Read-only";
             this.buttonVhdReadOnly.Click += new System.EventHandler(this.buttonVhdReadOnly_Click);
             // 
@@ -320,13 +317,9 @@
             // 
             // imagesAutoAttach
             // 
-            this.imagesAutoAttach.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imagesAutoAttach.ImageStream")));
+            this.imagesAutoAttach.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imagesAutoAttach.ImageSize = new System.Drawing.Size(16, 16);
             this.imagesAutoAttach.TransparentColor = System.Drawing.Color.Transparent;
-            this.imagesAutoAttach.Images.SetKeyName(0, "StatusInformation [16x16].png");
-            this.imagesAutoAttach.Images.SetKeyName(1, "StatusWarning [16x16].png");
-            this.imagesAutoAttach.Images.SetKeyName(2, "Status_SeriousWarning_16.png");
-            this.imagesAutoAttach.Images.SetKeyName(3, "StatusError [16x16].png");
-            this.imagesAutoAttach.Images.SetKeyName(4, "Lock (16x16).png");
             // 
             // btnRegisterExtensionVhd
             // 
