@@ -51,7 +51,9 @@ BeveledLabel=jmedved.com
 
 [Files]
 Source: "VhdAttach.exe";                DestDir: "{app}";                      Flags: ignoreversion;
+Source: "VhdAttach.pdb";                DestDir: "{app}";                      Flags: ignoreversion;
 Source: "VhdAttachService.exe";         DestDir: "{app}";                      Flags: ignoreversion;
+Source: "VhdAttachService.pdb";         DestDir: "{app}";                      Flags: ignoreversion;
 Source: "ReadMe.txt";                   DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
 
 
