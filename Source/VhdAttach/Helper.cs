@@ -64,6 +64,7 @@ namespace VhdAttach {
                     }
                 }
 
+
                 toolstrip.ImageScalingSize = new Size(size, size);
 
                 var resources = VhdAttach.Properties.Resources.ResourceManager;
@@ -72,7 +73,8 @@ namespace VhdAttach {
                     var resourceName = item.Name + set;
                     var bitmap = resources.GetObject(resourceName) as Bitmap;
                     if (bitmap != null) {
-                        item.Image = bitmap;
+                        item.ImageScaling = ToolStripItemImageScaling.None;
+                        item.Image = new Bitmap(bitmap, new Size(size, size));
                     }
                 }
 
