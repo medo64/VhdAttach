@@ -1,4 +1,13 @@
-syntax: glob
+**/Bin
+**/bin
+**/Debug
+**/obj
+**/TestResults
+
+Binaries/**
+Releases/**
+Backup/**
+Temporary/**
 
 *.bak
 *.csproj.user
@@ -20,16 +29,3 @@ syntax: glob
 *.vspscc
 *.vssscc
 *.zip
-
-*/Bin/*
-*/bin/*
-*/Debug/*
-*/obj/*
-*/TestResults/*
-
-syntax: regexp
-
-^.*[B|b]inaries/.*
-^.*[R|r]eleases/.*
-^.*[B|b]ackup/.*
-^.*Temporary/.*

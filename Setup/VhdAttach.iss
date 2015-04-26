@@ -7,8 +7,8 @@
 #define AppSetupFile   AppBase + StringChange(AppVersion, '.', '')
 
 #define AppVersionEx   StringChange(AppVersion, '0.00', '')
-#if "" != HgNode
-#  define AppVersionEx AppVersionEx + " (" + HgNode + ")"
+#if "" != VersionHash
+#  define AppVersionEx AppVersionEx + " (" + VersionHash + ")"
 #endif
 
 
@@ -55,6 +55,7 @@ Source: "VhdAttach.pdb";                DestDir: "{app}";                      F
 Source: "VhdAttachService.exe";         DestDir: "{app}";                      Flags: ignoreversion;
 Source: "VhdAttachService.pdb";         DestDir: "{app}";                      Flags: ignoreversion;
 Source: "ReadMe.txt";                   DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
+Source: "License.txt";                  DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
 
 
 [Tasks]
@@ -154,14 +155,12 @@ Root: HKCR;  Subkey: "Windows.IsoFile\shell\VhdAttach-Detach\command";          
 
 [Run]
 Filename: "{app}\VhdAttachService.exe";  Parameters: "/Install";  Flags: runascurrentuser waituntilterminated;
-Filename: "{app}\ReadMe.txt";                                     Flags: postinstall runasoriginaluser shellexec nowait skipifsilent unchecked;  Description: "View ReadMe.txt";
 Filename: "{app}\VhdAttach.exe";                                  Flags: postinstall nowait skipifsilent runasoriginaluser unchecked;            Description: "Launch application now";
+Filename: "{app}\ReadMe.txt";                                     Flags: postinstall nowait skipifsilent runasoriginaluser unchecked shellexec;  Description: "View ReadMe.txt";
 
 
 [UninstallRun]
 Filename: "{app}\VhdAttachService.exe";  Parameters: "/Uninstall";  Flags: runascurrentuser waituntilterminated
-
-
 
 
 [Code]
