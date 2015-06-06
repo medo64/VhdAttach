@@ -15,36 +15,37 @@ SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe
 SET         SIGN_HASH="C02FF227D5EE9F555C13D4C622697DF15C6FF871"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
-FOR /F "delims=" %%N IN ('git rev-list --count HEAD') DO @SET VERSION_NUMBER=%%N%
+
 FOR /F "delims=" %%N IN ('git log -n 1 --format^=%%h') DO @SET VERSION_HASH=%%N%
+
+IF NOT [%VERSION_HASH%]==[] (
+    FOR /F "delims=" %%N IN ('git rev-list --count HEAD') DO @SET VERSION_NUMBER=%%N%
+    git diff --exit-code --quiet
+    IF ERRORLEVEL 1 SET VERSION_HASH=%VERSION_HASH%+
+)
 
 
 ECHO --- BUILD SOLUTION
 ECHO.
 
 IF EXIST %COMPILE_TOOL_1% (
-    ECHO Using Visual Studio 2015
+    ECHO Using Visual Studio
     SET COMPILE_TOOL=%COMPILE_TOOL_1%
 ) ELSE (
     IF EXIST %COMPILE_TOOL_2% (
-        ECHO Using Visual Studio 2013
+        ECHO Using Visual Studio Express
         SET COMPILE_TOOL=%COMPILE_TOOL_2%
     ) ELSE (
-        IF EXIST %COMPILE_TOOL_3% (
-            ECHO Using Visual Studio Express 2013
-            SET COMPILE_TOOL=%COMPILE_TOOL_3%
-        ) ELSE (
-            ECHO Cannot find Visual Studio!
-            PAUSE && EXIT /B 255
-        )
+        ECHO Cannot find Visual Studio!
+        PAUSE && EXIT /B 255
     )
 )
 
 RMDIR /Q /S "..\Binaries" 2> NUL
 %COMPILE_TOOL% /Build "Release" %FILE_SOLUTION%
+IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 COPY ..\README.md ..\Binaries\ReadMe.txt
 COPY ..\LICENSE.md ..\Binaries\License.txt
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 
 ECHO.
 
@@ -135,4 +136,4 @@ ECHO.
 ECHO --- DONE
 ECHO.
 
-PAUSE
+explorer /select,"..\Releases\%_SETUPEXE%"
