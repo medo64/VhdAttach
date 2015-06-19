@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -60,8 +60,15 @@ namespace VhdAttachCommon {
             }
             set {
                 if (value == true) {
-                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue)) {
-                        rk.SetValue("Windows.VhdFile", "", RegistryValueKind.String);
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.CreateSubKey)) {
+                        RegistryKey subKey = null;
+                        try {
+                            subKey = Registry.ClassesRoot.OpenSubKey(@".vhd\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.CreateSubKey);
+                            if (subKey == null) { subKey = Registry.ClassesRoot.CreateSubKey(@".vhd\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree); }
+                            subKey.SetValue("Windows.VhdFile", "", RegistryValueKind.String);
+                        } finally {
+                            if (subKey != null) { subKey.Close(); }
+                        }
                     }
                 }
             }
@@ -72,7 +79,7 @@ namespace VhdAttachCommon {
         /// </summary>
         public static bool ContextMenuIso {
             get {
-                using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd\OpenWithProgids", RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey)) {
+                using (var rk = Registry.ClassesRoot.OpenSubKey(@".iso\OpenWithProgids", RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey)) {
                     if (rk != null) {
                         var text = rk.GetValue("Windows.IsoFile", null) as string;
                         if (text != null) { return true; }
@@ -82,8 +89,15 @@ namespace VhdAttachCommon {
             }
             set {
                 if (value == true) {
-                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhd\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue)) {
-                        rk.SetValue("Windows.IsoFile", "", RegistryValueKind.String);
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".iso\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.CreateSubKey | RegistryRights.SetValue)) {
+                        RegistryKey subKey = null;
+                        try {
+                            subKey = Registry.ClassesRoot.OpenSubKey(@".iso\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.CreateSubKey);
+                            if (subKey == null) { subKey = Registry.ClassesRoot.CreateSubKey(@".iso\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree); }
+                            subKey.SetValue("Windows.IsoFile", "", RegistryValueKind.String);
+                        } finally {
+                            if (subKey != null) { subKey.Close(); }
+                        }
                     }
                 }
             }
