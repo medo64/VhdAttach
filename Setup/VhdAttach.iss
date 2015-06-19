@@ -86,9 +86,13 @@ Root: HKLM;  Subkey: "Software\Josip Medved\VHD Attach";                        
 
 Root: HKCR;  Subkey: ".vhd";                                                    ValueType: none;    ValueName: "";                  Flags: deletevalue;                                                      Tasks: context_open context_attach context_attachreadonly context_detach context_detachdrive context_vhd_open context_vhd_attach context_vhd_attachreadonly context_vhd_detach;
 Root: HKCR;  Subkey: ".vhd\OpenWithProgids";                                    ValueType: string;  ValueName: "Windows.VhdFile";   ValueData: "";                                                           Tasks: context_open context_attach context_attachreadonly context_detach context_detachdrive context_vhd_open context_vhd_attach context_vhd_attachreadonly context_vhd_detach;
-Root: HKCR;  Subkey: "Windows.VhdFile\DefaultIcon";                             ValueType: string;  ValueName: "";                  ValueData: """{app}\VhdAttach.exe""";  Flags: createvalueifdoesntexist;  Tasks: context_open context_attach context_attachreadonly context_detach context_detachdrive context_vhd_open context_vhd_attach context_vhd_attachreadonly context_vhd_detach;
+
+Root: HKCR;  Subkey: ".vhdx";                                                   ValueType: none;    ValueName: "";                  Flags: deletevalue;                                                      Tasks: context_open context_attach context_attachreadonly context_detach context_detachdrive context_vhd_open context_vhd_attach context_vhd_attachreadonly context_vhd_detach;
+Root: HKCR;  Subkey: ".vhdx\OpenWithProgids";                                   ValueType: string;  ValueName: "Windows.VhdFile";   ValueData: "";                                                           Tasks: context_open context_attach context_attachreadonly context_detach context_detachdrive context_vhd_open context_vhd_attach context_vhd_attachreadonly context_vhd_detach;
 
 Root: HKCR;  Subkey: "VhdAttachFile";                                           ValueType: none;    Flags: deletekey;
+
+Root: HKCR;  Subkey: "Windows.VhdFile\DefaultIcon";                             ValueType: string;  ValueName: "";                  ValueData: """{app}\VhdAttach.exe""";  Flags: createvalueifdoesntexist;  Tasks: context_open context_attach context_attachreadonly context_detach context_detachdrive context_vhd_open context_vhd_attach context_vhd_attachreadonly context_vhd_detach;
 
 Root: HKCR;  Subkey: "Windows.VhdFile\shell";                                   ValueType: string;  ValueName: "";                  ValueData: "VhdAttach-Open";                                    Tasks: context_open context_vhd_open;
 

@@ -70,6 +70,17 @@ namespace VhdAttachCommon {
                             if (subKey != null) { subKey.Close(); }
                         }
                     }
+
+                    using (var rk = Registry.ClassesRoot.OpenSubKey(@".vhdx", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.CreateSubKey)) {
+                        RegistryKey subKey = null;
+                        try {
+                            subKey = Registry.ClassesRoot.OpenSubKey(@".vhdx\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.CreateSubKey);
+                            if (subKey == null) { subKey = Registry.ClassesRoot.CreateSubKey(@".vhdx\OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree); }
+                            subKey.SetValue("Windows.VhdFile", "", RegistryValueKind.String);
+                        } finally {
+                            if (subKey != null) { subKey.Close(); }
+                        }
+                    }
                 }
             }
         }
