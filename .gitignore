@@ -3,6 +3,7 @@
 **/Debug
 **/obj
 **/TestResults
+**/ApiPortabilityAnalysis.htm
 
 Binaries/**
 Releases/**
