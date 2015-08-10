@@ -11,9 +11,9 @@ SET    COMPILE_TOOL_1="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\
 SET    COMPILE_TOOL_2="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe"
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
-SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
+SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x64\signtool.exe"
 SET         SIGN_HASH="C02FF227D5EE9F555C13D4C622697DF15C6FF871"
-SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
+SET SIGN_TIMESTAMPURL="http://www.startssl.com/timestamp"
 
 FOR /F "delims=" %%N IN ('hg id -i 2^> NUL') DO @SET HG_NODE=%%N%
 FOR /F "delims=+" %%N IN ('hg id -n 2^> NUL') DO @SET HG_NODE_NUMBER=%%N%
