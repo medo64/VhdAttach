@@ -26,7 +26,7 @@ namespace VhdAttach {
 
 
         private void bwAction_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            ReFS.RemoveIntegrityStream(this.File.FullName);
+            ReFS.RemoveIntegrityStream(this.File);
         }
 
         private void bwAction_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {

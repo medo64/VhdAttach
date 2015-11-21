@@ -7,13 +7,17 @@ using System.Runtime.InteropServices;
 namespace VhdAttach {
     internal static class ReFS {
 
-        public static void RemoveIntegrityStream(string fileName) {
-            using (var handle = NativeMethods.CreateFile(fileName, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, FileShare.None, IntPtr.Zero, FileMode.Open, 0, IntPtr.Zero)) {
+        public static void RemoveIntegrityStream(FileInfo file) {
+            if (!ReFS.HasIntegrityStream(file)) { return; } //cancel if file has no integrity stream
+
+            using (var handle = NativeMethods.CreateFile(file.FullName, NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE, FileShare.None, IntPtr.Zero, FileMode.Open, 0, IntPtr.Zero)) {
                 RemoveIntegrityStream(handle);
             }
         }
 
         public static void RemoveIntegrityStream(SafeFileHandle handle) {
+            if (!ReFS.HasIntegrityStream(handle)) { return; } //cancel if file has no integrity stream
+
             var oldInfo = new NativeMethods.FSCTL_GET_INTEGRITY_INFORMATION_BUFFER();
             var oldInfoSizeReturn = 0;
             if (!NativeMethods.DeviceIoControl(handle, NativeMethods.FSCTL_GET_INTEGRITY_INFORMATION, IntPtr.Zero, 0, ref oldInfo, Marshal.SizeOf(oldInfo), out oldInfoSizeReturn, IntPtr.Zero)) {
@@ -38,6 +42,18 @@ namespace VhdAttach {
         }
 
 
+        public static bool HasIntegrityStream(FileInfo file) {
+            return ((int)(file.Attributes) & NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM) == NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM;
+        }
+
+        public static bool HasIntegrityStream(SafeFileHandle handle) {
+            var fileInfo = new NativeMethods.BY_HANDLE_FILE_INFORMATION();
+            if (NativeMethods.GetFileInformationByHandle(handle, out fileInfo)) {
+                return (fileInfo.dwFileAttributes & NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM) == NativeMethods.FILE_ATTRIBUTE_INTEGRITY_STREAM;
+            }
+            return false;
+        }
+
         private static class NativeMethods {
 
             internal const Int32 CHECKSUM_TYPE_NONE = 0;
@@ -48,6 +64,8 @@ namespace VhdAttach {
 
             internal const Int32 FSCTL_GET_INTEGRITY_INFORMATION = 0x9027c;
             internal const Int32 FSCTL_SET_INTEGRITY_INFORMATION = 0x9c280;
+
+            internal const int FILE_ATTRIBUTE_INTEGRITY_STREAM = 0x8000;
 
 
             [StructLayout(LayoutKind.Sequential)]
@@ -64,6 +82,27 @@ namespace VhdAttach {
                 internal Int16 ChecksumAlgorithm;
                 private Int16 Reserved;
                 internal Int32 Flags;
+            }
+
+
+            [StructLayoutAttribute(LayoutKind.Sequential)]
+            public struct BY_HANDLE_FILE_INFORMATION {
+                public uint dwFileAttributes;
+                public FILETIME ftCreationTime;
+                public FILETIME ftLastAccessTime;
+                public FILETIME ftLastWriteTime;
+                public uint dwVolumeSerialNumber;
+                public uint nFileSizeHigh;
+                public uint nFileSizeLow;
+                public uint nNumberOfLinks;
+                public uint nFileIndexHigh;
+                public uint nFileIndexLow;
+            }
+
+            [StructLayoutAttribute(LayoutKind.Sequential)]
+            public struct FILETIME {
+                public uint dwLowDateTime;
+                public uint dwHighDateTime;
             }
 
 
@@ -103,7 +142,14 @@ namespace VhdAttach {
                 out Int32 lpBytesReturned,
                 IntPtr lpOverlapped
             );
-        }
 
+            [DllImportAttribute("kernel32.dll", EntryPoint = "GetFileInformationByHandle", SetLastError = true)]
+            [return: MarshalAsAttribute(UnmanagedType.Bool)]
+            internal static extern bool GetFileInformationByHandle(
+                SafeFileHandle hFile,
+                out BY_HANDLE_FILE_INFORMATION lpFileInformation
+            );
+
+        }
     }
 }
