@@ -7,46 +7,110 @@ SET  FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.
 SET       FILES_OTHER="..\Binaries\ReadMe.txt" "..\Binaries\License.txt"
 
 SET    COMPILE_TOOL_1="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
-SET    COMPILE_TOOL_2="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe"
-SET    COMPILE_TOOL_3="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe"
+SET    COMPILE_TOOL_2="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\WDExpress.exe"
+SET    COMPILE_TOOL_3="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe"
+SET    COMPILE_TOOL_4="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe"
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
-SET         SIGN_TOOL="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x64\signtool.exe"
+SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
+SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
 SET         SIGN_HASH="C02FF227D5EE9F555C13D4C622697DF15C6FF871"
-SET SIGN_TIMESTAMPURL="http://www.startssl.com/timestamp"
+SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
+
+SET        GIT_TOOL_1="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
 
 
-FOR /F "delims=" %%N IN ('git log -n 1 --format^=%%h') DO @SET VERSION_HASH=%%N%
+ECHO --- DISCOVER TOOLS
+ECHO.
+
+IF EXIST %COMPILE_TOOL_1% (
+    ECHO Visual Studio 2015
+    SET COMPILE_TOOL=%COMPILE_TOOL_1%
+) ELSE (
+    IF EXIST %COMPILE_TOOL_2% (
+        ECHO Visual Studio Express 2015
+        SET COMPILE_TOOL=%COMPILE_TOOL_2%
+    ) ELSE (
+        IF EXIST %COMPILE_TOOL_3% (
+            ECHO Visual Studio 2012
+            SET COMPILE_TOOL=%COMPILE_TOOL_3%
+        ) ELSE (
+            IF EXIST %COMPILE_TOOL_4% (
+                ECHO Visual Studio Express 2012
+                SET COMPILE_TOOL=%COMPILE_TOOL_4%
+            ) ELSE (
+                ECHO Cannot find Visual Studio^^!
+                PAUSE && EXIT /B 255
+            )
+        )
+    )
+)
+
+IF EXIST %SETUP_TOOL% (
+    ECHO Inno Setup 5
+) ELSE (
+    ECHO Cannot find Inno Setup 5^^!
+    PAUSE && EXIT /B 255
+)
+
+IF EXIST %SIGN_TOOL_1% (
+    ECHO Windows SignTool 8.1
+    SET SIGN_TOOL=%SIGN_TOOL_1%
+) ELSE (
+    IF EXIST %SIGN_TOOL_2% (
+        ECHO Windows SignTool 8.0
+        SET SIGN_TOOL=%SIGN_TOOL_2%
+    ) ELSE (
+        ECHO Cannot find Windows SignTool^^!
+        PAUSE && EXIT /B 255
+    )
+)
+
+IF EXIST %GIT_TOOL_1% (
+    ECHO Git
+    SET GIT_TOOL=%GIT_TOOL_1%
+) ELSE (
+    GIT_TOOL="git"
+)
+
+ECHO.
+ECHO.
+
+
+ECHO --- DISCOVER VERSION
+ECHO.
+
+FOR /F "delims=" %%N IN ('%GIT_TOOL% log -n 1 --format^=%%h') DO @SET VERSION_HASH=%%N%
 
 IF NOT [%VERSION_HASH%]==[] (
-    FOR /F "delims=" %%N IN ('git rev-list --count HEAD') DO @SET VERSION_NUMBER=%%N%
-    git diff --exit-code --quiet
+    FOR /F "delims=" %%N IN ('%GIT_TOOL% rev-list --count HEAD') DO @SET VERSION_NUMBER=%%N%
+    %GIT_TOOL% diff --exit-code --quiet
     IF ERRORLEVEL 1 SET VERSION_HASH=%VERSION_HASH%+
 )
+IF NOT [%VERSION_HASH%]==[] (
+    ECHO %VERSION_NUMBER%: %VERSION_HASH%
+)
+
+ECHO.
+ECHO.
 
 
 ECHO --- BUILD SOLUTION
 ECHO.
 
-IF EXIST %COMPILE_TOOL_1% (
-    ECHO Using Visual Studio
-    SET COMPILE_TOOL=%COMPILE_TOOL_1%
-) ELSE (
-    IF EXIST %COMPILE_TOOL_2% (
-        ECHO Using Visual Studio Express
-        SET COMPILE_TOOL=%COMPILE_TOOL_2%
-    ) ELSE (
-        ECHO Cannot find Visual Studio!
-        PAUSE && EXIT /B 255
-    )
-)
-
 RMDIR /Q /S "..\Binaries" 2> NUL
 %COMPILE_TOOL% /Build "Release" %FILE_SOLUTION%
 IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
-COPY ..\README.md ..\Binaries\ReadMe.txt
-COPY ..\LICENSE.md ..\Binaries\License.txt
 
+COPY ..\README.md ..\Binaries\ReadMe.txt > NUL
+IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+
+COPY ..\LICENSE.md ..\Binaries\License.txt > NUL
+IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+
+ECHO Completed.
+
+ECHO.
 ECHO.
 
 
