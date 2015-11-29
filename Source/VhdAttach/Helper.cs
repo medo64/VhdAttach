@@ -30,7 +30,7 @@ namespace VhdAttach {
 
         #region Toolstrip images
 
-        internal static void UpdateToolstripImages(ImageList imageList, ToolStrip toolstrip) {
+        private static void GetToolstripSizeAndSet(ToolStrip toolstrip, out int size, out string set) {
             Form form = null;
             Control findParent = toolstrip;
             while ((findParent != null) && (form == null)) {
@@ -41,8 +41,6 @@ namespace VhdAttach {
             using (var g = form.CreateGraphics()) {
                 var scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;
 
-                int size;
-                string set;
                 if (scale < 1.5) {
                     size = 16;
                     set = "_16";
@@ -63,31 +61,47 @@ namespace VhdAttach {
                         set = "_32";
                     }
                 }
-
-
-                toolstrip.ImageScalingSize = new Size(size, size);
-
-                var resources = VhdAttach.Properties.Resources.ResourceManager;
-                foreach (ToolStripItem item in toolstrip.Items) {
-                    if (string.IsNullOrEmpty(item.Name)) { continue; }
-                    var resourceName = item.Name + set;
-                    var bitmap = resources.GetObject(resourceName) as Bitmap;
-                    if (bitmap != null) {
-                        item.ImageScaling = ToolStripItemImageScaling.None;
-                        item.Image = new Bitmap(bitmap, new Size(size, size));
-                    }
-                }
-
-                if (imageList != null) {
-                    imageList.Images.Clear();
-                    imageList.ImageSize = new Size(size, size);
-                    imageList.Images.Add(resources.GetObject("StatusInformation" + set) as Bitmap);
-                    imageList.Images.Add(resources.GetObject("StatusWarning" + set) as Bitmap);
-                    imageList.Images.Add(resources.GetObject("StatusError" + set) as Bitmap);
-                    imageList.Images.Add(resources.GetObject("StatusCritical" + set) as Bitmap);
-                    imageList.Images.Add(resources.GetObject("StatusLocked" + set) as Bitmap);
-                }
             }
+        }
+
+        internal static void UpdateToolstripImages(ImageList imageList, ToolStrip toolstrip) {
+            int size;
+            string set;
+            GetToolstripSizeAndSet(toolstrip, out size, out set);
+            toolstrip.ImageScalingSize = new Size(size, size);
+
+            var resources = VhdAttach.Properties.Resources.ResourceManager;
+            foreach (ToolStripItem item in toolstrip.Items) {
+                if (string.IsNullOrEmpty(item.Name)) { continue; }
+                UpdateToolstripImage(item, item.Name, size, set);
+            }
+
+            if (imageList != null) {
+                imageList.Images.Clear();
+                imageList.ImageSize = new Size(size, size);
+                imageList.Images.Add(resources.GetObject("StatusInformation" + set) as Bitmap);
+                imageList.Images.Add(resources.GetObject("StatusWarning" + set) as Bitmap);
+                imageList.Images.Add(resources.GetObject("StatusError" + set) as Bitmap);
+                imageList.Images.Add(resources.GetObject("StatusCritical" + set) as Bitmap);
+                imageList.Images.Add(resources.GetObject("StatusLocked" + set) as Bitmap);
+            }
+        }
+
+        private static void UpdateToolstripImage(ToolStripItem item, string name, int size, string set) {
+            var resources = VhdAttach.Properties.Resources.ResourceManager;
+            var resourceName = name + set;
+            var bitmap = resources.GetObject(resourceName) as Bitmap;
+            if (bitmap != null) {
+                item.ImageScaling = ToolStripItemImageScaling.None;
+                item.Image = new Bitmap(bitmap, new Size(size, size));
+            }
+        }
+
+        internal static void UpdateToolstripImage(ToolStripItem item, string name) {
+            int size;
+            string set;
+            GetToolstripSizeAndSet(item.GetCurrentParent(), out size, out set);
+            UpdateToolstripImage(item, name, size, set);
         }
 
         #endregion

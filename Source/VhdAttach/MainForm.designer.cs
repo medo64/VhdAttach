@@ -66,6 +66,7 @@ namespace VhdAttach {
             this.staErrorServiceNotRunning = new System.Windows.Forms.StatusStrip();
             this.staErrorServiceNotRunningText = new System.Windows.Forms.ToolStripStatusLabel();
             this.tmrUpdateMenu = new System.Windows.Forms.Timer(this.components);
+            this.bwCheckForUpgrade = new System.ComponentModel.BackgroundWorker();
             this.mnxList.SuspendLayout();
             this.mnu.SuspendLayout();
             this.staErrorStolenExtension.SuspendLayout();
@@ -448,6 +449,12 @@ namespace VhdAttach {
             this.tmrUpdateMenu.Interval = 1000;
             this.tmrUpdateMenu.Tick += new System.EventHandler(this.tmrUpdateMenu_Tick);
             // 
+            // bwCheckForUpgrade
+            // 
+            this.bwCheckForUpgrade.WorkerSupportsCancellation = true;
+            this.bwCheckForUpgrade.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwCheckForUpgrade_DoWork);
+            this.bwCheckForUpgrade.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCheckForUpgrade_RunWorkerCompleted);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -466,6 +473,7 @@ namespace VhdAttach {
             this.Text = "VHD Attach";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
             this.Load += new System.EventHandler(this.Form_Load);
+            this.Shown += new System.EventHandler(this.Form_Shown);
             this.Resize += new System.EventHandler(this.Form_Resize);
             this.mnxList.ResumeLayout(false);
             this.mnu.ResumeLayout(false);
@@ -524,6 +532,7 @@ namespace VhdAttach {
         private System.Windows.Forms.Timer tmrUpdateMenu;
         private System.Windows.Forms.ToolStripMenuItem mnuAppOptions;
         private System.Windows.Forms.ToolStripSeparator mnuApp0;
+        private System.ComponentModel.BackgroundWorker bwCheckForUpgrade;
     }
 }
 

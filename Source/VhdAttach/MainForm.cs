@@ -160,6 +160,7 @@ namespace VhdAttach {
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
             Medo.Windows.Forms.State.Save(this, list);
             this.Recent.Save();
+            bwCheckForUpgrade.CancelAsync();
         }
 
         private void Form_Resize(object sender, EventArgs e) {
@@ -168,6 +169,10 @@ namespace VhdAttach {
                 list.Columns[0].Width = x.Width;
             }
             list.Columns[1].Width = list.ClientSize.Width - list.Columns[0].Width - SystemInformation.VerticalScrollBarWidth;
+        }
+
+        private void Form_Shown(object sender, EventArgs e) {
+            bwCheckForUpgrade.RunWorkerAsync();
         }
 
 
@@ -1005,6 +1010,29 @@ namespace VhdAttach {
             }
         }
 
-    }
 
+        private void bwCheckForUpgrade_DoWork(object sender, DoWorkEventArgs e) {
+            e.Cancel = true;
+
+            var sw = Stopwatch.StartNew();
+            while (sw.ElapsedMilliseconds < 3000) { //wait for three seconds
+                Thread.Sleep(100);
+                if (bwCheckForUpgrade.CancellationPending) { return; }
+            }
+
+            var file = Medo.Services.Upgrade.GetUpgradeFile(new Uri("http://jmedved.com/upgrade/"));
+            if (file != null) {
+                if (bwCheckForUpgrade.CancellationPending) { return; }
+                e.Cancel = false;
+            }
+        }
+
+        private void bwCheckForUpgrade_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            if (!e.Cancelled) {
+                Helper.UpdateToolstripImage(mnuApp, "mnuAppUpgrade");
+                mnuAppUpgrade.Text = "Upgrade is available";
+            }
+        }
+
+    }
 }
