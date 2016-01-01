@@ -75,7 +75,7 @@
     <Compile Include="%28Medo%29\TaskbarProgress [003].cs" />
     <Compile Include="%28Medo%29\TinyMessage [009].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="%28Medo%29\Upgrade [002].cs" />
+    <Compile Include="%28Medo%29\Upgrade [004].cs" />
     <Compile Include="%28Medo%29\VirtualDisk [010].cs" />
     <Compile Include="..\VhdAttach-Service\FileWithOptions.cs">
       <Link>FileWithOptions.cs</Link>

@@ -8,8 +8,6 @@ SET       FILES_OTHER="..\Binaries\ReadMe.txt" "..\Binaries\License.txt"
 
 SET    COMPILE_TOOL_1="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
 SET    COMPILE_TOOL_2="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\WDExpress.exe"
-SET    COMPILE_TOOL_3="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe"
-SET    COMPILE_TOOL_4="%PROGRAMFILES(X86)%\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe"
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
 SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
@@ -31,18 +29,8 @@ IF EXIST %COMPILE_TOOL_1% (
         ECHO Visual Studio Express 2015
         SET COMPILE_TOOL=%COMPILE_TOOL_2%
     ) ELSE (
-        IF EXIST %COMPILE_TOOL_3% (
-            ECHO Visual Studio 2012
-            SET COMPILE_TOOL=%COMPILE_TOOL_3%
-        ) ELSE (
-            IF EXIST %COMPILE_TOOL_4% (
-                ECHO Visual Studio Express 2012
-                SET COMPILE_TOOL=%COMPILE_TOOL_4%
-            ) ELSE (
-                ECHO Cannot find Visual Studio^^!
-                PAUSE && EXIT /B 255
-            )
-        )
+        ECHO Cannot find Visual Studio^^!
+        PAUSE && EXIT /B 255
     )
 )
 
@@ -86,9 +74,7 @@ IF NOT [%VERSION_HASH%]==[] (
     FOR /F "delims=" %%N IN ('%GIT_TOOL% rev-list --count HEAD') DO @SET VERSION_NUMBER=%%N%
     %GIT_TOOL% diff --exit-code --quiet
     IF ERRORLEVEL 1 SET VERSION_HASH=%VERSION_HASH%+
-)
-IF NOT [%VERSION_HASH%]==[] (
-    ECHO %VERSION_NUMBER%: %VERSION_HASH%
+    ECHO %VERSION_HASH%
 )
 
 ECHO.

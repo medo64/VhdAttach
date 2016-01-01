@@ -17,7 +17,7 @@ AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppPublisher={#AppCompany}
-AppPublisherURL=http://jmedved.com/{#AppBase}/
+AppPublisherURL=https://www.medo64.com/{#AppBase}/
 AppCopyright={#AppCopyright}
 VersionInfoProductVersion={#AppVersion}
 VersionInfoProductTextVersion={#AppVersionEx}
@@ -46,7 +46,7 @@ LicenseFile=..\Setup\License.rtf
 [Messages]
 SetupAppTitle=Setup {#AppName} {#AppVersionEx}
 SetupWindowTitle=Setup {#AppName} {#AppVersionEx}
-BeveledLabel=jmedved.com
+BeveledLabel=www.medo64.com
 
 
 [Files]

@@ -1,7 +1,9 @@
-//Copyright (c) 2012 Josip Medved <jmedved@jmedved.com>
+//Josip Medved <jmedved@jmedved.com> www.medo64.com
 
 //2012-03-05: Initial version.
 //2012-03-13: UI adjustments.
+//2013-12-28: Message box adjustments.
+//2015-12-31: Allowing for 301 redirect.
 
 
 using System;
@@ -26,7 +28,7 @@ namespace Medo.Services {
         /// <summary>
         /// Returns upgrade file if there is one or null if there is no upgrade.
         /// </summary>
-        /// <param name="serviceUri">Service URI (e.g. http://jmedved.com/upgrade/).</param>
+        /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
         /// <exception cref="System.InvalidOperationException">Unexpected answer from upgrade server. -or- Cannot contact upgrade server.</exception>
         public static UpgradeFile GetUpgradeFile(Uri serviceUri) {
@@ -36,7 +38,7 @@ namespace Medo.Services {
         /// <summary>
         /// Returns upgrade file if there is one or null if there is no upgrade.
         /// </summary>
-        /// <param name="serviceUri">Service URI (e.g. http://jmedved.com/upgrade/).</param>
+        /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <param name="assembly">Assembly.</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
         /// <exception cref="System.InvalidOperationException">Unexpected answer from upgrade server. -or- Cannot contact upgrade server.</exception>
@@ -61,7 +63,7 @@ namespace Medo.Services {
         /// Shows Upgrade dialog.
         /// </summary>
         /// <param name="owner">Shows the form as a modal dialog box with the specified owner.</param>
-        /// <param name="serviceUri">Service URI (e.g. http://jmedved.com/upgrade/).</param>
+        /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
         public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri) {
             return ShowDialog(owner, serviceUri, Assembly.GetEntryAssembly());
@@ -71,7 +73,7 @@ namespace Medo.Services {
         /// Shows Upgrade dialog.
         /// </summary>
         /// <param name="owner">Shows the form as a modal dialog box with the specified owner.</param>
-        /// <param name="serviceUri">Service URI (e.g. http://jmedved.com/upgrade/).</param>
+        /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <param name="assembly">Assembly.</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
         public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri, Assembly assembly) {
@@ -101,7 +103,7 @@ namespace Medo.Services {
                 using (var response = (HttpWebResponse)request.GetResponse()) {
                     switch (response.StatusCode) {
                         case HttpStatusCode.Gone: return null; //no upgrade
-                        case HttpStatusCode.Forbidden: return null; //no upgrade (old code)
+                        case HttpStatusCode.MovedPermanently: return GetUpgradeFileFromURL(response.Headers["Location"]); //follow 301 redirect
                         case HttpStatusCode.SeeOther: return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
                         default: throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + " " + response.StatusDescription + ").");
                     }
@@ -240,7 +242,7 @@ namespace Medo.Services {
                             btnCancel.Text = Resources.Close;
                         }
                     } else {
-                        MessageBox.ShowDialog(this, Resources.ErrorCannotCheck + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotCheck + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
                         this.DialogResult = DialogResult.Cancel;
                     }
                 } else {
@@ -308,7 +310,7 @@ namespace Medo.Services {
                                 System.Windows.Forms.Application.Exit();
                                 this.DialogResult = DialogResult.OK;
                             } catch (Win32Exception ex) {
-                                MessageBox.ShowDialog(this, Resources.ErrorCannotUpgrade + "\n\n" + ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotUpgrade + "\n\n" + ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
                                 this.DialogResult = DialogResult.Cancel;
                             }
                         } else {
@@ -323,7 +325,7 @@ namespace Medo.Services {
                             }
                         }
                     } else {
-                        MessageBox.ShowDialog(this, Resources.ErrorCannotDownload + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotDownload + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
                         this.DialogResult = DialogResult.Cancel;
                     }
                 } else {
@@ -357,9 +359,9 @@ namespace Medo.Services {
             internal static string Close { get { return GetInCurrentLanguage("Close", "Zatvori"); } }
             internal static string Upgrade { get { return GetInCurrentLanguage("Upgrade", "Nadogradi"); } }
             internal static string Download { get { return GetInCurrentLanguage("Download", "Preuzmi"); } }
-            internal static string ErrorCannotCheck { get { return GetInCurrentLanguage("Cannot check for upgrade.", "Nije moguæe provjeriti nadogradnju."); } }
-            internal static string ErrorCannotUpgrade { get { return GetInCurrentLanguage("Cannot upgrade.", "Nadogradnja nije moguæa."); } }
-            internal static string ErrorCannotDownload { get { return GetInCurrentLanguage("Cannot download upgrade.", "Nije moguæe preuzeti nadogradnju."); } }
+            internal static string ErrorCannotCheck { get { return GetInCurrentLanguage("Cannot check for upgrade.", "Nije moguÄ‡e provjeriti nadogradnju."); } }
+            internal static string ErrorCannotUpgrade { get { return GetInCurrentLanguage("Cannot upgrade.", "Nadogradnja nije moguÄ‡a."); } }
+            internal static string ErrorCannotDownload { get { return GetInCurrentLanguage("Cannot download upgrade.", "Nije moguÄ‡e preuzeti nadogradnju."); } }
             internal static string StatusChecking { get { return GetInCurrentLanguage("Checking for upgrade...", "Provjera nadogradnje u tijeku..."); } }
             internal static string StatusCancelling { get { return GetInCurrentLanguage("Cancelling...", "Odustajanje u tijeku..."); } }
             internal static string StatusDownloading { get { return GetInCurrentLanguage("Download in progress...", "Preuzimanje u tijeku..."); } }

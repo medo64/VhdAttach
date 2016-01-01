@@ -735,11 +735,7 @@ namespace VhdAttach {
         }
 
         private void mnuAppUpgrade_Click(object sender, EventArgs e) {
-            Medo.Services.Upgrade.ShowDialog(this, new Uri("http://jmedved.com/upgrade/"));
-        }
-
-        private void mnuAppDonate_Click(object sender, EventArgs e) {
-            Process.Start("http://www.jmedved.com/donate/");
+            Medo.Services.Upgrade.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
         }
 
         private void mnuAppAbout_Click(object sender, EventArgs e) {
@@ -747,11 +743,11 @@ namespace VhdAttach {
         }
 
         private void mnuHelpReportABug_Click(object sender, EventArgs e) {
-            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/feedback/"));
+            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("https://medo64.com/feedback/"));
         }
 
         private void mnuHelpAbout_Click(object sender, EventArgs e) {
-            Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://www.jmedved.com/vhdattach/"));
+            Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("https://www.medo64.com/vhdattach/"));
         }
 
         #endregion
@@ -1020,7 +1016,7 @@ namespace VhdAttach {
                 if (bwCheckForUpgrade.CancellationPending) { return; }
             }
 
-            var file = Medo.Services.Upgrade.GetUpgradeFile(new Uri("http://jmedved.com/upgrade/"));
+            var file = Medo.Services.Upgrade.GetUpgradeFile(new Uri("https://medo64.com/upgrade/"));
             if (file != null) {
                 if (bwCheckForUpgrade.CancellationPending) { return; }
                 e.Cancel = false;

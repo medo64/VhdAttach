@@ -44,7 +44,6 @@ namespace VhdAttach {
             this.mnuApp0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppFeedback = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAppUpgrade = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAppDonate = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -209,7 +208,6 @@ namespace VhdAttach {
             this.mnuApp0,
             this.mnuAppFeedback,
             this.mnuAppUpgrade,
-            this.mnuAppDonate,
             this.mnuApp1,
             this.mnuAppAbout});
             this.mnuApp.Image = global::VhdAttach.Properties.Resources.mnuApp_16;
@@ -243,13 +241,6 @@ namespace VhdAttach {
             this.mnuAppUpgrade.Size = new System.Drawing.Size(244, 30);
             this.mnuAppUpgrade.Text = "Check for &upgrade";
             this.mnuAppUpgrade.Click += new System.EventHandler(this.mnuAppUpgrade_Click);
-            // 
-            // mnuAppDonate
-            // 
-            this.mnuAppDonate.Name = "mnuAppDonate";
-            this.mnuAppDonate.Size = new System.Drawing.Size(244, 30);
-            this.mnuAppDonate.Text = "&Donate";
-            this.mnuAppDonate.Click += new System.EventHandler(this.mnuAppDonate_Click);
             // 
             // mnuApp1
             // 
@@ -513,7 +504,6 @@ namespace VhdAttach {
         private System.Windows.Forms.ToolStripButton mnuRefresh;
         private System.Windows.Forms.ToolStrip mnu;
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
-        private System.Windows.Forms.ToolStripMenuItem mnuAppDonate;
         private System.Windows.Forms.ToolStripSeparator mnuApp1;
         private System.Windows.Forms.StatusStrip staErrorStolenExtension;
         private System.Windows.Forms.ToolStripStatusLabel staErrorStolenExtensionText;
