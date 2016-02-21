@@ -37,7 +37,7 @@ if [[ "$BRANCH" == "master" ]]; then
         
             git push origin :refs/tags/latest 2> /dev/null
             
-            ASSET_UPLOAD_URL=`curl -s -H "Authorization: token $TOKEN" --data "{\"tag_name\": \"latest\", \"target_commitish\": \"master\", \"name\": \"Most recent build\", \"body\": \"This is the most recent automated build.\n\nFor the latest stable release go to https://www.medo64.com/$REPOSITORY/.\", \"draft\": false, \"prerelease\": true}" -X POST https://api.github.com/repos/$OWNER/$REPOSITORY/releases | grep "\"upload_url\"" | cut -d\" -f4 | cut -d{ -f1`
+            ASSET_UPLOAD_URL=`curl -s -H "Authorization: token $TOKEN" --data "{\"tag_name\": \"latest\", \"target_commitish\": \"master\", \"name\": \"Most recent build ($VERSION_NUMBER)\", \"body\": \"This is the most recent automated build.\n\nFor the latest stable release go to https://www.medo64.com/$REPOSITORY/.\", \"draft\": false, \"prerelease\": true}" -X POST https://api.github.com/repos/$OWNER/$REPOSITORY/releases | grep "\"upload_url\"" | cut -d\" -f4 | cut -d{ -f1`
             for FILE_EXTENSION in "exe"; do
                 UPLOAD_RESULT=`curl -s -H "Authorization: token $TOKEN" -H "Content-Type: application/octet-stream" --data-binary @../Releases/$FILE_PREFIX.$FILE_EXTENSION -X POST $ASSET_UPLOAD_URL?name=$FILE_PREFIX.$FILE_EXTENSION`
                 echo $UPLOAD_RESULT | grep --quiet "browser_download_url"
