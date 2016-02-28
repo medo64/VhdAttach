@@ -12,7 +12,7 @@ SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
 SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
 SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
-SET         SIGN_HASH="C02FF227D5EE9F555C13D4C622697DF15C6FF871"
+SET   SIGN_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
 SET        GIT_TOOL_1="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
@@ -100,22 +100,22 @@ ECHO.
 ECHO.
 
 
-CERTUTIL -silent -verifystore -user My %SIGN_HASH% > NUL
+CERTUTIL -silent -verifystore -user My %SIGN_THUMBPRINT% > NUL
 IF %ERRORLEVEL%==0 (
     ECHO --- SIGN SOLUTION
     ECHO.
     
     IF [%SIGN_TIMESTAMPURL%]==[] (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /v %FILES_EXECUTABLE%
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /v %FILES_EXECUTABLE%
     ) ELSE (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /tr %SIGN_TIMESTAMPURL% /v %FILES_EXECUTABLE%
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v %FILES_EXECUTABLE%
     )
     IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 ) ELSE (
     ECHO --- DID NOT SIGN SOLUTION
-    IF NOT [%SIGN_HASH%]==[] (
+    IF NOT [%SIGN_THUMBPRINT%]==[] (
         ECHO.
-        ECHO No certificate with hash %SIGN_HASH%.
+        ECHO No certificate with hash %SIGN_THUMBPRINT%.
     ) 
 )
 ECHO.
@@ -154,15 +154,15 @@ ECHO.
 ECHO.
 
 
-CERTUTIL -silent -verifystore -user My %SIGN_HASH% > NUL
+CERTUTIL -silent -verifystore -user My %SIGN_THUMBPRINT% > NUL
 IF %ERRORLEVEL%==0 (
     ECHO --- SIGN SETUP
     ECHO.
     
     IF [%SIGN_TIMESTAMPURL%]==[] (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /v ".\Temp\%_SETUPEXE%"
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /v ".\Temp\%_SETUPEXE%"
     ) ELSE (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_HASH% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\%_SETUPEXE%"
+        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\%_SETUPEXE%"
     )
     IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 ) ELSE (
