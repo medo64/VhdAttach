@@ -211,143 +211,155 @@ namespace VhdAttach {
                         items.Add(new ListViewItem(new string[] { "Free space on " + di.Name, string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(di.AvailableFreeSpace, "B", "0"), di.AvailableFreeSpace) }) { Group = GroupFileSystem });
                     } catch { }
 
-                    document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo | Medo.IO.VirtualDiskAccessMask.Detach); //Workaround: The VirtualDiskAccessMask parameter must include the VIRTUAL_DISK_ACCESS_DETACH (0x00040000) flag.
-                    string attachedDevice = null;
-                    string[] attachedPaths = null;
-                    try {
-                        attachedDevice = document.GetAttachedPath();
-                        attachedPaths = PathFromDevice.GetPath(attachedDevice);
-                    } catch { }
-                    if (attachedDevice != null) {
-                        items.Add(new ListViewItem(new string[] { "Attached device", attachedDevice }) { Group = GroupFileSystem });
-                    }
-                    if (attachedPaths != null) {
-                        for (int i = 0; i < attachedPaths.Length; i++) {
-                            items.Add(new ListViewItem(new string[] { ((i == 0) ? "Attached path" : ""), attachedPaths[i] }) { Group = GroupFileSystem });
-                        }
-                    }
+
+                    mnuAttach.Enabled = false;
+                    mnuDetach.Enabled = false;
+                    mnuAutomount.Enabled = false;
+                    mnuDrive.Enabled = false;
 
                     try {
-                        long virtualSize;
-                        long physicalSize;
-                        int blockSize;
-                        int sectorSize;
-                        document.GetSize(out virtualSize, out physicalSize, out blockSize, out sectorSize);
-                        items.Add(new ListViewItem(new string[] { "Virtual size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(virtualSize, "B", "0"), virtualSize) }) { Group = GroupDetails });
-                        if (fileInfo.Length != physicalSize) {
-                            items.Add(new ListViewItem(new string[] { "Physical size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(physicalSize, "B", "0"), physicalSize) }) { Group = GroupDetails });
-                        }
-                        if (blockSize != 0) {
-                            items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(((long)blockSize), "B", "0"), blockSize) }) { Group = GroupDetails });
-                        }
-                        items.Add(new ListViewItem(new string[] { "Sector size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(((long)sectorSize), "B", "0"), sectorSize) }) { Group = GroupDetails });
-                    } catch { }
+                        document.Open(Medo.IO.VirtualDiskAccessMask.GetInfo | Medo.IO.VirtualDiskAccessMask.Detach); //Workaround: The VirtualDiskAccessMask parameter must include the VIRTUAL_DISK_ACCESS_DETACH (0x00040000) flag.
 
-                    try {
-                        items.Add(new ListViewItem(new string[] { "Identifier", document.GetIdentifier().ToString() }) { Group = GroupDetails });
-                    } catch { }
-
-                    try {
-                        int deviceId;
-                        Guid vendorId;
-                        document.GetVirtualStorageType(out deviceId, out vendorId);
-                        string deviceText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", deviceId);
-                        switch (deviceId) {
-                            case 1: deviceText = "ISO"; break;
-                            case 2: deviceText = "VHD"; break;
-                            case 3: deviceText = "VHDX"; break;
-                        }
-                        string vendorText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", vendorId);
-                        if (vendorId.Equals(new Guid("EC984AEC-A0F9-47e9-901F-71415A66345B"))) { vendorText = "Microsoft"; }
-                        items.Add(new ListViewItem(new string[] { "Device ID", deviceText }) { Group = GroupDetails });
-                        items.Add(new ListViewItem(new string[] { "Vendor ID", vendorText }) { Group = GroupDetails });
-                    } catch { }
-
-                    try {
-                        items.Add(new ListViewItem(new string[] { "Provider subtype", string.Format(CultureInfo.CurrentCulture, "{0} (0x{0:x8})", document.GetProviderSubtype()) }) { Group = GroupDetails });
-                    } catch { }
-
-
-                    if (document.DiskType == Medo.IO.VirtualDiskType.Vhd) {
+                        string attachedDevice = null;
+                        string[] attachedPaths = null;
                         try {
-                            var footerCopyBytes = new byte[512];
-                            var headerBytes = new byte[1024];
-                            var footerBytes = new byte[512];
-                            using (var vhdFile = new FileStream(vhdFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                                vhdFile.Read(footerCopyBytes, 0, 512);
-                                vhdFile.Read(headerBytes, 0, 1024);
-                                vhdFile.Position = vhdFile.Length - 512;
-                                vhdFile.Read(footerBytes, 0, 512);
-                            }
-
-                            var footer = new HardDiskFooter(footerBytes);
-
-                            if (footer.Cookie != "conectix") {
-                                items.Add(new ListViewItem(new string[] { "Cookie", footer.Cookie }) { Group = GroupInternals });
-                            }
-
-                            items.Add(new ListViewItem(new string[] { "Creation time stamp", string.Format(CultureInfo.CurrentCulture, "{0}", footer.TimeStamp.ToLocalTime()) }) { Group = GroupInternals });
-
-                            var creatorApplicationText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", (int)footer.CreatorApplication);
-                            switch (footer.CreatorApplication) {
-                                case VhdCreatorApplication.JosipMedvedVhdAttach: creatorApplicationText = "Josip Medved's VHD Attach"; break;
-                                case VhdCreatorApplication.MicrosoftSysinternalsDisk2Vhd: creatorApplicationText = "Microsoft Sysinternals Disk2vhd"; break;
-                                case VhdCreatorApplication.MicrosoftVirtualPC: creatorApplicationText = "Microsoft Virtual PC"; break;
-                                case VhdCreatorApplication.MicrosoftVirtualServer: creatorApplicationText = "Microsoft Virtual Server"; break;
-                                case VhdCreatorApplication.MicrosoftWindows: creatorApplicationText = "Microsoft Windows"; break;
-                                case VhdCreatorApplication.OracleVirtualBox: creatorApplicationText = "Oracle VirtualBox"; break;
-                            }
-                            items.Add(new ListViewItem(new string[] { "Creator application", string.Format(CultureInfo.InvariantCulture, "{0} {1}.{2}", creatorApplicationText, footer.CreatorVersion.Major, footer.CreatorVersion.Minor) }) { Group = GroupInternals });
-
-                            var creatorHostOsText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", (int)footer.CreatorHostOs);
-                            switch (footer.CreatorHostOs) {
-                                case VhdCreatorHostOs.Windows: creatorHostOsText = "Windows"; break;
-                                case VhdCreatorHostOs.Macintosh: creatorHostOsText = "Macintosh"; break;
-                            }
-                            items.Add(new ListViewItem(new string[] { "Creator host OS", creatorHostOsText }) { Group = GroupInternals });
-
-                            items.Add(new ListViewItem(new string[] { "Disk geometry", string.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", CylinderSuffix.GetText(footer.DiskGeometryCylinders), HeadSuffix.GetText(footer.DiskGeometryHeads), SectorSuffix.GetText(footer.DiskGeometrySectors)) }) { Group = GroupInternals });
-
-                            var diskTypeText = string.Format(CultureInfo.CurrentCulture, "Unknown ({0}: 0x{0:x4})", (int)footer.DiskType);
-                            switch ((int)footer.DiskType) {
-                                case 0: diskTypeText = "None"; break;
-                                case 1: diskTypeText = "Reserved (deprecated: 0x0001)"; break;
-                                case 2: diskTypeText = "Fixed hard disk"; break;
-                                case 3: diskTypeText = "Dynamic hard disk"; break;
-                                case 4: diskTypeText = "Differencing hard disk"; break;
-                                case 5: diskTypeText = "Reserved (deprecated: 0x0005)"; break;
-                                case 6: diskTypeText = "Reserved (deprecated: 0x0006)"; break;
-                            }
-                            items.Add(new ListViewItem(new string[] { "Disk type", diskTypeText }) { Group = GroupInternals });
-
-                            if ((footer.DiskType == VhdDiskType.DynamicHardDisk) || (footer.DiskType == VhdDiskType.DifferencingHardDisk)) {
-
-                                var header = new DynamicDiskHeader(headerBytes);
-
-                                if (header.Cookie != "cxsparse") {
-                                    items.Add(new ListViewItem(new string[] { "Cookie", header.Cookie }) { Group = GroupInternalsDynamic });
-                                }
-
-                                if (header.DataOffset != ulong.MaxValue) {
-                                    items.Add(new ListViewItem(new string[] { "Data offset", header.DataOffset.ToString("#,##0") }) { Group = GroupInternalsDynamic });
-                                }
-
-                                items.Add(new ListViewItem(new string[] { "Max table entries", header.MaxTableEntries.ToString("#,##0") }) { Group = GroupInternalsDynamic });
-
-                                items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(header.BlockSize, "B", "0"), header.BlockSize) }) { Group = GroupInternalsDynamic });
-
-                            }
-
+                            attachedDevice = document.GetAttachedPath();
+                            attachedPaths = PathFromDevice.GetPath(attachedDevice);
                         } catch { }
+                        if (attachedDevice != null) {
+                            items.Add(new ListViewItem(new string[] { "Attached device", attachedDevice }) { Group = GroupFileSystem });
+                        }
+                        if (attachedPaths != null) {
+                            for (int i = 0; i < attachedPaths.Length; i++) {
+                                items.Add(new ListViewItem(new string[] { ((i == 0) ? "Attached path" : ""), attachedPaths[i] }) { Group = GroupFileSystem });
+                            }
+                        }
+
+                        try {
+                            long virtualSize;
+                            long physicalSize;
+                            int blockSize;
+                            int sectorSize;
+                            document.GetSize(out virtualSize, out physicalSize, out blockSize, out sectorSize);
+                            items.Add(new ListViewItem(new string[] { "Virtual size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(virtualSize, "B", "0"), virtualSize) }) { Group = GroupDetails });
+                            if (fileInfo.Length != physicalSize) {
+                                items.Add(new ListViewItem(new string[] { "Physical size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(physicalSize, "B", "0"), physicalSize) }) { Group = GroupDetails });
+                            }
+                            if (blockSize != 0) {
+                                items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(((long)blockSize), "B", "0"), blockSize) }) { Group = GroupDetails });
+                            }
+                            items.Add(new ListViewItem(new string[] { "Sector size", string.Format(CultureInfo.CurrentCulture, "{0} ({1} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(((long)sectorSize), "B", "0"), sectorSize) }) { Group = GroupDetails });
+                        } catch { }
+
+                        try {
+                            items.Add(new ListViewItem(new string[] { "Identifier", document.GetIdentifier().ToString() }) { Group = GroupDetails });
+                        } catch { }
+
+                        try {
+                            int deviceId;
+                            Guid vendorId;
+                            document.GetVirtualStorageType(out deviceId, out vendorId);
+                            string deviceText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", deviceId);
+                            switch (deviceId) {
+                                case 1: deviceText = "ISO"; break;
+                                case 2: deviceText = "VHD"; break;
+                                case 3: deviceText = "VHDX"; break;
+                            }
+                            string vendorText = string.Format(CultureInfo.InvariantCulture, "Unknown ({0})", vendorId);
+                            if (vendorId.Equals(new Guid("EC984AEC-A0F9-47e9-901F-71415A66345B"))) { vendorText = "Microsoft"; }
+                            items.Add(new ListViewItem(new string[] { "Device ID", deviceText }) { Group = GroupDetails });
+                            items.Add(new ListViewItem(new string[] { "Vendor ID", vendorText }) { Group = GroupDetails });
+                        } catch { }
+
+                        try {
+                            items.Add(new ListViewItem(new string[] { "Provider subtype", string.Format(CultureInfo.CurrentCulture, "{0} (0x{0:x8})", document.GetProviderSubtype()) }) { Group = GroupDetails });
+                        } catch { }
+
+
+                        if (document.DiskType == Medo.IO.VirtualDiskType.Vhd) {
+                            try {
+                                var footerCopyBytes = new byte[512];
+                                var headerBytes = new byte[1024];
+                                var footerBytes = new byte[512];
+                                using (var vhdFile = new FileStream(vhdFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                    vhdFile.Read(footerCopyBytes, 0, 512);
+                                    vhdFile.Read(headerBytes, 0, 1024);
+                                    vhdFile.Position = vhdFile.Length - 512;
+                                    vhdFile.Read(footerBytes, 0, 512);
+                                }
+
+                                var footer = new HardDiskFooter(footerBytes);
+
+                                if (footer.Cookie != "conectix") {
+                                    items.Add(new ListViewItem(new string[] { "Cookie", footer.Cookie }) { Group = GroupInternals });
+                                }
+
+                                items.Add(new ListViewItem(new string[] { "Creation time stamp", string.Format(CultureInfo.CurrentCulture, "{0}", footer.TimeStamp.ToLocalTime()) }) { Group = GroupInternals });
+
+                                var creatorApplicationText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", (int)footer.CreatorApplication);
+                                switch (footer.CreatorApplication) {
+                                    case VhdCreatorApplication.JosipMedvedVhdAttach: creatorApplicationText = "Josip Medved's VHD Attach"; break;
+                                    case VhdCreatorApplication.MicrosoftSysinternalsDisk2Vhd: creatorApplicationText = "Microsoft Sysinternals Disk2vhd"; break;
+                                    case VhdCreatorApplication.MicrosoftVirtualPC: creatorApplicationText = "Microsoft Virtual PC"; break;
+                                    case VhdCreatorApplication.MicrosoftVirtualServer: creatorApplicationText = "Microsoft Virtual Server"; break;
+                                    case VhdCreatorApplication.MicrosoftWindows: creatorApplicationText = "Microsoft Windows"; break;
+                                    case VhdCreatorApplication.OracleVirtualBox: creatorApplicationText = "Oracle VirtualBox"; break;
+                                }
+                                items.Add(new ListViewItem(new string[] { "Creator application", string.Format(CultureInfo.InvariantCulture, "{0} {1}.{2}", creatorApplicationText, footer.CreatorVersion.Major, footer.CreatorVersion.Minor) }) { Group = GroupInternals });
+
+                                var creatorHostOsText = string.Format(CultureInfo.InvariantCulture, "Unknown (0x{0:x4})", (int)footer.CreatorHostOs);
+                                switch (footer.CreatorHostOs) {
+                                    case VhdCreatorHostOs.Windows: creatorHostOsText = "Windows"; break;
+                                    case VhdCreatorHostOs.Macintosh: creatorHostOsText = "Macintosh"; break;
+                                }
+                                items.Add(new ListViewItem(new string[] { "Creator host OS", creatorHostOsText }) { Group = GroupInternals });
+
+                                items.Add(new ListViewItem(new string[] { "Disk geometry", string.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", CylinderSuffix.GetText(footer.DiskGeometryCylinders), HeadSuffix.GetText(footer.DiskGeometryHeads), SectorSuffix.GetText(footer.DiskGeometrySectors)) }) { Group = GroupInternals });
+
+                                var diskTypeText = string.Format(CultureInfo.CurrentCulture, "Unknown ({0}: 0x{0:x4})", (int)footer.DiskType);
+                                switch ((int)footer.DiskType) {
+                                    case 0: diskTypeText = "None"; break;
+                                    case 1: diskTypeText = "Reserved (deprecated: 0x0001)"; break;
+                                    case 2: diskTypeText = "Fixed hard disk"; break;
+                                    case 3: diskTypeText = "Dynamic hard disk"; break;
+                                    case 4: diskTypeText = "Differencing hard disk"; break;
+                                    case 5: diskTypeText = "Reserved (deprecated: 0x0005)"; break;
+                                    case 6: diskTypeText = "Reserved (deprecated: 0x0006)"; break;
+                                }
+                                items.Add(new ListViewItem(new string[] { "Disk type", diskTypeText }) { Group = GroupInternals });
+
+                                if ((footer.DiskType == VhdDiskType.DynamicHardDisk) || (footer.DiskType == VhdDiskType.DifferencingHardDisk)) {
+
+                                    var header = new DynamicDiskHeader(headerBytes);
+
+                                    if (header.Cookie != "cxsparse") {
+                                        items.Add(new ListViewItem(new string[] { "Cookie", header.Cookie }) { Group = GroupInternalsDynamic });
+                                    }
+
+                                    if (header.DataOffset != ulong.MaxValue) {
+                                        items.Add(new ListViewItem(new string[] { "Data offset", header.DataOffset.ToString("#,##0") }) { Group = GroupInternalsDynamic });
+                                    }
+
+                                    items.Add(new ListViewItem(new string[] { "Max table entries", header.MaxTableEntries.ToString("#,##0") }) { Group = GroupInternalsDynamic });
+
+                                    items.Add(new ListViewItem(new string[] { "Block size", string.Format(CultureInfo.CurrentCulture, "{0} ({1:#,##0} bytes)", BinaryPrefixExtensions.ToBinaryPrefixString(header.BlockSize, "B", "0"), header.BlockSize) }) { Group = GroupInternalsDynamic });
+
+                                }
+
+                            } catch { }
+                        }
+
+                        mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
+                        mnuDetach.Enabled = !mnuAttach.Enabled;
+                        mnuAutomount.Enabled = true;
+                        mnuDrive.Enabled = true;
+                        mnuAutomount_DropDownOpening(null, null);
+                        mnuDrive_DropDownOpening(null, null);
+
+                    } catch (InvalidDataException ex) {
+                        Medo.MessageBox.ShowError(this, "Cannot open virtual disk drive.\n\n" + ex.Message);
                     }
 
-
-                    mnuAttach.Enabled = string.IsNullOrEmpty(attachedDevice);
-                    mnuDetach.Enabled = !mnuAttach.Enabled;
-                    mnuAutomount.Enabled = true;
-                    mnuDrive.Enabled = true;
-                    mnuAutomount_DropDownOpening(null, null);
-                    mnuDrive_DropDownOpening(null, null);
 
                     list.BeginUpdate();
                     list.Items.Clear();
