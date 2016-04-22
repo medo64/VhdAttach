@@ -75,7 +75,7 @@ namespace VhdAttachService {
             var todoList = new List<FileWithOptions>(ServiceSettings.AutoAttachVhdList);
             var failedList = new List<FileWithOptions>();
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 AttachAutomatics(todoList, failedList);
                 if (failedList.Count == 0) { break; } //no failed
                 todoList.Clear();
