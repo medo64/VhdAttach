@@ -10,9 +10,9 @@ SET   COMPILE_TOOL_15="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Communit
 
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
-SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
-SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
-SET       SIGN_TOOL_3="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
+SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe"
+SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe"
+SET       SIGN_TOOL_3="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
 SET   SIGN_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
@@ -38,15 +38,15 @@ IF EXIST %SETUP_TOOL% (
 )
 
 IF EXIST %SIGN_TOOL_1% (
-    ECHO Windows SignTool 10
+    ECHO Windows SignTool 10 / ClickOnce
     SET SIGN_TOOL=%SIGN_TOOL_1%
 ) ELSE (
     IF EXIST %SIGN_TOOL_2% (
-        ECHO Windows SignTool 8.1
+        ECHO Windows SignTool 10 / App Certification Kit
         SET SIGN_TOOL=%SIGN_TOOL_2%
     ) ELSE (
         IF EXIST %SIGN_TOOL_3% (
-            ECHO Windows SignTool 8.0
+            ECHO Windows SignTool 10 / SDK
             SET SIGN_TOOL=%SIGN_TOOL_3%
         ) ELSE (
             ECHO Cannot find Windows SignTool^^!
