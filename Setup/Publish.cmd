@@ -6,12 +6,13 @@ SET     FILE_SOLUTION="..\Source\VhdAttach.sln"
 SET  FILES_EXECUTABLE="..\Binaries\VhdAttach.exe" "..\Binaries\VhdAttachService.exe"
 SET       FILES_OTHER="..\Binaries\ReadMe.txt" "..\Binaries\License.txt"
 
-SET    COMPILE_TOOL_1="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
-SET    COMPILE_TOOL_2="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\WDExpress.exe"
+SET   COMPILE_TOOL_15="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
-SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
-SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
+SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
+SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
+SET       SIGN_TOOL_3="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
 SET   SIGN_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
@@ -21,17 +22,12 @@ SET        GIT_TOOL_1="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
 ECHO --- DISCOVER TOOLS
 ECHO.
 
-IF EXIST %COMPILE_TOOL_1% (
-    ECHO Visual Studio 2015
-    SET COMPILE_TOOL=%COMPILE_TOOL_1%
+IF EXIST %COMPILE_TOOL_15% (
+    ECHO Visual Studio 2017
+    SET COMPILE_TOOL=%COMPILE_TOOL_15%
 ) ELSE (
-    IF EXIST %COMPILE_TOOL_2% (
-        ECHO Visual Studio Express 2015
-        SET COMPILE_TOOL=%COMPILE_TOOL_2%
-    ) ELSE (
-        ECHO Cannot find Visual Studio^^!
-        PAUSE && EXIT /B 255
-    )
+    ECHO Cannot find Visual Studio^^!
+    PAUSE && EXIT /B 255
 )
 
 IF EXIST %SETUP_TOOL% (
@@ -42,15 +38,20 @@ IF EXIST %SETUP_TOOL% (
 )
 
 IF EXIST %SIGN_TOOL_1% (
-    ECHO Windows SignTool 8.1
+    ECHO Windows SignTool 10
     SET SIGN_TOOL=%SIGN_TOOL_1%
 ) ELSE (
     IF EXIST %SIGN_TOOL_2% (
-        ECHO Windows SignTool 8.0
+        ECHO Windows SignTool 8.1
         SET SIGN_TOOL=%SIGN_TOOL_2%
     ) ELSE (
-        ECHO Cannot find Windows SignTool^^!
-        PAUSE && EXIT /B 255
+        IF EXIST %SIGN_TOOL_3% (
+            ECHO Windows SignTool 8.0
+            SET SIGN_TOOL=%SIGN_TOOL_3%
+        ) ELSE (
+            ECHO Cannot find Windows SignTool^^!
+            PAUSE && EXIT /B 255
+        )
     )
 )
 
