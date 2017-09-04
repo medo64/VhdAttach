@@ -7,8 +7,10 @@
 #define AppSetupFile   AppBase + StringChange(AppVersion, '.', '')
 
 #define AppVersionEx   StringChange(AppVersion, '0.00', '')
-#if "" != VersionHash
-#  define AppVersionEx AppVersionEx + " (" + VersionHash + ")"
+#ifdef VersionHash
+#  if "" != VersionHash
+#    define AppVersionEx AppVersionEx + " (" + VersionHash + ")"
+#  endif
 #endif
 
 
@@ -29,6 +31,7 @@ SourceDir=..\Binaries
 AppId=JosipMedved_VhdAttach
 CloseApplications="yes"
 RestartApplications="no"
+AppMutex=Global\JosipMedved_VhdAttach
 UninstallDisplayIcon={app}\VhdAttach.exe
 AlwaysShowComponentsList=no
 ArchitecturesInstallIn64BitMode=x64
@@ -46,16 +49,16 @@ LicenseFile=..\Setup\License.rtf
 [Messages]
 SetupAppTitle=Setup {#AppName} {#AppVersionEx}
 SetupWindowTitle=Setup {#AppName} {#AppVersionEx}
-BeveledLabel=www.medo64.com
+BeveledLabel=medo64.com
 
 
 [Files]
-Source: "VhdAttach.exe";                DestDir: "{app}";                      Flags: ignoreversion;
-Source: "VhdAttach.pdb";                DestDir: "{app}";                      Flags: ignoreversion;
-Source: "VhdAttachService.exe";         DestDir: "{app}";                      Flags: ignoreversion;
-Source: "VhdAttachService.pdb";         DestDir: "{app}";                      Flags: ignoreversion;
-Source: "ReadMe.txt";                   DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
-Source: "License.txt";                  DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
+Source: "VhdAttach.exe";         DestDir: "{app}";                            Flags: ignoreversion;
+Source: "VhdAttach.pdb";         DestDir: "{app}";                            Flags: ignoreversion;
+Source: "VhdAttachService.exe";  DestDir: "{app}";                            Flags: ignoreversion;
+Source: "VhdAttachService.pdb";  DestDir: "{app}";                            Flags: ignoreversion;
+Source: "..\README.md";          DestDir: "{app}";  DestName: "ReadMe.txt";   Flags: overwritereadonly uninsremovereadonly;  Attribs: readonly;
+Source: "..\LICENSE.md";         DestDir: "{app}";  DestName: "License.txt";  Flags: overwritereadonly uninsremovereadonly;  Attribs: readonly;
 
 
 [Tasks]
