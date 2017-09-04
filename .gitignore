@@ -4,6 +4,7 @@
 **/obj
 **/TestResults
 **/ApiPortabilityAnalysis.htm
+**/.vs
 
 Binaries/**
 Releases/**
