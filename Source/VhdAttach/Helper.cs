@@ -37,6 +37,7 @@ namespace VhdAttach {
                 form = findParent.Parent as Form;
                 findParent = findParent.Parent;
             }
+            if (form == null) { form = new Form(); } //workaround if parent is gone
 
             using (var g = form.CreateGraphics()) {
                 var scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;
