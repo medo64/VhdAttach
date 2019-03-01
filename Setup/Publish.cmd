@@ -185,7 +185,6 @@ IF NOT [%WARNING%]==[] (
     IF [%TOOL_SIGNTOOL%]==[] ECHO SignTool executable not found.
     IF [%TOOL_INNOSETUP%]==[] ECHO InnoSetup executable not found.
     IF [%TOOL_WINRAR%]==[] ECHO WinRAR executable not found.
-    IF [%TOOL_APPCONVERTER%]==[] ECHO Desktop App Converter executable not found.
 
     IF [%CERTIFICATE_THUMBPRINT%]==[] ECHO Executables not signed.
     PAUSE
