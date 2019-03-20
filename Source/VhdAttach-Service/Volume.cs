@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -150,12 +150,12 @@ namespace VhdAttachCommon {
 
         public static IList<Volume> GetVolumesOnPhysicalDrive(string physicalDrive) {
             int driveNumber;
-            if (physicalDrive.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+            if ((physicalDrive != null) && physicalDrive.StartsWith(@"\\.\PHYSICALDRIVE", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(17), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
                 return GetVolumesOnPhysicalDrive(driveNumber);
-            } else if (physicalDrive.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
+            } else if ((physicalDrive != null) && physicalDrive.StartsWith(@"\\.\CDROM", StringComparison.InvariantCulture) && int.TryParse(physicalDrive.Substring(9), NumberStyles.Integer, CultureInfo.InvariantCulture, out driveNumber)) {
                 return GetVolumesOnCdDrive(driveNumber);
             } else {
-                return null;
+                return new List<Volume>().AsReadOnly();
             }
         }
 
