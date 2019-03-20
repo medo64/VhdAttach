@@ -11,7 +11,7 @@ SET         TOOLS_SIGNTOOL="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignToo
 SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 5\iscc.exe"
 SET           TOOLS_WINRAR="%PROGRAMFILES(X86)%\WinRAR\WinRAR.exe" "%PROGRAMFILES%\WinRAR\WinRAR.exe" "C:\Program Files\WinRAR\WinRAR.exe"
 
-SET CERTIFICATE_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
+SET CERTIFICATE_THUMBPRINT="026184de8dbf52fdcbae75fd6b1a7d9ce4310e5d"
 SET      SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
 
