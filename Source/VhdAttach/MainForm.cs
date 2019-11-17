@@ -1037,7 +1037,7 @@ namespace VhdAttach {
         }
 
         private void bwCheckForUpgrade_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            if (!e.Cancelled) {
+            if (!e.Cancelled && (e.Error == null)) {
                 Helper.UpdateToolstripImage(mnuApp, "mnuAppUpgrade");
                 mnuAppUpgrade.Text = "Upgrade is available";
             }

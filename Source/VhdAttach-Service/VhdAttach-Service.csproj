@@ -64,7 +64,7 @@
     <Compile Include="%28Medo%29\AboutBox [013].cs" />
     <Compile Include="%28Medo%29\Args [002].cs" />
     <Compile Include="%28Medo%29\CallingAssembly [002].cs" />
-    <Compile Include="%28Medo%29\ErrorReport [019].cs" />
+    <Compile Include="%28Medo%29\ErrorReport [020].cs" />
     <Compile Include="%28Medo%29\NamedPipe [003].cs" />
     <Compile Include="%28Medo%29\Settings [012].cs" />
     <Compile Include="%28Medo%29\TinyMessage [009].cs" />

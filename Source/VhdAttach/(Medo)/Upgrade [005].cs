@@ -1,9 +1,10 @@
-//Josip Medved <jmedved@jmedved.com> www.medo64.com
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
-//2012-03-05: Initial version.
-//2012-03-13: UI adjustments.
-//2013-12-28: Message box adjustments.
+//2019-11-16: Allowing for TLS 1.2 and 1.3 where available.
 //2015-12-31: Allowing for 301 redirect.
+//2013-12-28: Message box adjustments.
+//2012-03-13: UI adjustments.
+//2012-03-05: Initial version.
 
 
 using System;
@@ -18,12 +19,14 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Medo.Services {
+namespace Medo.Services
+{
 
     /// <summary>
     /// Handles upgrade procedures.
     /// </summary>
-    public static class Upgrade {
+    public static class Upgrade
+    {
 
         /// <summary>
         /// Returns upgrade file if there is one or null if there is no upgrade.
@@ -31,7 +34,8 @@ namespace Medo.Services {
         /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
         /// <exception cref="System.InvalidOperationException">Unexpected answer from upgrade server. -or- Cannot contact upgrade server.</exception>
-        public static UpgradeFile GetUpgradeFile(Uri serviceUri) {
+        public static UpgradeFile GetUpgradeFile(Uri serviceUri)
+        {
             return GetUpgradeFile(serviceUri, Assembly.GetEntryAssembly());
         }
 
@@ -42,13 +46,16 @@ namespace Medo.Services {
         /// <param name="assembly">Assembly.</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
         /// <exception cref="System.InvalidOperationException">Unexpected answer from upgrade server. -or- Cannot contact upgrade server.</exception>
-        public static UpgradeFile GetUpgradeFile(Uri serviceUri, Assembly assembly) {
+        public static UpgradeFile GetUpgradeFile(Uri serviceUri, Assembly assembly)
+        {
             if (serviceUri == null) { throw new ArgumentNullException("serviceUri", "Argument cannot be null."); }
             if (assembly == null) { assembly = Assembly.GetEntryAssembly(); }
             var url = new StringBuilder();
             url.Append(serviceUri.AbsoluteUri.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? serviceUri.AbsoluteUri : serviceUri.AbsoluteUri + "/");
-            foreach (var ch in GetProduct(assembly)) {
-                if (char.IsLetterOrDigit(ch)) {
+            foreach (var ch in GetProduct(assembly))
+            {
+                if (char.IsLetterOrDigit(ch))
+                {
                     url.Append(char.ToLowerInvariant(ch));
                 }
             }
@@ -65,7 +72,8 @@ namespace Medo.Services {
         /// <param name="owner">Shows the form as a modal dialog box with the specified owner.</param>
         /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
-        public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri) {
+        public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri)
+        {
             return ShowDialog(owner, serviceUri, Assembly.GetEntryAssembly());
         }
 
@@ -76,15 +84,21 @@ namespace Medo.Services {
         /// <param name="serviceUri">Service URI (e.g. https://medo64.com/upgrade/).</param>
         /// <param name="assembly">Assembly.</param>
         /// <exception cref="System.ArgumentNullException">Argument cannot be null (serviceUri).</exception>
-        public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri, Assembly assembly) {
+        public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri, Assembly assembly)
+        {
             if (serviceUri == null) { throw new ArgumentNullException("serviceUri", "Argument cannot be null."); }
             if (assembly == null) { assembly = Assembly.GetEntryAssembly(); }
-            using (var frm = new UpgradeForm(serviceUri, assembly)) {
-                if (owner != null) {
+            TryProtocolUpgrade();
+            using (var frm = new UpgradeForm(serviceUri, assembly))
+            {
+                if (owner != null)
+                {
                     frm.ShowInTaskbar = false;
                     frm.StartPosition = FormStartPosition.CenterParent;
                     return frm.ShowDialog(owner);
-                } else {
+                }
+                else
+                {
                     frm.ShowInTaskbar = true;
                     frm.StartPosition = FormStartPosition.CenterScreen;
                     return frm.ShowDialog();
@@ -93,27 +107,35 @@ namespace Medo.Services {
         }
 
 
-        private static UpgradeFile GetUpgradeFileFromURL(string url) {
-            try {
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+        private static UpgradeFile GetUpgradeFileFromURL(string url)
+        {
+            try
+            {
+                TryProtocolUpgrade();
+                var request = (HttpWebRequest)HttpWebRequest.Create(url);
                 request.AllowAutoRedirect = false;
                 request.Method = "HEAD";
                 request.Proxy = HttpWebRequest.DefaultWebProxy;
                 request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-                using (var response = (HttpWebResponse)request.GetResponse()) {
-                    switch (response.StatusCode) {
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    switch (response.StatusCode)
+                    {
                         case HttpStatusCode.Gone: return null; //no upgrade
                         case HttpStatusCode.MovedPermanently: return GetUpgradeFileFromURL(response.Headers["Location"]); //follow 301 redirect
                         case HttpStatusCode.SeeOther: return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
                         default: throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + " " + response.StatusDescription + ").");
                     }
                 }
-            } catch (InvalidOperationException ex) {
-                var webEx = ex as WebException;
-                if (webEx != null) {
-                    var response = webEx.Response as HttpWebResponse;
-                    if (response != null) {
-                        switch (response.StatusCode) {
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex is WebException webEx)
+                {
+                    if (webEx.Response is HttpWebResponse response)
+                    {
+                        switch (response.StatusCode)
+                        {
                             case HttpStatusCode.Gone: return null; //no upgrade
                             case HttpStatusCode.Forbidden: return null; //no upgrade (old code)
                             case HttpStatusCode.SeeOther: return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
@@ -122,21 +144,56 @@ namespace Medo.Services {
                     }
                 }
                 throw;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new InvalidOperationException("Cannot contact upgrade server.", ex);
             }
         }
 
-        private static string GetProduct(Assembly assembly) {
-            object[] productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
-            if ((productAttributes != null) && (productAttributes.Length >= 1)) {
+        private static string GetProduct(Assembly assembly)
+        {
+            var productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+            if ((productAttributes != null) && (productAttributes.Length >= 1))
+            {
                 return ((AssemblyProductAttribute)productAttributes[productAttributes.Length - 1]).Product;
-            } else {
-                object[] titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
-                if ((titleAttributes != null) && (titleAttributes.Length >= 1)) {
+            }
+            else
+            {
+                var titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
+                if ((titleAttributes != null) && (titleAttributes.Length >= 1))
+                {
                     return ((AssemblyTitleAttribute)titleAttributes[titleAttributes.Length - 1]).Title;
-                } else {
+                }
+                else
+                {
                     return assembly.GetName().Name;
+                }
+            }
+        }
+
+        private static void TryProtocolUpgrade()
+        {
+            try
+            { //try TLS 1.3
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)12288 | (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+            }
+            catch (NotSupportedException)
+            {
+                try
+                { //try TLS 1.2
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+                }
+                catch (NotSupportedException)
+                {
+                    try
+                    { //try TLS 1.1
+                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+                    }
+                    catch (NotSupportedException)
+                    { //TLS 1.0
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+                    }
                 }
             }
         }
@@ -144,45 +201,47 @@ namespace Medo.Services {
 
         #region Form
 
-        private class UpgradeForm : Form {
+        private class UpgradeForm : Form
+        {
 
             private readonly Uri ServiceUri;
             private readonly Assembly Assembly;
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "All controls are disposed in Form's Dispose method.")]
-            internal UpgradeForm(Uri serviceUri, Assembly assembly) {
-                this.ServiceUri = serviceUri;
-                this.Assembly = assembly;
+            internal UpgradeForm(Uri serviceUri, Assembly assembly)
+            {
+                ServiceUri = serviceUri;
+                Assembly = assembly;
 
-                this.CancelButton = btnCancel;
-                this.AutoSize = true;
-                this.AutoScaleMode = AutoScaleMode.Font;
-                this.Font = SystemFonts.MessageBoxFont;
-                this.FormBorderStyle = FormBorderStyle.FixedDialog;
-                this.MinimizeBox = false;
-                this.MaximizeBox = false;
-                this.ShowIcon = false;
-                this.Text = string.Format(CultureInfo.CurrentUICulture, Resources.Caption, GetProduct(assembly));
+                CancelButton = btnCancel;
+                AutoSize = true;
+                AutoScaleMode = AutoScaleMode.Font;
+                Font = SystemFonts.MessageBoxFont;
+                FormBorderStyle = FormBorderStyle.FixedDialog;
+                MinimizeBox = false;
+                MaximizeBox = false;
+                ShowIcon = false;
+                Text = string.Format(CultureInfo.CurrentUICulture, Resources.Caption, GetProduct(assembly));
 
-                this.FormClosing += new FormClosingEventHandler(Form_FormClosing);
+                FormClosing += new FormClosingEventHandler(Form_FormClosing);
 
-                this.Controls.Add(prgProgress);
-                this.Controls.Add(lblStatus);
-                this.Controls.Add(btnUpgrade);
-                this.Controls.Add(btnDownload);
-                this.Controls.Add(btnCancel);
+                Controls.Add(prgProgress);
+                Controls.Add(lblStatus);
+                Controls.Add(btnUpgrade);
+                Controls.Add(btnDownload);
+                Controls.Add(btnCancel);
 
                 var width = 7 + btnUpgrade.Width + 7 + btnDownload.Width + 5 * 7 + btnCancel.Width + 7;
                 var height = 7 + prgProgress.Height + 7 + lblStatus.Height + 21 + btnCancel.Height + 7;
-                this.ClientSize = new Size(width, height);
+                ClientSize = new Size(width, height);
 
                 prgProgress.Location = new Point(7, 7);
                 prgProgress.Width = width - 14;
                 lblStatus.Location = new Point(7, prgProgress.Bottom + 7);
 
-                btnUpgrade.Location = new Point(7, this.ClientSize.Height - btnUpgrade.Height - 7);
-                btnDownload.Location = new Point(btnUpgrade.Right + 7, this.ClientSize.Height - btnDownload.Height - 7);
-                btnCancel.Location = new Point(this.ClientSize.Width - btnCancel.Width - 7, this.ClientSize.Height - btnCancel.Height - 7);
+                btnUpgrade.Location = new Point(7, ClientSize.Height - btnUpgrade.Height - 7);
+                btnDownload.Location = new Point(btnUpgrade.Right + 7, ClientSize.Height - btnDownload.Height - 7);
+                btnCancel.Location = new Point(ClientSize.Width - btnCancel.Width - 7, ClientSize.Height - btnCancel.Height - 7);
 
 
                 bwCheck.DoWork += new DoWorkEventHandler(bwCheck_DoWork);
@@ -198,66 +257,80 @@ namespace Medo.Services {
             }
 
 
-            void Form_FormClosing(object sender, FormClosingEventArgs e) {
+            private void Form_FormClosing(object sender, FormClosingEventArgs e)
+            {
                 prgProgress.Style = ProgressBarStyle.Continuous;
                 prgProgress.Value = 0;
                 lblStatus.Text = Resources.StatusCancelling;
                 btnCancel.Enabled = false;
-                if (this.bwCheck.IsBusy) { this.bwCheck.CancelAsync(); }
-                if (this.bwDownload.IsBusy) { this.bwDownload.CancelAsync(); }
-                e.Cancel = (this.bwCheck.IsBusy) || (this.bwDownload.IsBusy);
+                if (bwCheck.IsBusy) { bwCheck.CancelAsync(); }
+                if (bwDownload.IsBusy) { bwDownload.CancelAsync(); }
+                e.Cancel = (bwCheck.IsBusy) || (bwDownload.IsBusy);
             }
 
 
-            ProgressBar prgProgress = new ProgressBar() { Height = (int)(SystemInformation.HorizontalScrollBarHeight * 1.5), Style = ProgressBarStyle.Marquee };
-            Label lblStatus = new Label() { AutoSize = true, Text = Resources.StatusChecking };
-            Button btnCancel = new Button() { AutoSize = true, DialogResult = DialogResult.Cancel, Padding = new Padding(3, 1, 3, 1), Text = Resources.Cancel };
-            Button btnUpgrade = new Button() { AutoSize = true, Padding = new Padding(3, 1, 3, 1), Text = Resources.Upgrade, Visible = false };
-            Button btnDownload = new Button() { AutoSize = true, Padding = new Padding(3, 1, 3, 1), Text = Resources.Download, Visible = false };
+            private readonly ProgressBar prgProgress = new ProgressBar() { Height = (int)(SystemInformation.HorizontalScrollBarHeight * 1.5), Style = ProgressBarStyle.Marquee };
+            private readonly Label lblStatus = new Label() { AutoSize = true, Text = Resources.StatusChecking };
+            private readonly Button btnCancel = new Button() { AutoSize = true, DialogResult = DialogResult.Cancel, Padding = new Padding(3, 1, 3, 1), Text = Resources.Cancel };
+            private readonly Button btnUpgrade = new Button() { AutoSize = true, Padding = new Padding(3, 1, 3, 1), Text = Resources.Upgrade, Visible = false };
+            private readonly Button btnDownload = new Button() { AutoSize = true, Padding = new Padding(3, 1, 3, 1), Text = Resources.Download, Visible = false };
 
-            BackgroundWorker bwCheck = new BackgroundWorker() { WorkerSupportsCancellation = true };
-            BackgroundWorker bwDownload = new BackgroundWorker() { WorkerSupportsCancellation = true, WorkerReportsProgress = true };
+            private readonly BackgroundWorker bwCheck = new BackgroundWorker() { WorkerSupportsCancellation = true };
+            private readonly BackgroundWorker bwDownload = new BackgroundWorker() { WorkerSupportsCancellation = true, WorkerReportsProgress = true };
 
-            UpgradeFile UpgradeFile = null;
+            private UpgradeFile UpgradeFile = null;
 
 
-            void bwCheck_DoWork(object sender, DoWorkEventArgs e) {
-                e.Result = Medo.Services.Upgrade.GetUpgradeFile(this.ServiceUri, this.Assembly);
+            private void bwCheck_DoWork(object sender, DoWorkEventArgs e)
+            {
+                e.Result = Medo.Services.Upgrade.GetUpgradeFile(ServiceUri, Assembly);
                 e.Cancel = bwCheck.CancellationPending;
             }
 
-            void bwCheck_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-                if (e.Cancelled == false) {
-                    if (e.Error == null) {
-                        this.UpgradeFile = e.Result as UpgradeFile;
+            private void bwCheck_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+            {
+                if (e.Cancelled == false)
+                {
+                    if (e.Error == null)
+                    {
+                        UpgradeFile = e.Result as UpgradeFile;
                         prgProgress.Style = ProgressBarStyle.Continuous;
-                        if (this.UpgradeFile != null) {
+                        if (UpgradeFile != null)
+                        {
                             lblStatus.Text = Resources.StatusUpgradeIsAvailable;
                             btnUpgrade.Visible = true;
                             btnDownload.Visible = true;
                             btnUpgrade.Focus();
-                        } else {
+                        }
+                        else
+                        {
                             lblStatus.Text = Resources.StatusUpgradeIsNotAvailable;
                             btnCancel.DialogResult = DialogResult.OK;
                             btnCancel.Text = Resources.Close;
                         }
-                    } else {
-                        System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotCheck + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
-                        this.DialogResult = DialogResult.Cancel;
                     }
-                } else {
-                    this.DialogResult = DialogResult.Cancel;
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotCheck + "\n\n" + e.Error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
+                        DialogResult = DialogResult.Cancel;
+                    }
+                }
+                else
+                {
+                    DialogResult = DialogResult.Cancel;
                 }
             }
 
-            void btnUpgrade_Click(object sender, EventArgs e) {
+            private void btnUpgrade_Click(object sender, EventArgs e)
+            {
                 lblStatus.Text = Resources.StatusDownloading;
                 btnUpgrade.Enabled = false;
                 btnDownload.Visible = false;
                 bwDownload.RunWorkerAsync();
             }
 
-            void btnDownload_Click(object sender, EventArgs e) {
+            private void btnDownload_Click(object sender, EventArgs e)
+            {
                 lblStatus.Text = Resources.StatusDownloading;
                 btnUpgrade.Visible = false;
                 btnDownload.Enabled = false;
@@ -265,83 +338,113 @@ namespace Medo.Services {
             }
 
 
-            void bwDownload_DoWork(object sender, DoWorkEventArgs e) {
+            private void bwDownload_DoWork(object sender, DoWorkEventArgs e)
+            {
                 var buffer = new byte[1024];
-                using (var stream = this.UpgradeFile.GetStream()) {
+                using (var stream = UpgradeFile.GetStream())
+                {
                     stream.ReadTimeout = 5000;
-                    using (var bytes = new MemoryStream(1024 * 1024)) {
-                        while (bwDownload.CancellationPending == false) {
-                            bwDownload.ReportProgress((int)(bytes.Length * 100 / this.UpgradeFile.StreamLength));
+                    using (var bytes = new MemoryStream(1024 * 1024))
+                    {
+                        while (bwDownload.CancellationPending == false)
+                        {
+                            bwDownload.ReportProgress((int)(bytes.Length * 100 / UpgradeFile.StreamLength));
                             var read = stream.Read(buffer, 0, buffer.Length);
-                            if (read > 0) {
+                            if (read > 0)
+                            {
                                 bytes.Write(buffer, 0, read);
-                            } else {
+                            }
+                            else
+                            {
                                 break;
                             }
                         }
-                        if (bwDownload.CancellationPending) {
+                        if (bwDownload.CancellationPending)
+                        {
                             e.Cancel = true;
-                        } else {
-                            if (bytes.Length != this.UpgradeFile.StreamLength) { throw new InvalidOperationException("Content length mismatch."); }
+                        }
+                        else
+                        {
+                            if (bytes.Length != UpgradeFile.StreamLength) { throw new InvalidOperationException("Content length mismatch."); }
                             e.Result = bytes.ToArray();
                         }
                     }
                 }
             }
 
-            void bwDownload_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            private void bwDownload_ProgressChanged(object sender, ProgressChangedEventArgs e)
+            {
                 prgProgress.Value = e.ProgressPercentage;
-                var text = e.UserState as string;
-                if (text != null) { lblStatus.Text = text; }
+                if (e.UserState is string text) { lblStatus.Text = text; }
             }
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "SaveFileDialog is disposed in using.")]
-            void bwDownload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-                if (e.Cancelled == false) {
-                    if (e.Error == null) {
-                        this.btnCancel.Enabled = false;
+            private void bwDownload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+            {
+                if (e.Cancelled == false)
+                {
+                    if (e.Error == null)
+                    {
+                        btnCancel.Enabled = false;
                         var bytes = e.Result as byte[];
                         var isUpgrade = btnUpgrade.Visible;
-                        if (isUpgrade) {
-                            try {
-                                var fileName = Path.Combine(Path.GetTempPath(), this.UpgradeFile.FileName);
+                        if (isUpgrade)
+                        {
+                            try
+                            {
+                                var fileName = Path.Combine(Path.GetTempPath(), UpgradeFile.FileName);
                                 File.WriteAllBytes(fileName, bytes);
                                 Process.Start(fileName);
                                 System.Windows.Forms.Application.Exit();
-                                this.DialogResult = DialogResult.OK;
-                            } catch (Win32Exception ex) {
-                                System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotUpgrade + "\n\n" + ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
-                                this.DialogResult = DialogResult.Cancel;
+                                DialogResult = DialogResult.OK;
                             }
-                        } else {
-                            var filter = string.Format(CultureInfo.CurrentUICulture, Resources.Filter, new FileInfo(this.UpgradeFile.FileName).Extension);
-                            using (var frm = new SaveFileDialog() { AddExtension = false, CheckPathExists = true, FileName = this.UpgradeFile.FileName, InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Filter = filter }) {
-                                if (frm.ShowDialog(this) == DialogResult.OK) {
+                            catch (Win32Exception ex)
+                            {
+                                System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotUpgrade + "\n\n" + ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
+                                DialogResult = DialogResult.Cancel;
+                            }
+                        }
+                        else
+                        {
+                            var filter = string.Format(CultureInfo.CurrentUICulture, Resources.Filter, new FileInfo(UpgradeFile.FileName).Extension);
+                            using (var frm = new SaveFileDialog() { AddExtension = false, CheckPathExists = true, FileName = UpgradeFile.FileName, InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Filter = filter })
+                            {
+                                if (frm.ShowDialog(this) == DialogResult.OK)
+                                {
                                     File.WriteAllBytes(frm.FileName, bytes);
-                                    this.DialogResult = DialogResult.OK;
-                                } else {
-                                    this.DialogResult = DialogResult.Cancel;
+                                    DialogResult = DialogResult.OK;
+                                }
+                                else
+                                {
+                                    DialogResult = DialogResult.Cancel;
                                 }
                             }
                         }
-                    } else {
-                        System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotDownload + "\n\n" + e.Error.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
-                        this.DialogResult = DialogResult.Cancel;
                     }
-                } else {
-                    this.DialogResult = DialogResult.Cancel;
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show(this, Resources.ErrorCannotDownload + "\n\n" + e.Error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
+                        DialogResult = DialogResult.Cancel;
+                    }
+                }
+                else
+                {
+                    DialogResult = DialogResult.Cancel;
                 }
             }
 
 
-            protected override void Dispose(bool disposing) {
-                if (disposing) {
-                    foreach (Control iControl in this.Controls) {
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    foreach (Control iControl in Controls)
+                    {
                         iControl.Dispose();
                     }
-                    this.bwCheck.Dispose();
-                    this.bwDownload.Dispose();
-                    this.Controls.Clear();
+                    bwCheck.Dispose();
+                    bwDownload.Dispose();
+                    Controls.Clear();
                 }
                 base.Dispose(disposing);
             }
@@ -352,7 +455,8 @@ namespace Medo.Services {
 
 
 
-        private static class Resources {
+        private static class Resources
+        {
 
             internal static string Caption { get { return GetInCurrentLanguage("Upgrade {0}", "{0} nadogradnja"); } }
             internal static string Cancel { get { return GetInCurrentLanguage("Cancel", "Odustani"); } }
@@ -370,8 +474,10 @@ namespace Medo.Services {
             internal static string Filter { get { return GetInCurrentLanguage("Download|*{0}|All files|*.*", "Preuzimanje|*{0}|Sve datoteke|*.*"); } }
 
 
-            private static string GetInCurrentLanguage(string en_US, string hr_HR) {
-                switch (Thread.CurrentThread.CurrentUICulture.Name.ToUpperInvariant()) {
+            private static string GetInCurrentLanguage(string en_US, string hr_HR)
+            {
+                switch (Thread.CurrentThread.CurrentUICulture.Name.ToUpperInvariant())
+                {
                     case "EN":
                     case "EN-US":
                     case "EN-GB":
@@ -397,10 +503,12 @@ namespace Medo.Services {
     /// <summary>
     /// Handles upgrade file operations.
     /// </summary>
-    public sealed class UpgradeFile {
+    public sealed class UpgradeFile
+    {
 
-        internal UpgradeFile(Uri uri) {
-            this.Uri = uri;
+        internal UpgradeFile(Uri uri)
+        {
+            Uri = uri;
         }
 
 
@@ -412,20 +520,21 @@ namespace Medo.Services {
         /// <summary>
         /// Gets file name.
         /// </summary>
-        public string FileName { get { return this.Uri.Segments[this.Uri.Segments.Length - 1]; } }
+        public string FileName { get { return Uri.Segments[Uri.Segments.Length - 1]; } }
 
         /// <summary>
         /// Returns content stream.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Method is appropriate since it can produce side effects and each call produces different result.")]
-        public Stream GetStream() {
-            var request = (HttpWebRequest)HttpWebRequest.Create(this.Uri);
+        public Stream GetStream()
+        {
+            var request = (HttpWebRequest)HttpWebRequest.Create(Uri);
             request.AllowAutoRedirect = true;
             request.Method = "GET";
             request.Proxy = HttpWebRequest.DefaultWebProxy;
             request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
             var response = (HttpWebResponse)request.GetResponse();
-            this.StreamLength = response.ContentLength;
+            StreamLength = response.ContentLength;
             return response.GetResponseStream();
         }
 
@@ -439,20 +548,27 @@ namespace Medo.Services {
         /// Retrieves whole file.
         /// </summary>
         /// <exception cref="System.InvalidOperationException">Content length mismatch.</exception>
-        public byte[] GetBytes() {
+        public byte[] GetBytes()
+        {
             var buffer = new byte[1024];
-            using (var stream = this.GetStream()) {
+            using (var stream = GetStream())
+            {
                 stream.ReadTimeout = 5000;
-                using (var bytes = new MemoryStream(1024 * 1024)) {
-                    while (true) {
+                using (var bytes = new MemoryStream(1024 * 1024))
+                {
+                    while (true)
+                    {
                         var read = stream.Read(buffer, 0, buffer.Length);
-                        if (read > 0) {
+                        if (read > 0)
+                        {
                             bytes.Write(buffer, 0, read);
-                        } else {
+                        }
+                        else
+                        {
                             break;
                         }
                     }
-                    if (bytes.Length != this.StreamLength) { throw new InvalidOperationException("Content length mismatch."); }
+                    if (bytes.Length != StreamLength) { throw new InvalidOperationException("Content length mismatch."); }
                     return bytes.ToArray();
                 }
             }
