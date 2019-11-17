@@ -6,9 +6,9 @@ SET        SOURCE_SOLUTION="..\Source\VhdAttach.sln"
 SET       SOURCE_INNOSETUP=".\VhdAttach.iss"
 
 SET              TOOLS_GIT="%PROGRAMFILES(X86)%\Git\mingw64\bin\git.exe" "%PROGRAMFILES%\Git\mingw64\bin\git.exe" "C:\Program Files\Git\mingw64\bin\git.exe"
-SET     TOOLS_VISUALSTUDIO="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+SET     TOOLS_VISUALSTUDIO="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"
 SET         TOOLS_SIGNTOOL="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
-SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 5\iscc.exe"
+SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 6\iscc.exe"
 SET           TOOLS_WINRAR="%PROGRAMFILES(X86)%\WinRAR\WinRAR.exe" "%PROGRAMFILES%\WinRAR\WinRAR.exe" "C:\Program Files\WinRAR\WinRAR.exe"
 
 SET CERTIFICATE_THUMBPRINT="026184de8dbf52fdcbae75fd6b1a7d9ce4310e5d"
